@@ -32,7 +32,7 @@
 
         @include('admin.layout.components.left-navbar')
 
-        @include('admin.layout.components.content')
+        @yield('content');
 
     </div>
 
