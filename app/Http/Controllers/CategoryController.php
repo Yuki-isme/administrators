@@ -8,6 +8,8 @@ use App\Services\CategoryService;
 class CategoryController extends Controller
 {
     private $categoryService;
+    private $activePage;
+
     public function __construct(CategoryService $categoryService)
     {
         $this->categoryService = $categoryService;
@@ -18,7 +20,8 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = $this->categoryService->getAllCategory();
-        return view('admin.category.index', ['categories'=>$categories]);
+        $this->activePage = 'category_list';
+        return view('admin.category.index', ['categories' => $categories, 'activePage' => $this->activePage]);
     }
 
     /**
@@ -26,7 +29,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $this->activePage = 'category_create';
+        return view('admin.category.create-category', ['activePage' => $this->activePage]);
     }
 
     /**
@@ -34,7 +38,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $result = $this->categoryService->store($request->all());
+
+        if (isset($result['error'])) {
+
+            return back()->withErrors($result['error'])->withInput();
+        }
+
+        return redirect()->route('categories.index')->with('success', 'Thêm sản phẩm thành công!');
     }
 
     /**
@@ -48,9 +59,11 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $category = $this->categoryService->getCategoryById($id);
+        $this->activePage = 'category_list';
+        return view('admin.category.edit-category', ['categories' => $category, 'activePage' => $this->activePage]);
     }
 
     /**
@@ -66,6 +79,12 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $result = $this->categoryService->deleteCategory($id);
+
+        if ($result) {
+            return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
+        } else {
+            return redirect()->back()->withErrors('Không thể xóa danh mục này.');
+        }
     }
 }

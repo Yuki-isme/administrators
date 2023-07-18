@@ -12,8 +12,8 @@
                     <ul>
                         <li><a href="productlist.html">Product List</a></li>
                         <li><a href="addproduct.html">Add Product</a></li>
-                        <li><a href="categorylist.html">Category List</a></li>
-                        <li><a href="addcategory.html">Add Category</a></li>
+                        <li><a href="{{ route('categories.index') }}" @if($activePage == 'category_list') class="show active" @endif>Category List</a></li>
+                        <li><a href="{{ route('categories.create') }}" @if($activePage == 'category_create') class="show active" @endif>Add Category</a></li>
                         <li><a href="subcategorylist.html">Sub Category List</a></li>
                         <li><a href="subaddcategory.html">Add Sub Category</a></li>
                         <li><a href="brandlist.html">Brand List</a></li>
@@ -105,7 +105,7 @@
                 <li>
                     <a href="components.html"><i data-feather="layers"></i><span> Components</span> </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="blankpage.html"><i data-feather="file"></i><span> Blank Page</span> </a>
                 </li>
                 <li class="submenu">

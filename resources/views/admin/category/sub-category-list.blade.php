@@ -1,7 +1,6 @@
 @extends('admin.layout.layout')
 
 @section('content')
-
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -11,19 +10,11 @@
                 </div>
                 <div class="page-btn">
                     <a href="{{ route('categories.create') }}" class="btn btn-added">
-                        <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add Category
+                        <img src="assets/img/icons/plus.svg" class="me-1" alt="img">Add Category
                     </a>
                 </div>
             </div>
-            @if (session('success'))
-                <div class="alert alert-success" id="success-alert">
-                    {{ session('success') }}
-                    <button type="button" class="close-alert" id="close-success-alert"
-                        style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
+
             <div class="card">
                 <div class="card-body">
                     <div class="table-top">
@@ -35,8 +26,8 @@
                                 </a>
                             </div>
                             <div class="search-input">
-                                <a class="btn btn-searchset"><img
-                                        src="{{ asset('admin/assets/img/icons/search-white.svg') }}" alt="img"></a>
+                                <a class="btn btn-searchset"><img src="{{ asset('admin/assets/img/icons/search-white.svg') }}"
+                                        alt="img"></a>
                             </div>
                         </div>
                         <div class="wordset">
@@ -86,8 +77,7 @@
                                 </div>
                                 <div class="col-lg-1 col-sm-6 col-12 ms-auto">
                                     <div class="form-group">
-                                        <a class="btn btn-filters ms-auto"><img
-                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
+                                        <a class="btn btn-filters ms-auto"><img src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
                                                 alt="img"></a>
                                     </div>
                                 </div>
@@ -144,17 +134,12 @@
                                         </td>
                                         <td>{{ $category->created_at->format('d/m/Y H:i:s') }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('categories.edit', ['id' => $category->id]) }}">
+                                            <a class="me-3" href="editcategory.html">
                                                 <img src="{{ asset('admin/assets/img/icons/edit.svg') }}" alt="img">
                                             </a>
-
-
-                                            {{-- cầu cứu phần này --}}
-                                            <a class="me-3 confirm-text" href="{{ route('categories.destroy', ['id' => $category->id]) }}">
+                                            <a class="me-3 confirm-text" href="javascript:void(0);">
                                                 <img src="{{ asset('admin/assets/img/icons/delete.svg') }}" alt="img">
                                             </a>
-
-
                                         </td>
                                     </tr>
                                 @endforeach
@@ -166,5 +151,4 @@
 
         </div>
     </div>
-
 @endsection
