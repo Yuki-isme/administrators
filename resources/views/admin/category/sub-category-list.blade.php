@@ -96,6 +96,7 @@
                                         </label>
                                     </th>
                                     <th>Category name</th>
+                                    <th>Parent Category</th>
                                     <th>Slug</th>
                                     <th>Description</th>
                                     <th>Active</th>
@@ -104,7 +105,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($categories as $category)
+                                @foreach ($child_categories as $child_category)
+
                                     <tr>
                                         <td>
                                             <label class="checkboxs">
@@ -114,15 +116,16 @@
                                         </td>
                                         <td class="productimgname">
                                             <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('admin/assets/img/category/' . $category->path_img) }}"
+                                                <img src="{{ asset('admin/assets/img/category/' . $child_category->path_img) }}"
                                                     alt="product">
                                             </a>
-                                            <a href="javascript:void(0);">{{ $category->name }}</a>
+                                            <a href="javascript:void(0);">{{ $child_category->name }}</a>
                                         </td>
-                                        <td>{{ $category->slug }}</td>
-                                        <td>{{ $category->description }}</td>
+                                        <td>{{ $child_category->parent_name }}</td>
+                                        <td>{{ $child_category->slug }}</td>
+                                        <td>{{ $child_category->description }}</td>
                                         <td>
-                                            @if ($category->is_active)
+                                            @if ($child_category->is_active)
                                                 <i class="ion-checkmark-round" data-bs-toggle="tooltip"
                                                     aria-label="ion-checkmark-round"
                                                     data-bs-original-title="ion-checkmark-round"></i>
@@ -132,7 +135,7 @@
                                                     data-bs-original-title="ion-close-round"></i>
                                             @endif
                                         </td>
-                                        <td>{{ $category->created_at->format('d/m/Y H:i:s') }}</td>
+                                        <td>{{ $child_category->created_at->format('d/m/Y H:i:s') }}</td>
                                         <td>
                                             <a class="me-3" href="editcategory.html">
                                                 <img src="{{ asset('admin/assets/img/icons/edit.svg') }}" alt="img">

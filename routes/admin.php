@@ -17,17 +17,22 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 
 Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
-    // Điều hướng tới phương thức 'index' trong 'CategoryController'
+
     Route::get('/', [CategoryController::class, 'index'])->name('index');
 
-    // Điều hướng tới phương thức 'create' trong 'CategoryController'
+
     Route::get('/create', [CategoryController::class, 'create'])->name('create');
     Route::post('/store', [CategoryController::class, 'store'])->name('store');
 
     Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
     Route::put('/{id}/update', [CategoryController::class, 'update'])->name('update');
 
-    Route::any('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+    Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+
+    Route::get('/child', [CategoryController::class, 'child_index'])->name('child_index');
+
+    Route::get('/child/create', [CategoryController::class, 'child_create'])->name('child_create');
+    Route::post('/child/store', [CategoryController::class, 'child_store'])->name('child_store');
 });
 
 

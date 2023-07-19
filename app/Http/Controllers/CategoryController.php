@@ -91,7 +91,21 @@ class CategoryController extends Controller
         if ($result) {
             return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
         } else {
-            return redirect()->back()->withErrors('Không thể xóa danh mục này.');
+            return redirect()->route('categories.index')->with('alert', 'Cannot delete category');
         }
+    }
+
+    public function child_index()
+    {
+        $child_categories = $this->categoryService->get_child();
+        $this->activePage = 'child_category_list';
+        return view('admin.category.sub-category-list', ['child_categories' => $child_categories, 'activePage' => $this->activePage]);
+    }
+
+    public function child_create()
+    {
+        $categories = $this->categoryService->getAllCategory();
+        $this->activePage = 'child_category_create';
+        return view('admin.category.create-sub-category', ['categories' => $categories, 'activePage' => $this->activePage]);
     }
 }

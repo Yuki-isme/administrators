@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class CategoryRepository extends BaseRepository
 {
@@ -19,7 +19,7 @@ class CategoryRepository extends BaseRepository
 
     public function getCategories()
     {
-        return $this->model->paginate(10);
+        return $this->model->where('parent_id', 0)->paginate(10);
     }
 
     public function store($data)
@@ -57,17 +57,17 @@ class CategoryRepository extends BaseRepository
         $category->is_active = $data['is_active'] ?? 1;
 
 
-        if (isset($data['img']) && $data['img']->isValid()) {
-            $file = $data['img'];
-            $extension = $file->getClientOriginalExtension();
-            $fileName = uniqid(Str::slug($data['name'])) . '.' . $extension;
-            $file->move('admin/assets/img/category', $fileName);
 
-            if ($category->path_img) {
-                Storage::delete('admin/assets/img/category/' . $category->path_img);
-            }
-            $category->path_img = $fileName;
-        }
+        $file = $data['img'];
+        $extension = $file->getClientOriginalExtension();
+        $fileName = uniqid(Str::slug($data['name'])) . '.' . $extension;
+        $file->move('admin/assets/img/category', $fileName);
+
+
+        File::delete('admin/assets/img/category/' . $category->path_img);
+
+        $category->path_img = $fileName;
+
 
         $category->save();
 
@@ -76,6 +76,23 @@ class CategoryRepository extends BaseRepository
 
     public function delete($id)
     {
-        return Category::destroy($id);
+        $category = Category::where('parent_id', $id)->exists();
+
+        if ($category) {
+            return false;
+        }
+
+        File::delete('admin/assets/img/category/' . $category->path_img);
+        return  Category::destroy($id);
+    }
+
+    public function get_child()
+    {
+        $child_categories = Category::select('categories.id as child_id', 'categories.name as name', 'categories.description as description', 'categories.slug as slug', 'categories.path_img as path_img', 'categories.is_active as is_active', 'categories.created_at as created_at', 'parent.name as parent_name')
+            ->leftJoin('categories as parent', 'categories.parent_id', '=', 'parent.id')
+            ->where('categories.parent_id', '>', 0)
+            ->paginate(10);
+
+        return $child_categories;
     }
 }

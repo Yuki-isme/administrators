@@ -56,10 +56,15 @@ class CategoryService
         $category = $this->categoryRepository->getById($id);
 
         if (!$category) {
+
             return false;
         }
 
         // Thực hiện xóa danh mục
         return $this->categoryRepository->delete($id);
+    }
+
+    public function get_child(){
+        return $this->categoryRepository->get_child();
     }
 }

@@ -23,6 +23,15 @@
                     </button>
                 </div>
             @endif
+            @if (session('alert'))
+            <div class="alert alert-danger" id="success-alert">
+                {{ session('alert') }}
+                <button type="button" class="close-alert" id="close-success-alert"
+                    style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
             <div class="card">
                 <div class="card-body">
                     <div class="table-top">
