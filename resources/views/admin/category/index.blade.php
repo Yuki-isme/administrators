@@ -1,7 +1,6 @@
 @extends('admin.layout.layout')
 
 @section('content')
-
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -144,18 +143,18 @@
                                         </td>
                                         <td>{{ $category->created_at->format('d/m/Y H:i:s') }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('categories.edit', ['id' => $category->id]) }}">
+
+                                            <a class="me-3"
+                                                href="{{ route('categories.edit', ['id' => $category->id]) }}">
                                                 <img src="{{ asset('admin/assets/img/icons/edit.svg') }}" alt="img">
                                             </a>
 
-
-                                            {{-- cầu cứu phần này --}}
-                                            <a class="me-3 confirm-text" href="{{ route('categories.destroy', ['id' => $category->id]) }}">
+                                            <a href="#"onclick="event.preventDefault(); deleteCategory('{{ route('categories.destroy', ['id' => $category->id]) }}')">
                                                 <img src="{{ asset('admin/assets/img/icons/delete.svg') }}" alt="img">
                                             </a>
 
-
                                         </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -167,4 +166,28 @@
         </div>
     </div>
 
+    <form action="" method="post" id="delete-form">
+        @csrf
+        @method('delete')
+    </form>
+
+    <script>
+        function deleteCategory(url) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Set the correct action for the delete form
+                    document.getElementById('delete-form').action = url;
+                    document.getElementById('delete-form').submit();
+                }
+            });
+        }
+    </script>
 @endsection

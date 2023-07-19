@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/plugins/icons/ionic/ionicons.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/assets/plugins/sweetalert/css/sweetalert.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
 
 </head>
@@ -49,8 +50,8 @@
 
     <script src="{{ asset('admin/assets/plugins/select2/js/select2.min.js') }}"></script>
 
-    <script src="{{ asset('admin/assets/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('admin/assets/plugins/sweetalert/sweetalerts.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/sweetalert/js/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/sweetalert/js/sweetalerts.min.js') }}"></script>
 
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
 

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,7 +27,7 @@ Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
     Route::put('/{id}/update', [CategoryController::class, 'update'])->name('update');
 
-    Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+    Route::any('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
 });
 
 

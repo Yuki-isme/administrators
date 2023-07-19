@@ -63,7 +63,7 @@ class CategoryController extends Controller
     {
         $category = $this->categoryService->getCategoryById($id);
         $this->activePage = 'category_list';
-        return view('admin.category.edit-category', ['categories' => $category, 'activePage' => $this->activePage]);
+        return view('admin.category.edit-category', ['category' => $category, 'activePage' => $this->activePage]);
     }
 
     /**
@@ -71,8 +71,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $result = $this->categoryService->update($id, $request->all());
+
+        if (isset($result['error'])) {
+            return back()->withErrors($result['error'])->withInput();
+        }
+
+        return redirect()->route('categories.index')->with('success', 'Sửa sản phẩm thành công!');
     }
+
 
     /**
      * Remove the specified resource from storage.
