@@ -14,9 +14,7 @@ class CategoryController extends Controller
     {
         $this->categoryService = $categoryService;
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $categories = $this->categoryService->getAllCategory();
@@ -24,18 +22,12 @@ class CategoryController extends Controller
         return view('admin.category.index', ['categories' => $categories, 'activePage' => $this->activePage]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $this->activePage = 'category_create';
         return view('admin.category.create-category', ['activePage' => $this->activePage]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $result = $this->categoryService->store($request->all());
@@ -48,17 +40,11 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Thêm sản phẩm thành công!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $category = $this->categoryService->getCategoryById($id);
@@ -66,9 +52,6 @@ class CategoryController extends Controller
         return view('admin.category.edit-category', ['category' => $category, 'activePage' => $this->activePage]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $result = $this->categoryService->update($id, $request->all());
@@ -81,31 +64,28 @@ class CategoryController extends Controller
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $result = $this->categoryService->deleteCategory($id);
 
-        if ($result) {
-            return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
-        } else {
-            return redirect()->route('categories.index')->with('alert', 'Cannot delete category');
+        if (isset($result['error'])) {
+
+            return redirect()->route('categories.index')->with('alert', $result['error']);
         }
+        return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
     }
 
-    public function child_index()
+    public function getChildCategories()
     {
-        $child_categories = $this->categoryService->get_child();
-        $this->activePage = 'child_category_list';
+        $child_categories = $this->categoryService->getChildCategories();
+
         return view('admin.category.sub-category-list', ['child_categories' => $child_categories, 'activePage' => $this->activePage]);
     }
 
-    public function child_create()
+    public function childCreate()
     {
         $categories = $this->categoryService->getAllCategory();
-        $this->activePage = 'child_category_create';
+
         return view('admin.category.create-sub-category', ['categories' => $categories, 'activePage' => $this->activePage]);
     }
 }

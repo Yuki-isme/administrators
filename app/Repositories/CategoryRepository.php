@@ -19,7 +19,7 @@ class CategoryRepository extends BaseRepository
 
     public function getCategories()
     {
-        return $this->model->where('parent_id', 0)->paginate(10);
+        return $this->model->where('parent_id', 0)->get();
     }
 
     public function store($data)
@@ -27,17 +27,16 @@ class CategoryRepository extends BaseRepository
 
         $category = new Category();
 
-        $category->name = $data['name'];
-        $category->slug = $data['slug'];
-        $category->description = $data['description'];
-        $category->parent_id = $data['parent_id'] ?? 0;
-        $category->is_active = $data['is_active'] ?? 1;
-
         $file = $data['img'];
         $extension = $file->getClientOriginalExtension();
         $fileName = uniqid(Str::slug($data['name']) . '-') . '.' . $extension;
         $file->move('admin/assets/img/category', $fileName);
 
+        $category->name = $data['name'];
+        $category->slug = $data['slug'];
+        $category->description = $data['description'];
+        $category->parent_id = $data['parent_id'] ?? 0;
+        $category->is_active = $data['is_active'] ?? 1;
         $category->path_img = $fileName;
 
         $category->save();
@@ -45,29 +44,29 @@ class CategoryRepository extends BaseRepository
         return ['success' => 'Category created successfully'];
     }
 
-    public function update($categoryId, $data)
+    public function update($Id, $data)
     {
+        $category = Category::find($Id);
 
-        $category = Category::find($categoryId);
+        if (isset($data['img']) && $data['img'] instanceof \Illuminate\Http\UploadedFile) {
+            $file = $data['img'];
+            $extension = $file->getClientOriginalExtension();
+            $fileName = uniqid(Str::slug($data['name']).'-') . '.' . $extension;
+            $file->move('admin/assets/img/category', $fileName);
+
+            File::delete('admin/assets/img/category/' . $category->path_img);
+        } else {
+            $fileName = uniqid(Str::slug($data['name']).'-') . '.' . pathinfo($category->path_img, PATHINFO_EXTENSION);
+            
+            File::move('admin/assets/img/category/' . $category->path_img, 'admin/assets/img/category/' . $fileName);
+        }
 
         $category->name = $data['name'];
         $category->slug = $data['slug'];
         $category->description = $data['description'];
         $category->parent_id = $data['parent_id'] ?? 0;
         $category->is_active = $data['is_active'] ?? 1;
-
-
-
-        $file = $data['img'];
-        $extension = $file->getClientOriginalExtension();
-        $fileName = uniqid(Str::slug($data['name'])) . '.' . $extension;
-        $file->move('admin/assets/img/category', $fileName);
-
-
-        File::delete('admin/assets/img/category/' . $category->path_img);
-
         $category->path_img = $fileName;
-
 
         $category->save();
 
@@ -79,19 +78,18 @@ class CategoryRepository extends BaseRepository
         $category = Category::where('parent_id', $id)->exists();
 
         if ($category) {
-            return false;
+            return ['error' => 'Không thể xóa category cha'];
         }
 
         File::delete('admin/assets/img/category/' . $category->path_img);
-        return  Category::destroy($id);
+        Category::destroy($id);
+
+        return  ['success' => 'Xóa thành công!'];
     }
 
-    public function get_child()
+    public function getChildCategories()
     {
-        $child_categories = Category::select('categories.id as child_id', 'categories.name as name', 'categories.description as description', 'categories.slug as slug', 'categories.path_img as path_img', 'categories.is_active as is_active', 'categories.created_at as created_at', 'parent.name as parent_name')
-            ->leftJoin('categories as parent', 'categories.parent_id', '=', 'parent.id')
-            ->where('categories.parent_id', '>', 0)
-            ->paginate(10);
+        $child_categories = Category::with('parent')->where('parent_id', '!=', 0)->get();
 
         return $child_categories;
     }

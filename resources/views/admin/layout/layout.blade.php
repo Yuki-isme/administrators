@@ -49,6 +49,7 @@
     <script src="{{ asset('admin/assets/js/bootstrap.bundle.min.js') }}"></script>
 
     <script src="{{ asset('admin/assets/plugins/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/select2/js/custom-select.js') }}"></script>
 
     <script src="{{ asset('admin/assets/plugins/sweetalert/js/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/sweetalert/js/sweetalerts.min.js') }}"></script>

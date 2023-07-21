@@ -22,17 +22,17 @@ Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
 
 
     Route::get('/create', [CategoryController::class, 'create'])->name('create');
-    Route::post('/store', [CategoryController::class, 'store'])->name('store');
+    Route::post('/', [CategoryController::class, 'store'])->name('store');
 
     Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
-    Route::put('/{id}/update', [CategoryController::class, 'update'])->name('update');
+    Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
 
     Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
 
-    Route::get('/child', [CategoryController::class, 'child_index'])->name('child_index');
+    Route::get('/child', [CategoryController::class, 'getChildCategories'])->name('child_index');
 
-    Route::get('/child/create', [CategoryController::class, 'child_create'])->name('child_create');
-    Route::post('/child/store', [CategoryController::class, 'child_store'])->name('child_store');
+    Route::get('/child/create', [CategoryController::class, 'childCreate'])->name('child_create');
+    Route::post('/child/store', [CategoryController::class, 'childStore'])->name('child_store');
 });
 
 

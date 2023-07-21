@@ -150,7 +150,7 @@
                                                     data-bs-original-title="ion-close-round"></i>
                                             @endif
                                         </td>
-                                        <td>{{ $category->created_at->format('d/m/Y H:i:s') }}</td>
+                                        <td>{{ $category->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
 
                                             <a class="me-3"

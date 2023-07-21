@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="page-wrapper">
+        
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
@@ -10,7 +11,7 @@
                 </div>
                 <div class="page-btn">
                     <a href="{{ route('categories.create') }}" class="btn btn-added">
-                        <img src="assets/img/icons/plus.svg" class="me-1" alt="img">Add Category
+                        <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add Category
                     </a>
                 </div>
             </div>
@@ -121,7 +122,7 @@
                                             </a>
                                             <a href="javascript:void(0);">{{ $child_category->name }}</a>
                                         </td>
-                                        <td>{{ $child_category->parent_name }}</td>
+                                        <td>{{ $child_category->parent->name }}</td>
                                         <td>{{ $child_category->slug }}</td>
                                         <td>{{ $child_category->description }}</td>
                                         <td>

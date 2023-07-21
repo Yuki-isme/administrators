@@ -21,7 +21,6 @@ class CategoryService
     public function store($data)
     {
         if (isset($data['img']) && $data['img']->isValid()) {
-            // Continue with saving the category
             return $this->categoryRepository->store($data);
         } else {
             return ['error' => 'Invalid image or no image uploaded'];
@@ -32,22 +31,15 @@ class CategoryService
         return $this->categoryRepository->getById($id);
     }
 
-    public function update($categoryId, $data)
+    public function update($Id, $data)
     {
 
-        $category = $this->categoryRepository->getById($categoryId);
+        $category = $this->categoryRepository->getById($Id);
         if (!$category) {
             return ['error' => 'Không tìm thấy danh mục'];
         }
 
-        if (isset($data['img']) && $data['img']->isValid()) {
-            // Continue with saving the category
-            $category = $this->categoryRepository->update($categoryId, $data);
-        } else {
-            return ['error' => 'Vui lòng tải lên tệp ảnh hợp lệ'];
-        }
-
-        return $category;
+        return $category = $this->categoryRepository->update($Id, $data);
     }
 
     public function deleteCategory($id)
@@ -57,14 +49,15 @@ class CategoryService
 
         if (!$category) {
 
-            return false;
+            return ['error' => 'Không tìm thấy category'];
         }
 
         // Thực hiện xóa danh mục
         return $this->categoryRepository->delete($id);
     }
 
-    public function get_child(){
-        return $this->categoryRepository->get_child();
+    public function getChildCategories()
+    {
+        return $this->categoryRepository->getChildCategories();
     }
 }
