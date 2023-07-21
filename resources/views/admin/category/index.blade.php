@@ -1,6 +1,7 @@
 @extends('admin.layout.layout')
 
 @section('content')
+
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -9,29 +10,42 @@
                     <h6>View/Search product Category</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('categories.create') }}" class="btn btn-added">
+                    <a href="{{ isset($sub) ? route('categories.sub_create') : route('categories.create') }}" class="btn btn-added">
                         <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add Category
                     </a>
                 </div>
             </div>
+
             @if (session('success'))
-                <div class="alert alert-success" id="success-alert">
+                <div class="alert alert-success" id="alert">
                     {{ session('success') }}
-                    <button type="button" class="close-alert" id="close-success-alert"
+                    <button type="button" class="close-alert" id="close-alert"
+                        style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @elseif (session('alert'))
+                <div class="alert alert-danger" id="alert">
+                    {{ session('alert') }}
+                    <button type="button" class="close-alert" id="close-alert"
+                        style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @elseif ($errors->any())
+                <div class="alert alert-danger" id="alert" style="position: relative;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="close-alert" id="close-alert"
                         style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
             @endif
-            @if (session('alert'))
-            <div class="alert alert-danger" id="success-alert">
-                {{ session('alert') }}
-                <button type="button" class="close-alert" id="close-success-alert"
-                    style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+
             <div class="card">
                 <div class="card-body">
                     <div class="table-top">
@@ -114,6 +128,9 @@
                                         </label>
                                     </th>
                                     <th>Category name</th>
+                                    @if (isset($sub))
+                                        <th>Parent Name</th>
+                                    @endif
                                     <th>Slug</th>
                                     <th>Description</th>
                                     <th>Active</th>
@@ -137,6 +154,9 @@
                                             </a>
                                             <a href="javascript:void(0);">{{ $category->name }}</a>
                                         </td>
+                                        @if (isset($sub))
+                                            <td>{{ $category->parent->name }}</td>
+                                        @endif
                                         <td>{{ $category->slug }}</td>
                                         <td>{{ $category->description }}</td>
                                         <td>
@@ -152,18 +172,17 @@
                                         </td>
                                         <td>{{ $category->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
-
                                             <a class="me-3"
-                                                href="{{ route('categories.edit', ['id' => $category->id]) }}">
+                                                href="{{ isset($sub) ? route('categories.sub_edit', ['id' => $category->id]) : route('categories.edit', ['id' => $category->id]) }}">
                                                 <img src="{{ asset('admin/assets/img/icons/edit.svg') }}" alt="img">
                                             </a>
 
-                                            <a href="#"onclick="event.preventDefault(); deleteCategory('{{ route('categories.destroy', ['id' => $category->id]) }}')">
-                                                <img src="{{ asset('admin/assets/img/icons/delete.svg') }}" alt="img">
+                                            <a
+                                                href="#"onclick="event.preventDefault(); deleteCategory('{{ isset($sub) ? route('categories.sub_destroy', ['id' => $category->id]) : route('categories.destroy', ['id' => $category->id]) }}')">
+                                                <img src="{{ asset('admin/assets/img/icons/delete.svg') }}"
+                                                    alt="img">
                                             </a>
-
                                         </td>
-
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -180,7 +199,17 @@
         @method('delete')
     </form>
 
+@endsection
+
+@push('custom-script')
     <script>
+        $(document).ready(function() {
+
+            $('#close-alert').on('click', function() {
+                $('#alert').hide();
+            });
+        });
+
         function deleteCategory(url) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -192,11 +221,11 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Set the correct action for the delete form
-                    document.getElementById('delete-form').action = url;
-                    document.getElementById('delete-form').submit();
+                    // Set the correct action for the delete form using jQuery
+                    $('#delete-form').attr('action', url);
+                    $('#delete-form').submit();
                 }
             });
         }
     </script>
-@endsection
+@endpush

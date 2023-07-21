@@ -13,4 +13,10 @@ class BaseRepository
     public function getById($id){
         return $this->model->find($id);
     }
+
+    public function create($attribute = [])
+    {
+        return $this->model->create($attribute);
+    }
+
 }

@@ -8,7 +8,6 @@ use App\Services\CategoryService;
 class CategoryController extends Controller
 {
     private $categoryService;
-    private $activePage;
 
     public function __construct(CategoryService $categoryService)
     {
@@ -18,26 +17,17 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = $this->categoryService->getAllCategory();
-        $this->activePage = 'category_list';
-        return view('admin.category.index', ['categories' => $categories, 'activePage' => $this->activePage]);
+        return view('admin.category.index', ['categories' => $categories]);
     }
 
     public function create()
     {
-        $this->activePage = 'category_create';
-        return view('admin.category.create-category', ['activePage' => $this->activePage]);
+        return view('admin.category.form');
     }
 
     public function store(Request $request)
     {
-        $result = $this->categoryService->store($request->all());
-
-        if (isset($result['error'])) {
-
-            return back()->withErrors($result['error'])->withInput();
-        }
-
-        return redirect()->route('categories.index')->with('success', 'Thêm sản phẩm thành công!');
+        return $this->categoryService->store($request);
     }
 
     public function show(string $id)
@@ -48,44 +38,56 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = $this->categoryService->getCategoryById($id);
-        $this->activePage = 'category_list';
-        return view('admin.category.edit-category', ['category' => $category, 'activePage' => $this->activePage]);
+
+        return view('admin.category.form', ['category' => $category]);
     }
 
     public function update(Request $request, string $id)
     {
-        $result = $this->categoryService->update($id, $request->all());
-
-        if (isset($result['error'])) {
-            return back()->withErrors($result['error'])->withInput();
-        }
-
-        return redirect()->route('categories.index')->with('success', 'Sửa sản phẩm thành công!');
+        return $this->categoryService->update($id, $request);
     }
 
-
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        $result = $this->categoryService->deleteCategory($id);
-
-        if (isset($result['error'])) {
-
-            return redirect()->route('categories.index')->with('alert', $result['error']);
-        }
-        return redirect()->route('categories.index')->with('success', 'Xóa danh mục thành công!');
+        return $this->categoryService->destroy($id);
     }
 
-    public function getChildCategories()
-    {
-        $child_categories = $this->categoryService->getChildCategories();
+    //
 
-        return view('admin.category.sub-category-list', ['child_categories' => $child_categories, 'activePage' => $this->activePage]);
+    public function subIndex()
+    {
+        $categories = $this->categoryService->getAllSub();
+
+        return view('admin.category.index', ['categories' => $categories, 'sub' => 'sub']);
     }
 
-    public function childCreate()
+    public function subCreate()
     {
-        $categories = $this->categoryService->getAllCategory();
+        $parents = $this->categoryService->getAllCategory();
 
-        return view('admin.category.create-sub-category', ['categories' => $categories, 'activePage' => $this->activePage]);
+        return view('admin.category.form', ['parents' => $parents, 'sub' => 'sub']);
+    }
+
+    public function subStore(Request $request)
+    {
+        return $this->categoryService->subStore($request);
+    }
+
+    public function subEdit($id)
+    {
+        $category = $this->categoryService->getCategoryById($id);
+        $parents = $this->categoryService->getAllCategory();
+
+        return view('admin.category.form', ['category' => $category, 'parents' => $parents, 'sub' => 'sub']);
+    }
+
+    public function subUpdate(Request $request, string $id)
+    {
+        return $this->categoryService->subUpdate($id, $request);
+    }
+
+    public function subDestroy($id)
+    {
+        return $this->categoryService->subDestroy($id);
     }
 }

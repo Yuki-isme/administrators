@@ -14,8 +14,8 @@
                         <li><a href="addproduct.html">Add Product</a></li>
                         <li><a href="{{ route('categories.index') }}" class = "{{ request()->routeIs('categories.index') ? 'show active' : '' }}">Category List</a></li>
                         <li><a href="{{ route('categories.create') }}" class = "{{ request()->routeIs('categories.create') ? 'show active' : '' }}" >Add Category</a></li>
-                        <li><a href="{{ route('categories.child_index') }}" class = "{{ request()->routeIs('categories.child_index') ? 'show active' : '' }}" >Sub Category List</a></li>
-                        <li><a href="{{ route('categories.child_create') }}" class = "{{ request()->routeIs('categories.child_create') ? 'show active' : '' }}" >Add Sub Category</a></li>
+                        <li><a href="{{ route('categories.sub_index') }}" class = "{{ request()->routeIs('categories.sub_index') ? 'show active' : '' }}" >Sub Category List</a></li>
+                        <li><a href="{{ route('categories.sub_create') }}" class = "{{ request()->routeIs('categories.sub_create') ? 'show active' : '' }}" >Add Sub Category</a></li>
                         <li><a href="brandlist.html">Brand List</a></li>
                         <li><a href="addbrand.html">Add Brand</a></li>
                         <li><a href="importproduct.html">Import Products</a></li>
