@@ -70,7 +70,7 @@ class CategoryController extends Controller
 
     public function subStore(Request $request)
     {
-        return $this->categoryService->subStore($request);
+        return $this->categoryService->Store($request);
     }
 
     public function subEdit($id)
@@ -83,11 +83,11 @@ class CategoryController extends Controller
 
     public function subUpdate(Request $request, string $id)
     {
-        return $this->categoryService->subUpdate($id, $request);
+        return $this->categoryService->Update($id, $request);
     }
 
     public function subDestroy($id)
     {
-        return $this->categoryService->subDestroy($id);
+        return $this->categoryService->destroy($id);
     }
 }

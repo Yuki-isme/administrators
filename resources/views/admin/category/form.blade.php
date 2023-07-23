@@ -55,7 +55,7 @@
                                         <option value="0">No Parent</option>
                                         @isset($sub)
                                             @foreach ($parents as $parent)
-                                                <option value="{{ $parent->id }}" {{ isset($category) && $category->parent_id == $parent->id ? 'Selected' : '' }}> {{ $parent->name }} </option>
+                                                <option value="{{ $parent->id }}" {{ isset($category) && $category->parent_id == $parent->id ? 'Selected' : '' }} {{ $parent->is_active == 0 ? 'Disabled' : '' }}> {{ $parent->name }} </option>
                                             @endforeach
                                         @endisset
                                     </select>
@@ -65,7 +65,7 @@
                                 <div class="form-group">
                                     <label>Is Active</label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_active" role="switch"
+                                        <input class="form-check-input" type="checkbox" name="is_active" role="switch" value="1"
                                             {{ isset($category) ? ($category->is_active == 1 ? 'checked' : '') : 'checked' }}>
                                     </div>
                                 </div>
