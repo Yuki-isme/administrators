@@ -17,7 +17,7 @@ class CategoryService
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function getAllCategory()
+    public function getAllCategories()
     {
         return $this->categoryRepository->getAllCategories(); //lấy tất cả category có parent_id = 0
     }
@@ -37,14 +37,14 @@ class CategoryService
                     'name' => $request->name,
                     'slug' => $request->slug,
                     'description' => $request->description,
-                    'parent_id' => $request->parent_id ?? 0,
+                    'parent_id' => $request->parent_id,
                     'is_active' => $request->is_active ?? 0,
                     'path_img' => $fileName,
                 ]);
 
                 DB::commit();
 
-                return isset($request->parent_id) ?  Redirect::route('categories.sub_index')->with('success', 'Created sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Created category successfully!');
+                return $request->parent_id!=0 ?  Redirect::route('categories.sub_index')->with('success', 'Created sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Created category successfully!');
             } else {
                 throw new \Exception('Invalid image or no image uploaded');
             }

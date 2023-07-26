@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ProductController;
 
 Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     //category
@@ -38,7 +40,32 @@ Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     Route::put('/sub/{id}', [CategoryController::class, 'subUpdate'])->name('sub_update');
 
     Route::delete('/sub/{id}', [CategoryController::class, 'subDestroy'])->name('sub_destroy');
-    //
+});
+
+Route::group(['prefix' => 'brands', 'as' => 'brands.'], function () {
+
+    Route::get('/', [BrandController::class, 'index'])->name('index');
+
+    Route::get('/create', [BrandController::class, 'create'])->name('create');
+    Route::post('/', [BrandController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [BrandController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [BrandController::class, 'update'])->name('update');
+
+    Route::delete('/{id}', [BrandController::class, 'destroy'])->name('destroy');
+});
+
+Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
+
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+
+    Route::get('/create', [ProductController::class, 'create'])->name('create');
+    Route::post('/', [ProductController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [ProductController::class, 'update'])->name('update');
+
+    Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
 });
 
 

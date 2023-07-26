@@ -23,6 +23,8 @@
     {{-- <link rel="stylesheet" href="{{ asset('admin/assets/plugins/sweetalert/css/sweetalert.min.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
 
+    @stack('custom-css')
+
 </head>
 
 <body>
@@ -48,6 +50,8 @@
 
     <script src="{{ asset('admin/assets/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/dataTables.bootstrap4.min.js') }}"></script>
+
+    <script src="{{ asset('admin/assets/plugins/fileupload/fileupload.min.js') }}"></script>
 
     <script src="{{ asset('admin/assets/js/bootstrap.bundle.min.js') }}"></script>
 

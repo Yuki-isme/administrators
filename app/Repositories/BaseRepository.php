@@ -16,7 +16,7 @@ class BaseRepository
 
     public function create($attribute = [])
     {
-        return $this->model->create($attribute);
+        return $this->model->firstOrCreate($attribute);
     }
 
 }

@@ -12,14 +12,14 @@
                             alt="img"><span>
                             Product</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="productlist.html">Product List</a></li>
-                        <li><a href="addproduct.html">Add Product</a></li>
+                        <li><a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.index') ? 'show active' : '' }}">Product List</a></li>
+                        <li><a href="{{ route('products.create') }}" class="{{ request()->routeIs('products.create') ? 'show active' : '' }}">Add Product</a></li>
                         <li><a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.index') ? 'show active' : '' }}">Category List</a></li>
                         <li><a href="{{ route('categories.create') }}" class="{{ request()->routeIs('categories.create') ? 'show active' : '' }}">Add Category</a></li>
                         <li><a href="{{ route('categories.sub_index') }}" class="{{ request()->routeIs('categories.sub_index') ? 'show active' : '' }}">Sub Category List</a></li>
                         <li><a href="{{ route('categories.sub_create') }}" class="{{ request()->routeIs('categories.sub_create') ? 'show active' : '' }}">Add Sub Category</a></li>
-                        <li><a href="brandlist.html">Brand List</a></li>
-                        <li><a href="addbrand.html">Add Brand</a></li>
+                        <li><a href="{{ route('brands.index') }}" class="{{ request()->routeIs('brands.index') ? 'show active' : '' }}">Brand List</a></li>
+                        <li><a href="{{ route('brands.create') }}" class="{{ request()->routeIs('brands.create') ? 'show active' : '' }}">Add Brand</a></li>
                         <li><a href="importproduct.html">Import Products</a></li>
                         <li><a href="barcode.html">Print Barcode</a></li>
                     </ul>

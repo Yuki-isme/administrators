@@ -16,7 +16,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $categories = $this->categoryService->getAllCategory();
+        $categories = $this->categoryService->getAllCategories();
         return view('admin.category.index', ['categories' => $categories]);
     }
 
@@ -63,7 +63,7 @@ class CategoryController extends Controller
 
     public function subCreate()
     {
-        $parents = $this->categoryService->getAllCategory();
+        $parents = $this->categoryService->getAllCategories();
 
         return view('admin.category.form', ['parents' => $parents, 'sub' => 'sub']);
     }
@@ -76,7 +76,7 @@ class CategoryController extends Controller
     public function subEdit($id)
     {
         $category = $this->categoryService->getCategoryById($id);
-        $parents = $this->categoryService->getAllCategory();
+        $parents = $this->categoryService->getAllCategories();
 
         return view('admin.category.form', ['category' => $category, 'parents' => $parents, 'sub' => 'sub']);
     }
