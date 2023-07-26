@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\CategoryService;
+use Illuminate\Support\Facades\Redirect;
 
 class CategoryController extends Controller
 {
@@ -27,7 +28,9 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        return $this->categoryService->store($request);
+        $this->categoryService->store($request);
+
+        return $request->parent_id!=0 ?  Redirect::route('categories.sub_index')->with('success', 'Created sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Created category successfully!');
     }
 
     public function show(string $id)

@@ -10,7 +10,8 @@
                     <h6>View/Search product Category</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ isset($sub) ? route('categories.sub_create') : route('categories.create') }}" class="btn btn-added">
+                    <a href="{{ isset($sub) ? route('categories.sub_create') : route('categories.create') }}"
+                        class="btn btn-added">
                         <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add Category
                     </a>
                 </div>
@@ -160,6 +161,7 @@
                                         <td>{{ $category->slug }}</td>
                                         <td>{{ $category->description }}</td>
                                         <td>
+                                            <a data-visibility={{ $categoty->is_active }}></a>
                                             @if ($category->is_active)
                                                 <i class="ion-checkmark-round" data-bs-toggle="tooltip"
                                                     aria-label="ion-checkmark-round"
@@ -202,11 +204,47 @@
 @endsection
 
 @push('custom-script')
+    <script></script>
+
     <script>
         $(document).ready(function() {
 
             $('#close-alert').on('click', function() {
                 $('#alert').hide();
+            });
+        });
+
+        let statusCustom = [
+            '<i class="ion-close-round" data-bs-toggle="tooltip" aria-label="ion-close-round" data-bs-original-title="ion-close-round"></i>',
+            '<i class="ion-checkmark-round" data-bs-toggle="tooltip" aria-label="ion-checkmark-round" data-bs-original-title="ion-checkmark-round"></i>'
+        ];
+
+
+        $(document).ready(function() {
+            $('.change-status').on('click', function(e) {
+                e.preventDefault();
+                let url = $(this).attr('href');
+                let is_active = $(this).data('data-visibility');
+                let _this = $(this);
+                $.ajax({
+                    method: 'PUT',
+                    url: url,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        is_active: is_active
+                    },
+                    dataType: 'json',
+
+                    success: function(data) {
+                        _this.attr('data-visibility', data.is_active);
+                        _this.empty();
+                        _this.html(statusCustom[data.is_active]);
+                    }
+
+                    error: function(data){
+                        
+                    }
+                })
             });
         });
 
@@ -221,7 +259,6 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Set the correct action for the delete form using jQuery
                     $('#delete-form').attr('action', url);
                     $('#delete-form').submit();
                 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use App\Exceptions\CommonException;
 
 class CategoryService
 {
@@ -44,14 +45,14 @@ class CategoryService
 
                 DB::commit();
 
-                return $request->parent_id!=0 ?  Redirect::route('categories.sub_index')->with('success', 'Created sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Created category successfully!');
+                
             } else {
                 throw new \Exception('Invalid image or no image uploaded');
             }
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException('Something went wrong');
         }
     }
 

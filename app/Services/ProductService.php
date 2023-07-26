@@ -7,6 +7,7 @@ use App\Repositories\AttributeRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\BrandRepository;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
