@@ -162,7 +162,7 @@
                                         <td>{{ $category->description }}</td>
                                         <td>
                                             <a href="{{ route('categories.update', ['id' => $category->id]) }}"
-                                                data-visbility="{{ $category->is_active }}" class="change-statuss">
+                                                data-visbility="{{ $category->is_active }}" class="change-status">
                                                 @if ($category->is_active)
                                                     <i class="ion-checkmark-round" data-bs-toggle="tooltip"
                                                         aria-label="ion-checkmark-round"
@@ -214,37 +214,35 @@
             });
         });
 
-        $(document).on('click', 'a.change-status', function(e) {
-            e.preventDefault(); // Chặn mặc định hành vi của thẻ <a>
+        $(document).ready(function() {
+            $('.change-status').on('click', function(e) {
+                e.preventDefault();
+                const statusIcon = [
+                    '<i class="ion-close-round" data-bs-toggle="tooltip" aria-label="ion-close-round" data-bs-original-title="ion-close-round"></i>',
+                    '<i class="ion-checkmark-round" data-bs-toggle="tooltip" aria-label="ion-checkmark-round" data-bs-original-title="ion-checkmark-round"></i>'
+                ]
+                let url = $(this).attr('href')
+                let is_active = $(this).attr('data-visbility');
+                let _this = $(this)
+                $.ajax({
+                    type: 'PUT',
+                    url: url,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        is_active: is_active == 1 ? '0' : 1,
+                    },
+                    dataType: 'json',
 
-            var url = $(this).attr('href');
-            var isActive = $(this).data('visibility');
-            var newStatus = isActive ? 0 : 1;
-            var clickedLink = $(this);
-
-            // Gửi yêu cầu AJAX để cập nhật trạng thái
-            $.ajax({
-                type: 'PUT',
-                url: url,
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    is_active: newStatus
-                },
-                success: function(data) {
-                    clickedLink.data('visibility', newStatus);
-
-                    // Thay đổi hiển thị giữa 2 thẻ "i" tùy vào trạng thái mới
-                    if (newStatus) {
-                        clickedLink.find('i.ion-checkmark-round').show();
-                        clickedLink.find('i.ion-close-round').hide();
-                    } else {
-                        clickedLink.find('i.ion-checkmark-round').hide();
-                        clickedLink.find('i.ion-close-round').show();
+                    success: function(data) {
+                        console.log(_this)
+                        _this.attr('data-visbility', data.is_active);
+                        _this.empty();
+                        _this.html(statusIcon[data.is_active]);
+                    },
+                    error: function(data) {
+                        console.log(data, 1)
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
+                });
             });
         });
 

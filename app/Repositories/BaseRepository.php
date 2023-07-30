@@ -23,7 +23,9 @@ class BaseRepository
     {
         $model = $this->getById($id);
 
-        return $model->update($attribute);
+        $model->update($attribute);
+
+        return $model;
     }
 
 }

@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer('feature')->default(0);
             $table->text('description')->nullable();
             $table->text('content')->nullable();
-            $table->json('images')->nullable();
             $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();

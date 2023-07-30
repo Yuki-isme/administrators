@@ -30,7 +30,7 @@ class CategoryController extends Controller
     {
         $this->categoryService->store($request);
 
-        return $request->parent_id!=0 ?  Redirect::route('categories.sub_index')->with('success', 'Created sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Created category successfully!');
+        return Redirect::route('categories.index')->with('success', 'Created category successfully!');
     }
 
     public function show(string $id)
@@ -47,12 +47,13 @@ class CategoryController extends Controller
 
     public function update(Request $request, string $id)
     {
-        if (!$request->isMethod('put')) {
-            return response()->json(['error' => 'Method Not Allowed'], 405);
+        if($request->ajax()){
+            return $this->categoryService->update($request, $id);
         }
-        $this->categoryService->update($id, $request);
+        $this->categoryService->update($request, $id);
+        return Redirect::route('categories.index')->with('success', 'Updated category successfully!');
 
-        return $request->parent_id!=0 ?  Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Updated category successfully!');
+
     }
 
     public function destroy($id)
@@ -80,7 +81,8 @@ class CategoryController extends Controller
 
     public function subStore(Request $request)
     {
-        return $this->categoryService->Store($request);
+        $this->categoryService->store($request);
+        return Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!');
     }
 
     public function subEdit($id)
@@ -93,7 +95,11 @@ class CategoryController extends Controller
 
     public function subUpdate(Request $request, string $id)
     {
-        return $this->categoryService->Update($id, $request);
+        if($request->ajax()){
+            return $this->categoryService->update($request, $id);
+        }
+        $this->categoryService->update($request, $id);
+        return Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!'); 
     }
 
     public function subDestroy($id)
