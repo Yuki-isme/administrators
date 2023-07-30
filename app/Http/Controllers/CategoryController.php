@@ -47,12 +47,19 @@ class CategoryController extends Controller
 
     public function update(Request $request, string $id)
     {
-        return $this->categoryService->update($id, $request);
+        if (!$request->isMethod('put')) {
+            return response()->json(['error' => 'Method Not Allowed'], 405);
+        }
+        $this->categoryService->update($id, $request);
+
+        return $request->parent_id!=0 ?  Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Updated category successfully!');
     }
 
     public function destroy($id)
     {
-        return $this->categoryService->destroy($id);
+        $this->categoryService->destroy($id);
+
+        return Redirect::back()->with('alert', 'Deleted category successfully!');
     }
 
     //

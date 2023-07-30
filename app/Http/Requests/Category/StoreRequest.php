@@ -22,7 +22,16 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|min:3|max:10',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Bạn phải nhập tên của Danh mục!',
+            'name.min' => 'Tên Danh mục tối thiểu là 3 ký tự',
+            'name.max' => 'Tên Danh mục không vượt quá 10 ký tự',
         ];
     }
 }

@@ -45,9 +45,9 @@ class CategoryService
 
                 DB::commit();
 
-                
+
             } else {
-                throw new \Exception('Invalid image or no image uploaded');
+                throw new CommonException('Invalid image or no image uploaded');
             }
         } catch (\Exception $e) {
             DB::rollBack();
@@ -67,15 +67,29 @@ class CategoryService
         try {
             $category = $this->categoryRepository->getById($id);
 
-            if (!$category) {
-                throw new \Exception('Category not found!');
-            }
-
-            if ($this->categoryRepository->getParentById($id) && is_null($request->is_active)) { //nếu là parent thì không thể turn off is_active
-                throw new \Exception('Unable to disable active parent category containing subcategories');
-            }
+            // if (!$category) {
+            //     throw new CommonException('Category not found!');
+            // }
 
             DB::beginTransaction();
+
+            if ($request->ajax() && $request->has('is_active')) {
+
+                $category->update([
+                    'is_active' => $request->is_active,
+                ]);
+                DB::commit();
+
+                return response()->json([
+                    'title'=> 'Update Status',
+                    'message' => 'Update Status for ' . $category->name . 'successfully!',
+                    'is_active' => $category->is_active,
+                ]);
+            }
+
+            // if ($this->categoryRepository->getParentById($id) && is_null($request->is_active)) { //nếu là parent thì không thể turn off is_active
+            //     throw new CommonException('Unable to disable active parent category containing subcategories');
+            // }
 
             if (isset($request->img) && $request->img->isValid()) {
                 $file = $request->img;
@@ -102,11 +116,11 @@ class CategoryService
 
             DB::commit();
 
-            return isset($request->parent_id) ?  Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!') :  Redirect::route('categories.index')->with('success', 'Updated category successfully!');
+
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException('Something went wrong');
         }
     }
 
@@ -115,7 +129,7 @@ class CategoryService
     {
         try {
             if ($this->categoryRepository->getParentById($id)) {
-                throw new \Exception('Cannot delete parent category containing subcategories');
+                throw new CommonException('Cannot delete parent category containing subcategories');
             }
 
             DB::beginTransaction();
@@ -123,7 +137,7 @@ class CategoryService
             $category = $this->categoryRepository->getById($id);
 
             if (!$category) {
-                throw new \Exception('Category not found');
+                throw new CommonException('Category not found');
             }
 
             // Delete the category image (if any)
@@ -135,11 +149,11 @@ class CategoryService
 
             DB::commit();
 
-            return Redirect::back()->with('alert', 'Deleted category successfully!');
+
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException('Something went wrong');
         }
     }
 

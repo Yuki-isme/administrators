@@ -33,10 +33,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            @elseif ($errors->any())
+            @elseif ($errors->has('common'))
                 <div class="alert alert-danger" id="alert" style="position: relative;">
                     <ul>
-                        @foreach ($errors->all() as $error)
+                        @foreach ($errors->all('common') as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -161,16 +161,18 @@
                                         <td>{{ $category->slug }}</td>
                                         <td>{{ $category->description }}</td>
                                         <td>
-                                            <a data-visibility={{ $categoty->is_active }}></a>
-                                            @if ($category->is_active)
-                                                <i class="ion-checkmark-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-checkmark-round"
-                                                    data-bs-original-title="ion-checkmark-round"></i>
-                                            @else
-                                                <i class="ion-close-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-close-round"
-                                                    data-bs-original-title="ion-close-round"></i>
-                                            @endif
+                                            <a href="{{ route('categories.update', ['id' => $category->id]) }}"
+                                                data-visbility="{{ $category->is_active }}" class="change-statuss">
+                                                @if ($category->is_active)
+                                                    <i class="ion-checkmark-round" data-bs-toggle="tooltip"
+                                                        aria-label="ion-checkmark-round"
+                                                        data-bs-original-title="ion-checkmark-round"></i>
+                                                @else
+                                                    <i class="ion-close-round" data-bs-toggle="tooltip"
+                                                        aria-label="ion-close-round"
+                                                        data-bs-original-title="ion-close-round"></i>
+                                                @endif
+                                            </a>
                                         </td>
                                         <td>{{ $category->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
@@ -204,8 +206,6 @@
 @endsection
 
 @push('custom-script')
-    <script></script>
-
     <script>
         $(document).ready(function() {
 
@@ -214,37 +214,37 @@
             });
         });
 
-        let statusCustom = [
-            '<i class="ion-close-round" data-bs-toggle="tooltip" aria-label="ion-close-round" data-bs-original-title="ion-close-round"></i>',
-            '<i class="ion-checkmark-round" data-bs-toggle="tooltip" aria-label="ion-checkmark-round" data-bs-original-title="ion-checkmark-round"></i>'
-        ];
+        $(document).on('click', 'a.change-status', function(e) {
+            e.preventDefault(); // Chặn mặc định hành vi của thẻ <a>
 
+            var url = $(this).attr('href');
+            var isActive = $(this).data('visibility');
+            var newStatus = isActive ? 0 : 1;
+            var clickedLink = $(this);
 
-        $(document).ready(function() {
-            $('.change-status').on('click', function(e) {
-                e.preventDefault();
-                let url = $(this).attr('href');
-                let is_active = $(this).data('data-visibility');
-                let _this = $(this);
-                $.ajax({
-                    method: 'PUT',
-                    url: url,
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        is_active: is_active
-                    },
-                    dataType: 'json',
+            // Gửi yêu cầu AJAX để cập nhật trạng thái
+            $.ajax({
+                type: 'PUT',
+                url: url,
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    is_active: newStatus
+                },
+                success: function(data) {
+                    clickedLink.data('visibility', newStatus);
 
-                    success: function(data) {
-                        _this.attr('data-visibility', data.is_active);
-                        _this.empty();
-                        _this.html(statusCustom[data.is_active]);
+                    // Thay đổi hiển thị giữa 2 thẻ "i" tùy vào trạng thái mới
+                    if (newStatus) {
+                        clickedLink.find('i.ion-checkmark-round').show();
+                        clickedLink.find('i.ion-close-round').hide();
+                    } else {
+                        clickedLink.find('i.ion-checkmark-round').hide();
+                        clickedLink.find('i.ion-close-round').show();
                     }
-
-                    error: function(data){
-                        
-                    }
-                })
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
             });
         });
 

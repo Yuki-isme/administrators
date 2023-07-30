@@ -24,7 +24,7 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->renderAble(function (CommonException $e) {
-            return redirect()->back()->withErrors(['errors' => $e->getMessage()]);
+            return redirect()->back()->withInput()->withErrors(['common' => $e->getMessage()]);
         });
     }
 }
