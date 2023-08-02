@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Services\BrandService;
+use Illuminate\Support\Facades\Redirect;
 
 class BrandController extends Controller
 {
@@ -28,7 +29,9 @@ class BrandController extends Controller
 
     public function store(Request $request)
     {
-        return $this->brandService->store($request);
+        $this->brandService->store($request);
+
+        return Redirect::route('brands.index')->with('success', 'Created brand successfully!');
     }
 
     public function show(string $id)
@@ -43,13 +46,21 @@ class BrandController extends Controller
         return view('admin.brand.form', ['brand' => $brand]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        return $this->brandService->update($id, $request);
+        if($request->ajax()){
+            return $this->brandService->update($request, $id);
+        }
+
+        $this->brandService->update($request, $id);
+
+        return Redirect::route('categories.index')->with('success', 'Updated category successfully!');
     }
 
     public function destroy($id)
     {
-        return $this->brandService->destroy($id);
+        $this->brandService->destroy($id);
+
+        return Redirect::back()->with('alert', 'Deleted brand successfully!');
     }
 }

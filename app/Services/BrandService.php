@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use App\Exceptions\CommonException;
 
 class BrandService
 {
@@ -42,15 +43,13 @@ class BrandService
                 ]);
 
                 DB::commit();
-
-                return Redirect::route('brands.index')->with('success', 'Created brand successfully!');
             } else {
                 throw new \Exception('Invalid image or no image uploaded');
             }
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException($e->getMessage());
         }
     }
 
@@ -60,12 +59,30 @@ class BrandService
         return $this->brandRepository->getById($id);
     }
 
-    public function update($id, $request)
+    public function update($request, $id)
     {
         try {
             $brand = $this->brandRepository->getById($id);
 
+            if (!$brand) {
+                throw new \Exception('Category not found!');
+            }
+
             DB::beginTransaction();
+
+            if ($request->ajax()) {
+                $brand = $this->brandRepository->update($id, [
+                    'is_active' => $request->is_active,
+
+                ]);
+                DB::commit();
+
+                return response()->json([
+                    'title' => 'Update Status',
+                    'message' => 'Update Status for ' . $brand->name . ' successfully!',
+                    'is_active' => $brand->is_active,
+                ]);
+            }
 
             if (isset($request->img) && $request->img->isValid()) {
                 $file = $request->img;
@@ -91,11 +108,11 @@ class BrandService
 
             DB::commit();
 
-            return Redirect::route('brands.index')->with('success', 'Updated brand successfully!');
+
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException($e->getMessage());
         }
     }
 
@@ -109,7 +126,7 @@ class BrandService
             $brand = $this->brandRepository->getById($id);
 
             if (!$brand) {
-                throw new \Exception('brand not found');
+                throw new \Exception('Brand not found');
             }
 
             // Delete the brand image (if any)
@@ -121,11 +138,11 @@ class BrandService
 
             DB::commit();
 
-            return Redirect::back()->with('alert', 'Deleted brand successfully!');
+
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException($e->getMessage());
         }
     }
 }

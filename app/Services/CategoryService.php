@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\CategoryRepository;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use App\Exceptions\CommonException;
@@ -162,6 +161,30 @@ class CategoryService
     {
         return $this->categoryRepository->getAllSub();
     }
+
+    public function getChildrenByParent_id($request)
+    {
+        if ($request->parent_id == 0) {
+            return response()->json([]);
+        }
+
+        $categories = $this->categoryRepository->getChildrenByParent_id($request->parent_id);
+
+        $childCategory = $categories->map(function ($category) {
+            $is_active = $category->is_active;
+            $disabled = $is_active ? '' : 'disabled'; // Thêm 'disabled' vào thẻ nếu $is_active == 0
+
+            return [
+                'id' => $category->id,
+                'text' => $category->name,
+                'is_active' => $category->is_active,
+                'disabled' => $disabled, // Thêm thuộc tính 'disabled' vào mảng nếu cần
+            ];
+        });
+
+        return response()->json($childCategory);
+    }
+
 
     // public function subStore($request)
     // {

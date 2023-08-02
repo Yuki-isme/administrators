@@ -119,9 +119,8 @@
                                     <th>SKU</th>
                                     <th>Price</th>
                                     <th>Stock</th>
-                                    <th>Active</th>
+                                    <th>Status</th>
                                     <th>Feature</th>
-                                    <th>Description</th>
                                     <th>Create At</th>
                                     <th>Action</th>
                                 </tr>
@@ -149,15 +148,18 @@
                                         <td>{{ $product->price }}</td>
                                         <td>{{ $product->stock }}</td>
                                         <td>
-                                            @if ($product->is_active)
-                                                <i class="ion-checkmark-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-checkmark-round"
-                                                    data-bs-original-title="ion-checkmark-round"></i>
-                                            @else
-                                                <i class="ion-close-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-close-round"
-                                                    data-bs-original-title="ion-close-round"></i>
-                                            @endif
+                                            <a href="{{ route('products.update', ['id' => $product->id]) }}"
+                                                data-visbility="{{ $product->is_active }}" class="change-status">
+                                                @if ($product->is_active)
+                                                    <i class="ion-checkmark-round" data-bs-toggle="tooltip"
+                                                        aria-label="ion-checkmark-round"
+                                                        data-bs-original-title="ion-checkmark-round"></i>
+                                                @else
+                                                    <i class="ion-close-round" data-bs-toggle="tooltip"
+                                                        aria-label="ion-close-round"
+                                                        data-bs-original-title="ion-close-round"></i>
+                                                @endif
+                                            </a>
                                         </td>
                                         <td>
                                             @if ($product->features)
@@ -170,7 +172,6 @@
                                                     data-bs-original-title="ion-close-round"></i>
                                             @endif
                                         </td>
-                                        <td>{{ $product->description }}</td>
                                         <td>{{ $product->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
                                             <a class="me-3" href="product-details.html">
@@ -211,6 +212,38 @@
 
             $('#close-alert').on('click', function() {
                 $('#alert').hide();
+            });
+        });
+
+        $(document).ready(function() {
+            $('.change-status').on('click', function(e) {
+                e.preventDefault();
+                const statusIcon = [
+                    '<i class="ion-close-round" data-bs-toggle="tooltip" aria-label="ion-close-round" data-bs-original-title="ion-close-round"></i>',
+                    '<i class="ion-checkmark-round" data-bs-toggle="tooltip" aria-label="ion-checkmark-round" data-bs-original-title="ion-checkmark-round"></i>'
+                ]
+                let url = $(this).attr('href')
+                let is_active = $(this).attr('data-visbility');
+                let _this = $(this)
+                $.ajax({
+                    type: 'PUT',
+                    url: url,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        is_active: is_active == 1 ? '0' : 1,
+                    },
+                    dataType: 'json',
+
+                    success: function(data) {
+                        console.log(_this)
+                        _this.attr('data-visbility', data.is_active);
+                        _this.empty();
+                        _this.html(statusIcon[data.is_active]);
+                    },
+                    error: function(data) {
+                        console.log(data, 1)
+                    }
+                });
             });
         });
 

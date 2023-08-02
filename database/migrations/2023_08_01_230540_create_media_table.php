@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('url');
             $table->string('type')->nullable();
-            $table->string('mediable')->nullable();
+            $table->string('mediable_type')->nullable();
             $table->unsignedBigInteger('mediable_id')->nullable();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('media');
     }
 };

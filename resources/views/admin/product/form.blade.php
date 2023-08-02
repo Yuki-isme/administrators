@@ -36,7 +36,7 @@
                             @method('PUT')
                         @endisset
                         <div class="row">
-                            <div class="col-lg-4 col-sm-4 col-12">
+                            <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>Product Name</label>
                                     <input type="text" name="name" value="{{ $product->name ?? '' }}" required>
@@ -51,7 +51,8 @@
                             <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Category</label>
-                                    <select name="category_id" class="disabled-results form-control form-small">
+                                    <select id="parent_id" name="parent_id"
+                                        class="disabled-results form-control form-small">
                                         <option value="0">No category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
@@ -59,6 +60,21 @@
                                                 {{ $category->is_active == 0 ? 'Disabled' : '' }}> {{ $category->name }}
                                             </option>
                                         @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-12">
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <select id="category_id" name="category_id"
+                                        class="disabled-results form-control form-small">
+                                        <option value="0">No category</option>
+                                        {{-- @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ isset($product) && $product->category_id == $category->id ? 'Selected' : '' }}
+                                                {{ $category->is_active == 0 ? 'Disabled' : '' }}> {{ $category->name }}
+                                            </option>
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -76,29 +92,19 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-1 col-sm-1 col-12">
-                                <div class="form-group">
-                                    <label>Is Active</label>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_active" role="switch"
-                                            value="1"
-                                            {{ isset($product) ? ($product->is_active == 1 ? 'checked' : '') : 'checked' }}>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-4 col-12">
+                            <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>SKU</label>
                                     <input type="text" name="sku" value="{{ $product->sku ?? '' }}" required>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-4 col-12">
+                            <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>Stock</label>
                                     <div class="col-lg-12">
                                         <div class="input-group">
-                                            <input class="form-control" type="number" name="stock" value="{{ $product->stock ?? '' }}"
-                                                required>
+                                            <input class="form-control" type="number" name="stock"
+                                                value="{{ $product->stock ?? '' }}" required>
                                             <span class="input-group-text">$</span>
                                         </div>
                                     </div>
@@ -121,9 +127,29 @@
                                 <div class="form-group">
                                     <label>Feature</label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="feature" role="switch"
+                                        <input class="form-check-input" type="checkbox" name="is_feature" role="switch"
                                             value="1"
                                             {{ isset($product) ? ($product->feature == 1 ? 'checked' : '') : 'checked' }}>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-1 col-12">
+                                <div class="form-group">
+                                    <label>Active</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="is_active" role="switch"
+                                            value="1"
+                                            {{ isset($product) ? ($product->is_active == 1 ? 'checked' : '') : 'checked' }}>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-sm-1 col-12">
+                                <div class="form-group">
+                                    <label>Hot</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" name="is_hot" role="switch"
+                                            value="1"
+                                            {{ isset($product) ? ($product->is_hot == 1 ? 'checked' : '') : 'checked' }}>
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +171,8 @@
                                 <div class="form-group">
                                     <div class="custom-file-container" data-upload-id="myFirstImage">
                                         <label>Upload image <a href="javascript:void(0)"
-                                                class="custom-file-container__image-clear" title="Clear Image">x</a></label>
+                                                class="custom-file-container__image-clear"
+                                                title="Clear Image">x</a></label>
                                         <label class="custom-file-container__custom-file">
                                             <input name="images[]" type="file"
                                                 class="custom-file-container__custom-file__custom-file-input"
@@ -207,6 +234,38 @@
                 $('#alert').hide();
             });
         });
+
+        $(document).ready(function() {
+            // $('.select2').select2({
+            //     theme: 'bootstrap-5'
+            // });
+
+            $('#category_id').select2({
+                ajax: {
+                    url: '{{ route('categories.get-children') }}',
+                    data: function(params) {
+                        var query = {
+                            parent_id: $('#parent_id').val(),
+                            _token: '{{ csrf_token() }}'
+                        }
+
+                        return query;
+                    },
+                    dataType: 'json',
+                    processResults: function(data, params) {
+                        return {
+                            results: data,
+                        }
+                    }
+                },
+                // templateResult: function(data) {
+                //     if (data.disabled) {
+                //         return $('<span style="color: red;">' + data.text + '</span>');
+                //     }
+                //     return data.text;
+                // },
+            })
+        })
 
         $(document).ready(function() {
             let attributeIndex = 1;

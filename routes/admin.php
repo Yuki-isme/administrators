@@ -40,6 +40,8 @@ Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     Route::put('/sub/{id}', [CategoryController::class, 'subUpdate'])->name('sub_update');
 
     Route::delete('/sub/{id}', [CategoryController::class, 'subDestroy'])->name('sub_destroy');
+
+    Route::get('/children', [CategoryController::class, 'getChildrenByParent_id'])->name('get-children');
 });
 
 Route::group(['prefix' => 'brands', 'as' => 'brands.'], function () {

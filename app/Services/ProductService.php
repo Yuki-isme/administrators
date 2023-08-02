@@ -9,9 +9,9 @@ use App\Repositories\CategoryRepository;
 use App\Repositories\BrandRepository;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use App\Exceptions\CommonException;
 
 class ProductService
 {
@@ -37,7 +37,7 @@ class ProductService
 
     public function getAllCategories()
     {
-        return $this->categoryRepository->getAllSub();
+        return $this->categoryRepository->getAllCategories();
     }
 
     public function getAllBrands()
@@ -48,52 +48,53 @@ class ProductService
     public function store($request)
     {
         try {
-            if (isset($request->images)) {
-                DB::beginTransaction();
+            // if (isset($request->images)) {
+            DB::beginTransaction();
 
-                foreach ($request->file('images') as $image) {
+            // foreach ($request->file('images') as $image) {
 
-                    $extension = $image->getClientOriginalExtension();
-                    $fileName = uniqid(Str::slug($request->input('name')) . '-') . '.' . $extension;
-                    $image->move('admin/assets/img/product', $fileName);
-                    $images[] = '/admin/assets/img/product/' . $fileName;
-                }
-                $imagesJson = json_encode($images);
+            //     $extension = $image->getClientOriginalExtension();
+            //     $fileName = uniqid(Str::slug($request->input('name')) . '-') . '.' . $extension;
+            //     $image->move('admin/assets/img/product', $fileName);
+            //     $images[] = '/admin/assets/img/product/' . $fileName;
+            // }
+            // $imagesJson = json_encode($images);
 
-                $product = $this->productRepository->create([
-                    'name' => $request->name,
-                    'price' => $request->price,
-                    'stock' => $request->stock,
-                    'sku' => $request->sku,
-                    'slug' => $request->slug,
-                    'description' => $request->description,
-                    'content' => $request->content,
-                    'is_active' => $request->is_active ?? 0,
-                    'feature' => $request->feature ?? 0,
-                    'category_id' => $request->category_id,
-                    'brand_id' => $request->brand_id,
-                    'images' => $imagesJson,
+            $product = $this->productRepository->create([
+                'name' => $request->name,
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'sku' => $request->sku,
+                'slug' => $request->slug,
+                'description' => $request->description,
+                'content' => $request->content,
+                'is_active' => $request->is_active ?? 0,
+                'is_feature' => $request->is_feature ?? 0,
+                'is_hot' => $request->is_hot ?? 0,
+                'category_id' => $request->category_id,
+                'brand_id' => $request->brand_id,
+                //'images' => $imagesJson,
+            ]);
+
+            foreach ($request->input('attributesData', []) as $attributeData) {
+                $attribute = $this->attributeRepository->create(['name' => $attributeData['name']]);
+                $this->attributeValueRepository->create([
+                    'product_id' => $product->id,
+                    'attribute_id' => $attribute->id,
+                    'value' => $attributeData['value'],
                 ]);
-
-                foreach ($request->input('attributesData', []) as $attributeData) {
-                    $attribute = $this->attributeRepository->create(['name' => $attributeData['name']]);
-                    $this->attributeValueRepository->create([
-                        'product_id' => $product->id,
-                        'attribute_id' => $attribute->id,
-                        'value' => $attributeData['value'],
-                    ]);
-                }
-
-                DB::commit();
-
-                return Redirect::route('products.index')->with('success', 'Created product successfully!');
-            } else {
-                throw new \Exception('Invalid image or no image uploaded');
             }
+
+            DB::commit();
+
+
+            // } else {
+            //     throw new \Exception('Invalid image or no image uploaded');
+            //}
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException($e->getMessage());
         }
     }
 
@@ -103,42 +104,61 @@ class ProductService
         return $this->productRepository->getById($id);
     }
 
-    public function update($id, $request)
+    public function update($request, $id)
     {
         try {
             $product = $this->productRepository->getById($id);
 
             DB::beginTransaction();
 
-            if (isset($request->img) && $request->img->isValid()) {
-                $file = $request->img;
-                $extension = $file->getClientOriginalExtension();
-                $fileName = uniqid(Str::slug($request->name) . '-') . '.' . $extension;
-                $file->move('admin/assets/img/product', $fileName);
+            if ($request->ajax()) {
+                $product = $this->productRepository->update($id, [
+                    'is_active' => $request->is_active,
 
-                File::delete('admin/assets/img/product/' . $product->path_img);
-            } else {
+                ]);
+                DB::commit();
 
-                $fileName = uniqid(Str::slug($request['name']) . '-') . '.' . pathinfo($product->path_img, PATHINFO_EXTENSION);
-
-                File::move('admin/assets/img/product/' . $product->path_img, 'admin/assets/img/product/' . $fileName);
+                return response()->json([
+                    'title' => 'Update Status',
+                    'message' => 'Update Status for ' . $product->name . ' successfully!',
+                    'is_active' => $product->is_active,
+                ]);
             }
 
-            $product->update([
+            // if (isset($request->img) && $request->img->isValid()) {
+            //     $file = $request->img;
+            //     $extension = $file->getClientOriginalExtension();
+            //     $fileName = uniqid(Str::slug($request->name) . '-') . '.' . $extension;
+            //     $file->move('admin/assets/img/product', $fileName);
+
+            //     File::delete('admin/assets/img/product/' . $product->path_img);
+            // } else {
+
+            //     $fileName = uniqid(Str::slug($request['name']) . '-') . '.' . pathinfo($product->path_img, PATHINFO_EXTENSION);
+
+            //     File::move('admin/assets/img/product/' . $product->path_img, 'admin/assets/img/product/' . $fileName);
+            // }
+
+            $product->update($id,[
                 'name' => $request->name,
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'sku' => $request->sku,
                 'slug' => $request->slug,
                 'description' => $request->description,
+                'content' => $request->content,
                 'is_active' => $request->is_active ?? 0,
-                'path_img' => $fileName,
+                'is_feature' => $request->is_feature ?? 0,
+                'is_hot' => $request->is_hot ?? 0,
+                'category_id' => $request->category_id,
+                'brand_id' => $request->brand_id,
             ]);
 
             DB::commit();
-
-            return Redirect::route('products.index')->with('success', 'Updated product successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException($e->getMessage());
         }
     }
 
@@ -156,19 +176,19 @@ class ProductService
             }
 
             // Delete the product image (if any)
-            if ($product->path_img) {
-                File::delete('admin/assets/img/product/' . $product->path_img);
-            }
+            // if ($product->path_img) {
+            //     File::delete('admin/assets/img/product/' . $product->path_img);
+            // }
 
-           $product->delete();
+            $product->delete();
 
             DB::commit();
 
-            return Redirect::back()->with('alert', 'Deleted product successfully!');
+
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return Redirect::back()->withErrors(['errors' => $e->getMessage()])->withInput();
+            throw new CommonException($e->getMessage());
         }
     }
 }

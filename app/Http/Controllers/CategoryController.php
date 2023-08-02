@@ -52,8 +52,6 @@ class CategoryController extends Controller
         }
         $this->categoryService->update($request, $id);
         return Redirect::route('categories.index')->with('success', 'Updated category successfully!');
-
-
     }
 
     public function destroy($id)
@@ -93,17 +91,22 @@ class CategoryController extends Controller
         return view('admin.category.form', ['category' => $category, 'parents' => $parents, 'sub' => 'sub']);
     }
 
-    public function subUpdate(Request $request, string $id)
+    public function subUpdate(Request $request, $id)
     {
         if($request->ajax()){
             return $this->categoryService->update($request, $id);
         }
         $this->categoryService->update($request, $id);
-        return Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!'); 
+        return Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!');
     }
 
     public function subDestroy($id)
     {
         return $this->categoryService->destroy($id);
+    }
+
+    public function getChildrenByParent_id(Request $request)
+    {
+        return $this->categoryService->getChildrenByParent_id($request);
     }
 }

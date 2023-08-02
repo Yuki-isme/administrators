@@ -139,15 +139,18 @@
                                         <td>{{ $brand->slug }}</td>
                                         <td>{{ $brand->description }}</td>
                                         <td>
-                                            @if ($brand->is_active)
-                                                <i class="ion-checkmark-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-checkmark-round"
-                                                    data-bs-original-title="ion-checkmark-round"></i>
-                                            @else
-                                                <i class="ion-close-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-close-round"
-                                                    data-bs-original-title="ion-close-round"></i>
-                                            @endif
+                                            <a href="{{ route('brands.update', ['id' => $brand->id]) }}"
+                                                data-visbility="{{ $brand->is_active }}" class="change-status">
+                                                @if ($brand->is_active)
+                                                    <i class="ion-checkmark-round" data-bs-toggle="tooltip"
+                                                        aria-label="ion-checkmark-round"
+                                                        data-bs-original-title="ion-checkmark-round"></i>
+                                                @else
+                                                    <i class="ion-close-round" data-bs-toggle="tooltip"
+                                                        aria-label="ion-close-round"
+                                                        data-bs-original-title="ion-close-round"></i>
+                                                @endif
+                                            </a>
                                         </td>
                                         <td>{{ $brand->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
@@ -186,6 +189,38 @@
 
             $('#close-alert').on('click', function() {
                 $('#alert').hide();
+            });
+        });
+
+        $(document).ready(function() {
+            $('.change-status').on('click', function(e) {
+                e.preventDefault();
+                const statusIcon = [
+                    '<i class="ion-close-round" data-bs-toggle="tooltip" aria-label="ion-close-round" data-bs-original-title="ion-close-round"></i>',
+                    '<i class="ion-checkmark-round" data-bs-toggle="tooltip" aria-label="ion-checkmark-round" data-bs-original-title="ion-checkmark-round"></i>'
+                ]
+                let url = $(this).attr('href')
+                let is_active = $(this).attr('data-visbility');
+                let _this = $(this)
+                $.ajax({
+                    type: 'PUT',
+                    url: url,
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        is_active: is_active == 1 ? '0' : 1,
+                    },
+                    dataType: 'json',
+
+                    success: function(data) {
+                        console.log(_this)
+                        _this.attr('data-visbility', data.is_active);
+                        _this.empty();
+                        _this.html(statusIcon[data.is_active]);
+                    },
+                    error: function(data) {
+                        console.log(data, 1)
+                    }
+                });
             });
         });
 
