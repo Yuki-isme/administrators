@@ -7,11 +7,14 @@ use App\Repositories\AttributeRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\BrandRepository;
+use App\Repositories\MediaRepository;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File;
+use Carbon\Carbon;
 use App\Exceptions\CommonException;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProductService
 {
@@ -21,7 +24,7 @@ class ProductService
     private $attributeRepository;
     private $attributeValueRepository;
 
-    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository, BrandRepository $brandRepository, AttributeRepository $attributeRepository, AttributeValueRepository $attributeValueRepository)
+    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository, BrandRepository $brandRepository, AttributeRepository $attributeRepository, AttributeValueRepository $attributeValueRepository, readonly MediaRepository $mediaRepository)
     {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
@@ -48,24 +51,17 @@ class ProductService
     public function store($request)
     {
         try {
-            // if (isset($request->images)) {
             DB::beginTransaction();
-
-            // foreach ($request->file('images') as $image) {
-
-            //     $extension = $image->getClientOriginalExtension();
-            //     $fileName = uniqid(Str::slug($request->input('name')) . '-') . '.' . $extension;
-            //     $image->move('admin/assets/img/product', $fileName);
-            //     $images[] = '/admin/assets/img/product/' . $fileName;
-            // }
-            // $imagesJson = json_encode($images);
+                $thumbImages = $request->file('thumbnail');
+                $imagesName = Carbon::now() . '-' . $thumbImages->getClientOriginalName();
+                dd($thumbImages->putFileAs('thumbnails', $imagesName, 'public'));
 
             $product = $this->productRepository->create([
                 'name' => $request->name,
                 'price' => $request->price,
                 'stock' => $request->stock,
                 'sku' => $request->sku,
-                'slug' => $request->slug,
+                'slug' => Str::slug($request->name),
                 'description' => $request->description,
                 'content' => $request->content,
                 'is_active' => $request->is_active ?? 0,
@@ -85,12 +81,35 @@ class ProductService
                 ]);
             }
 
+            if ($request->hasFile('thumbnail')) {
+                $thumbImages = $request->file('thumbnail');
+                $imagesName = Carbon::now() . '-' . $thumbImages->getClientOriginalName();
+                dd($thumbImages->storeAs('thumbnails', $imagesName, 'public'));
+                $url = $thumbImages->storeAs('thumbnails', $imagesName, 'public');
+                $this->mediaRepository->create([
+                    'title' => $imagesName,
+                    'url' => $url,
+                    'type' => 'thumbnail',
+                    'mediable_type' => Product::class,
+                    'mediable_id' => $product->id,
+                ]);
+            }
+
+            if (isset($request->catalog)) {
+                foreach ($request->catalog as $item) {
+                    $imagesName = Carbon::now() . '-' . $item->getClientOriginalName();
+                    $url = $item->storeAs('thumbnails', $imagesName, 'public');
+                    $this->mediaRepository->create([
+                        'title' => $imagesName,
+                        'url' => $url,
+                        'type' => 'catalog',
+                        'mediable_type' => Product::class,
+                        'mediable_id' => $product->id,
+                    ]);
+                }
+            }
+
             DB::commit();
-
-
-            // } else {
-            //     throw new \Exception('Invalid image or no image uploaded');
-            //}
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -139,11 +158,11 @@ class ProductService
             //     File::move('admin/assets/img/product/' . $product->path_img, 'admin/assets/img/product/' . $fileName);
             // }
 
-            $product->update($id,[
+            $product->update($id, [
                 'name' => $request->name,
                 'price' => $request->price,
                 'stock' => $request->stock,
-                'sku' => $request->sku,
+                'sku' => Str::slug($request->name),
                 'slug' => $request->slug,
                 'description' => $request->description,
                 'content' => $request->content,
@@ -183,8 +202,6 @@ class ProductService
             $product->delete();
 
             DB::commit();
-
-
         } catch (\Exception $e) {
             DB::rollBack();
 

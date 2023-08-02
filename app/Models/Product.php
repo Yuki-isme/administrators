@@ -42,8 +42,8 @@ class Product extends Model
         return $this->hasMany(AttributeValue::class);
     }
 
-    public function media() : MorphMany
+    public function thumbnail() : MorphMany
     {
-        return $this->morphMany(Media::class, 'mediable');
+        return $this->morphMany(Media::class, 'mediable')->where('type','thumbnail');
     }
 }

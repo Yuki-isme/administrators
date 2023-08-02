@@ -42,13 +42,13 @@
                                     <input type="text" name="name" value="{{ $product->name ?? '' }}" required>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            {{-- <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>Slug</label>
                                     <input type="text" name="slug" value="{{ $product->slug ?? '' }}" required>
                                 </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-12">
+                            </div> --}}
+                            <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>Category</label>
                                     <select id="parent_id" name="parent_id"
@@ -63,7 +63,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-sm-2 col-12">
+                            <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>Category</label>
                                     <select id="category_id" name="category_id"
@@ -78,7 +78,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-sm-2 col-12">
+                            <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>Brand</label>
                                     <select name="brand_id" class="disabled-results form-control form-small">
@@ -170,17 +170,27 @@
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <div class="custom-file-container" data-upload-id="myFirstImage">
-                                        <label>Upload image <a href="javascript:void(0)"
+                                        <label>Upload Image <a href="javascript:void(0)"
                                                 class="custom-file-container__image-clear"
                                                 title="Clear Image">x</a></label>
                                         <label class="custom-file-container__custom-file">
-                                            <input name="images[]" type="file"
+                                            <input name="thumbnail" type="file"
                                                 class="custom-file-container__custom-file__custom-file-input"
-                                                accept="image/*" multiple>
+                                                accept="image/*">
                                             <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                                             <span class="custom-file-container__custom-file__custom-file-control"></span>
                                         </label>
                                         <div class="custom-file-container__image-preview"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <div class="custom-file-container" data-upload-id="myFirstImage">
+                                        <label>Upload catalog</label>
+                                        <input name="catelog[]" type="file" class="form-control" accept="image/*"
+                                            multiple>
                                     </div>
                                 </div>
                             </div>

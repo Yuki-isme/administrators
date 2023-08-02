@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\ProductService;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Carbon;
 
 class ProductController extends Controller
 {
@@ -32,6 +33,9 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $thumbImages = $request->file('thumbnail');
+                $imagesName = Carbon::now() . '-' . $thumbImages->getClientOriginalName();
+                dd($thumbImages->storeAs('thumbnails', $imagesName, 'public'));
         $this->productService->store($request);
 
         return Redirect::route('products.index')->with('success', 'Created product successfully!');
