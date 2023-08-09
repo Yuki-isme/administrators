@@ -72,4 +72,3 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
     Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
 });
 
-
