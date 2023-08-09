@@ -174,8 +174,8 @@
                                         </td>
                                         <td>{{ $product->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
-                                            <a class="me-3" href="product-details.html">
-                                                <img src="assets/img/icons/eye.svg" alt="img">
+                                            <a class="me-3" href="{{ route('products.show', ['id' => $product->id]) }}">
+                                                <img src="{{ asset('admin/assets/img/icons/eye.svg') }}" alt="img">
                                             </a>
                                             <a class="me-3"
                                                 href="{{ route('products.edit', ['id' => $product->id]) }}">
@@ -215,6 +215,7 @@
             });
         });
 
+        //change status active
         $(document).ready(function() {
             $('.change-status').on('click', function(e) {
                 e.preventDefault();
@@ -247,6 +248,7 @@
             });
         });
 
+        //delete product
         function deleteproduct(url) {
             Swal.fire({
                 title: 'Are you sure?',

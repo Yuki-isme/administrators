@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Models;
+
 class BaseRepository
 {
     private $model;
@@ -28,4 +30,12 @@ class BaseRepository
         return $model;
     }
 
+    public function delete($id)
+    {
+        return $this->model->find($id)->delete();
+    }
+
+    public function getModel($name){
+        return $name::class;
+    }
 }

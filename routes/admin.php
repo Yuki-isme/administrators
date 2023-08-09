@@ -64,6 +64,8 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
     Route::get('/create', [ProductController::class, 'create'])->name('create');
     Route::post('/', [ProductController::class, 'store'])->name('store');
 
+    Route::get('/{id}', [ProductController::class, 'show'])->name('show');
+
     Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
     Route::put('/{id}', [ProductController::class, 'update'])->name('update');
 

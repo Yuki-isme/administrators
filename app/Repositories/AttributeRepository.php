@@ -16,4 +16,8 @@ class AttributeRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function findByName($name)
+    {
+        return $this->model->where('name', $name)->first();
+    }
 }

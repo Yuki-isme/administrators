@@ -166,6 +166,30 @@
                                 </div>
                             </div>
                             <div id="attributeFields" class="row">
+                                @if (isset($product))
+                                    @foreach ($product->attributeValue as $attribute)
+                                        <div class="col-lg-6 col-sm-6 col-12 attributeField row">
+                                            <div class="col-lg-4 col-sm-4 col-12">
+                                                <div class="form-group">
+                                                    <label for="attributesData[{{ $loop->index }}][name]">Attribute Name:</label>
+                                                    <input type="text" name="attributesData[{{ $loop->index }}][name]" value="{{ $attribute->attribute->name }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-sm-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="attributesData[{{ $loop->index }}][value]">Attribute Value:</label>
+                                                    <input type="text" name="attributesData[{{ $loop->index }}][value]" value="{{ $attribute->value }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-2 col-12">
+                                                <div class="form-group">
+                                                    <label>Remove:</label>
+                                                    <button type="button" class="removeAttributeField btn btn-danger">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
@@ -189,7 +213,7 @@
                                 <div class="form-group">
                                     <div class="custom-file-container" data-upload-id="myFirstImage">
                                         <label>Upload catalog</label>
-                                        <input name="catelog[]" type="file" class="form-control" accept="image/*"
+                                        <input name="catalog[]" type="file" class="form-control" accept="image/*"
                                             multiple>
                                     </div>
                                 </div>
@@ -268,17 +292,11 @@
                         }
                     }
                 },
-                // templateResult: function(data) {
-                //     if (data.disabled) {
-                //         return $('<span style="color: red;">' + data.text + '</span>');
-                //     }
-                //     return data.text;
-                // },
             })
         })
 
         $(document).ready(function() {
-            let attributeIndex = 1;
+            let attributeIndex = {{ isset($product) ?  count($product->attributeValue) : 1}};
 
             $('#addAttributeField').on('click', function() {
                 let attributeField = `
@@ -311,28 +329,28 @@
                 $(this).closest('.attributeField').remove();
             });
 
-            $('#productForm').submit(function(e) {
-                e.preventDefault();
-                let formData = new FormData(this);
+            // $('#productForm').submit(function(e) {
+            //     e.preventDefault();
+            //     let formData = new FormData(this);
 
-                $.ajax({
-                    url: "{{ route('products.store') }}",
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        alert(data.message);
-                    },
-                    error: function(xhr, status, error) {
-                        if (xhr.responseJSON && xhr.responseJSON.error) {
-                            alert(xhr.responseJSON.error);
-                        } else {
-                            alert("An error occurred while saving the product.");
-                        }
-                    }
-                });
-            });
+            //     $.ajax({
+            //         url: "{{ route('products.store') }}",
+            //         type: "POST",
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(data) {
+            //             alert(data.message);
+            //         },
+            //         error: function(xhr, status, error) {
+            //             if (xhr.responseJSON && xhr.responseJSON.error) {
+            //                 alert(xhr.responseJSON.error);
+            //             } else {
+            //                 alert("An error occurred while saving the product.");
+            //             }
+            //         }
+            //     });
+            // });
         });
     </script>
 @endpush

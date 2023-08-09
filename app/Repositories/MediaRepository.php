@@ -17,4 +17,7 @@ class MediaRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function deleteMediaByProductIDAndType($product_id, $type){
+        return $this->model->where('mediable_id', $product_id)->where('type', $type)->delete();
+    }
 }

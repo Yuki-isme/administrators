@@ -20,4 +20,18 @@ class ProductRepository extends BaseRepository
         return $this->model->with('category', 'brand')->get();
     }
 
+    public function getProductById($id){
+        // $name = 'catalog';
+        // $product = Product::with([
+        //     'media' => function ($sql) use ($name) {
+        //         return $sql->where('type', $name);
+        //     }
+        // ])
+        //     ->get();
+        // dd($product);
+
+        $product = $this->model->with('category.parent', 'brand', 'thumbnail', 'media', 'attributeValue.attribute')->find($id);
+
+        return $product;
+    }
 }

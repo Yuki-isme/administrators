@@ -19,13 +19,13 @@ class Category extends Model
         'path_img'
     ];
 
-    // public function subcategories()
-    // {
-    //     return $this->hasMany(Category::class, 'parent_id');
-    // }
-
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id')->withDefault(['name' => 'No Parent']);
     }
+
+    // public function subcategories()
+    // {
+    //     return $this->hasMany(Category::class, 'parent_id');
+    // }
 }

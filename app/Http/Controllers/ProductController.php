@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Services\ProductService;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+
+use App\Models\Product;
 
 class ProductController extends Controller
 {
@@ -33,9 +36,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $thumbImages = $request->file('thumbnail');
-                $imagesName = Carbon::now() . '-' . $thumbImages->getClientOriginalName();
-                dd($thumbImages->storeAs('thumbnails', $imagesName, 'public'));
         $this->productService->store($request);
 
         return Redirect::route('products.index')->with('success', 'Created product successfully!');
@@ -43,7 +43,9 @@ class ProductController extends Controller
 
     public function show(string $id)
     {
-        //
+        $product = $this->productService->getProductById($id);
+
+        return view('admin.product.show', ['product' => $product]);
     }
 
     public function edit($id)
@@ -61,7 +63,7 @@ class ProductController extends Controller
             return $this->productService->update($request, $id);
         }
 
-        $this->productService->update($id, $request);
+        $this->productService->update($request, $id);
 
         return Redirect::route('products.index')->with('success', 'Updated product successfully!');
     }

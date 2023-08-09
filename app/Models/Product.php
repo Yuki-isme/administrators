@@ -13,16 +13,16 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'slug',
+        'sku',
+        'stock',
         'price',
         'sale_price',
-        'stock',
-        'sku',
-        'slug',
+        'content',
+        'description',
         'is_active',
         'is_hot',
         'is_feature',
-        'description',
-        'content',
         'brand_id',
         'category_id'
     ];
@@ -44,6 +44,11 @@ class Product extends Model
 
     public function thumbnail() : MorphMany
     {
-        return $this->morphMany(Media::class, 'mediable')->where('type','thumbnail');
+        return $this->morphMany(Media::class, 'mediable')->where('type', 'thumbnail');
+    }
+
+    public function media() : MorphMany
+    {
+        return $this->morphMany(Media::class, 'mediable')->where('type', 'catalog');
     }
 }
