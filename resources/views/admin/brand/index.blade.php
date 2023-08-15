@@ -35,7 +35,7 @@
             @elseif ($errors->any())
                 <div class="alert alert-danger" id="alert" style="position: relative;">
                     <ul>
-                        @foreach ($errors->all() as $error)
+                        @foreach ($errors->get() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -131,7 +131,7 @@
                                         </td>
                                         <td class="productimgname">
                                             <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('admin/assets/img/brand/' . $brand->path_img) }}"
+                                                <img src="{{ asset('storage/' . $brand->thumbnail[0]->url) }}"
                                                     alt="product">
                                             </a>
                                             <a href="javascript:void(0);">{{ $brand->name }}</a>

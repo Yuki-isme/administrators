@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
@@ -12,18 +13,21 @@ class AdminAuthController extends Controller
         return view('admin.auth.login');
     }
 
-    public function login(Request $request){
-        $credential = [
-            'username' => $request->username,
-            'password' => $request->password,
-        ];
-
-        $user = Auth::guard('admin')->attempt($credential);
-
-        if($user){
-            return redirect()->route('products.index');
+    public function login(Request $request)
+    {
+        $credentials = $request->only('username', 'password');
+        //dd($credentials);
+        if (Auth::guard('admin')->attempt($credentials)) {
+            return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->back()->withErrors(['login' => 'Login failed'])->withInput();
+        return redirect()->back()->withErrors(['login' => 'Thông tin đăng nhập không đúng.'])->withInput();
     }
+
+    public function logout()
+    {
+        Auth::guard('admin')->logout();
+        return redirect()->route('admin.login');
+    }
+
 }

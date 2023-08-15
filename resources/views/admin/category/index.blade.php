@@ -36,7 +36,7 @@
             @elseif ($errors->has('common'))
                 <div class="alert alert-danger" id="alert" style="position: relative;">
                     <ul>
-                        @foreach ($errors->all('common') as $error)
+                        @foreach ($errors->get('common') as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -150,7 +150,7 @@
                                         </td>
                                         <td class="productimgname">
                                             <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('admin/assets/img/category/' . $category->path_img) }}"
+                                                <img src="{{ asset('storage/' . $category->thumbnail[0]->url) }}"
                                                     alt="product">
                                             </a>
                                             <a href="javascript:void(0);">{{ $category->name }}</a>

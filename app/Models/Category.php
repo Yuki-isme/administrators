@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Category extends Model
 {
@@ -16,12 +17,16 @@ class Category extends Model
         'description',
         'parent_id',
         'is_active',
-        'path_img'
     ];
 
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id')->withDefault(['name' => 'No Parent']);
+    }
+
+    public function thumbnail() : MorphMany
+    {
+        return $this->morphMany(Media::class, 'mediable')->where('type', 'thumbnail');
     }
 
     // public function subcategories()

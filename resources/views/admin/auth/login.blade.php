@@ -22,7 +22,7 @@
 </head>
 
 <body class="account-page">
-  
+
     <div class="main-wrapper">
         <div class="account-content">
             <div class="login-wrapper">
@@ -35,8 +35,8 @@
                             <h3>Sign In</h3>
                             <h4>Please login to your account</h4>
                         </div>
-                        <form action="" method="POST">
-                          @csrf
+                        <form action="{{ route('admin.auth') }}" method="POST">
+                            @csrf
                             <div class="form-login">
                                 <label>User Name</label>
                                 <div class="form-addons">
@@ -47,7 +47,8 @@
                             <div class="form-login">
                                 <label>Password</label>
                                 <div class="pass-group">
-                                    <input name="password" type="password" class="pass-input" placeholder="Enter your password" />
+                                    <input name="password" type="password" class="pass-input"
+                                        placeholder="Enter your password" />
                                     <span class="fas toggle-password fa-eye-slash"></span>
                                 </div>
                             </div>
@@ -58,8 +59,21 @@
                                     </h4>
                                 </div>
                             </div>
+                            @if ($errors->has('login'))
+                                <div class="alert alert-danger" id="alert" style="position: relative;">
+                                    <ul>
+                                        @foreach ($errors->get('login') as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                    <button type="button" class="close-alert" id="close-alert"
+                                        style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
                             <div class="form-login">
-                                <a class="btn btn-login" href="index.html">Sign In</a>
+                                <input type="submit" class="btn btn-login" value="Sign In">
                             </div>
                         </form>
                         <div class="signinform text-center">
@@ -105,6 +119,15 @@
     <script src="{{ asset('admin/assets/js/bootstrap.bundle.min.js') }}"></script>
 
     <script src="{{ asset('admin/assets/js/script.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#close-alert').on('click', function() {
+                $('#alert').hide();
+            });
+        });
+    </script>
 </body>
 
 </html>

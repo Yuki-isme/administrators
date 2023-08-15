@@ -19,7 +19,7 @@ class CategoryRepository extends BaseRepository
 
     public function getAllCategories()
     {
-        return $this->model->where('parent_id', 0)->get(); //lấy tất cả category có parent_id = 0
+        return $this->model->with('thumbnail')->where('parent_id', 0)->get(); //lấy tất cả category có parent_id = 0
     }
 
     public function getParentById($id){

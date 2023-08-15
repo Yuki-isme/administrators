@@ -20,4 +20,8 @@ class MediaRepository extends BaseRepository
     public function deleteMediaByProductIDAndType($product_id, $type){
         return $this->model->where('mediable_id', $product_id)->where('type', $type)->delete();
     }
+
+    public function deleteMediaByMediableID($mediable_id, $mediable_type){
+        return $this->model->where('mediable_id', $mediable_id)->where('$mediable_type', $mediable_type)->delete();
+    }
 }

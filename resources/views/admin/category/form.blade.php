@@ -36,31 +36,27 @@
                             @method('PUT')
                         @endisset
                         <div class="row">
-                            <div class="col-lg-4 col-sm-4 col-12">
+                            <div class="{{ isset($sub) ? 'col-lg-8 col-sm-8' : 'col-lg-11 col-sm-11' }} col-12">
                                 <div class="form-group">
                                     <label>Category Name</label>
                                     <input type="text" name="name" value="{{ $category->name ?? '' }}" required>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label>Slug</label>
-                                    <input type="text" name="slug" value="{{ $category->slug ?? '' }}" required>
-                                </div>
-                            </div>
+                            @isset($sub)
                             <div class="col-lg-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label>Parent Category</label>
                                     <select name="parent_id" class="disabled-results form-control form-small">
                                         <option value="0">No Parent</option>
-                                        @isset($sub)
+
                                             @foreach ($parents as $parent)
                                                 <option value="{{ $parent->id }}" {{ isset($category) && $category->parent_id == $parent->id ? 'Selected' : '' }} {{ $parent->is_active == 0 ? 'Disabled' : '' }}> {{ $parent->name }} </option>
                                             @endforeach
-                                        @endisset
+
                                     </select>
                                 </div>
                             </div>
+                            @endisset
                             <div class="col-lg-1 col-sm-1 col-12">
                                 <div class="form-group">
                                     <label>Is Active</label>
@@ -82,7 +78,7 @@
                                         <label>Upload Image <a href="javascript:void(0)"
                                                 class="custom-file-container__image-clear" title="Clear Image">x</a></label>
                                         <label class="custom-file-container__custom-file">
-                                            <input name="img" type="file" class="custom-file-container__custom-file__custom-file-input"
+                                            <input name="thumbnail" type="file" class="custom-file-container__custom-file__custom-file-input"
                                                 accept="image/*">
                                             <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                                             <span class="custom-file-container__custom-file__custom-file-control"></span>

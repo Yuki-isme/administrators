@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AdminAuthController;
 
 Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     //category
@@ -72,3 +73,6 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
     Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
 });
 
+Route::get('/dashboard', function () {
+    return view('admin.layout.layout');
+})->name('admin.dashboard');

@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\ProductService;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 
-use App\Models\Product;
 
 class ProductController extends Controller
 {
@@ -22,7 +19,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = $this->productService->getAllProducts();
-
+        
         return view('admin.product.index', ['products' => $products]);
     }
 

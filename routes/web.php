@@ -15,9 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('admin.layout.layout');
+    return view('welcome');
 });
 
-Route::get('admin/login', [AdminAuthController::class, 'viewlogin'])->name('admin.login');
 
-Route::post('admin/auth', [AdminAuthController::class, 'login'])->name('admin.auth');
+Route::group(['prefix' => 'admin'], function () {
+
+    Route::get('login', [AdminAuthController::class, 'viewlogin'])->name('admin.login');
+    Route::post('auth', [AdminAuthController::class, 'login'])->name('admin.auth');
+    Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+});
+

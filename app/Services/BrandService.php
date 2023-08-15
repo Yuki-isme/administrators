@@ -4,18 +4,23 @@ namespace App\Services;
 
 use App\Repositories\BrandRepository;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File;
 use App\Exceptions\CommonException;
+use App\Repositories\MediaRepository;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+use App\Models\Brand;
 
 class BrandService
 {
     private $brandRepository;
+    private $mediaRepository;
 
-    public function __construct(BrandRepository $brandRepository)
+    public function __construct(BrandRepository $brandRepository, MediaRepository $mediaRepository)
     {
         $this->brandRepository = $brandRepository;
+        $this->mediaRepository = $mediaRepository;
     }
 
     public function getAllBrands()
@@ -26,26 +31,30 @@ class BrandService
     public function store($request)
     {
         try {
-            if (isset($request->img) && $request->img->isValid()) {
                 DB::beginTransaction();
 
-                $file = $request->img;
-                $extension = $file->getClientOriginalExtension();
-                $fileName = uniqid(Str::slug($request->name) . '-') . '.' . $extension;
-                $file->move('admin/assets/img/brand', $fileName);
-
-                $this->brandRepository->create([
+                $brand = $this->brandRepository->create([
                     'name' => $request->name,
-                    'slug' => $request->slug,
+                    'slug' => Str::slug($request->name),
                     'description' => $request->description,
                     'is_active' => $request->is_active ?? 0,
-                    'path_img' => $fileName,
                 ]);
 
+                if ($request->hasFile('thumbnail')) {
+                    $thumbImage = $request->file('thumbnail');
+                    $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $thumbImage->getClientOriginalName();
+                    $url =  $thumbImage->storeAs('thumbnails', $imageName, 'public');
+
+                    $this->mediaRepository->create([
+                        'title' => $imageName,
+                        'url' => $url,
+                        'type' => 'thumbnail',
+                        'mediable_type' => Brand::class,
+                        'mediable_id' => $brand->id,
+                    ]);
+                }
+
                 DB::commit();
-            } else {
-                throw new \Exception('Invalid image or no image uploaded');
-            }
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -65,7 +74,7 @@ class BrandService
             $brand = $this->brandRepository->getById($id);
 
             if (!$brand) {
-                throw new \Exception('Category not found!');
+                throw new \Exception('Brand not found!');
             }
 
             DB::beginTransaction();
@@ -84,27 +93,29 @@ class BrandService
                 ]);
             }
 
-            if (isset($request->img) && $request->img->isValid()) {
-                $file = $request->img;
-                $extension = $file->getClientOriginalExtension();
-                $fileName = uniqid(Str::slug($request->name) . '-') . '.' . $extension;
-                $file->move('admin/assets/img/brand', $fileName);
-
-                File::delete('admin/assets/img/brand/' . $brand->path_img);
-            } else {
-
-                $fileName = uniqid(Str::slug($request['name']) . '-') . '.' . pathinfo($brand->path_img, PATHINFO_EXTENSION);
-
-                File::move('admin/assets/img/brand/' . $brand->path_img, 'admin/assets/img/brand/' . $fileName);
-            }
-
             $brand->update([
                 'name' => $request->name,
-                'slug' => $request->slug,
+                'slug' => Str::slug($request->name),
                 'description' => $request->description,
                 'is_active' => $request->is_active ?? 0,
-                'path_img' => $fileName,
+
             ]);
+
+            if ($request->hasFile('thumbnail')) {
+                Storage::disk('public')->delete($brand->thumbnail[0]->url);
+                $this->mediaRepository->deleteMediaByProductIDAndType($brand->id, 'thumbnail');
+                $thumbImage = $request->file('thumbnail');
+                $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $thumbImage->getClientOriginalName();
+                $url =  $thumbImage->storeAs('thumbnails', $imageName, 'public');
+
+                $this->mediaRepository->create([
+                    'title' => $imageName,
+                    'url' => $url,
+                    'type' => 'thumbnail',
+                    'mediable_type' => Brand::class,
+                    'mediable_id' => $brand->id,
+                ]);
+            }
 
             DB::commit();
 
@@ -129,10 +140,11 @@ class BrandService
                 throw new \Exception('Brand not found');
             }
 
-            // Delete the brand image (if any)
-            if ($brand->path_img) {
-                File::delete('admin/assets/img/brand/' . $brand->path_img);
+            if ($brand->thumbnail) {
+                Storage::disk('public')->delete($brand->thumbnail->url);
             }
+
+            $this->mediaRepository->deleteMediaByMediableID($brand->id, Brand::class);
 
            $brand->delete();
 

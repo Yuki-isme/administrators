@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('slug');
             $table->text('description')->nullable();
             $table->integer('is_active')->default(1);
-            $table->string('path_img')->nullable();
             $table->timestamps();
         });
     }

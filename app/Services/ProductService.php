@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 use App\Exceptions\CommonException;
 use Illuminate\Support\Facades\Storage;
 
+use App\Models\Product;
 
 class ProductService
 {
@@ -94,7 +95,7 @@ class ProductService
                     'title' => $imageName,
                     'url' => $url,
                     'type' => 'thumbnail',
-                    'mediable_type' => 'App\Models\Product',
+                    'mediable_type' => Product::class,
                     'mediable_id' => $product->id,
                 ]);
             }
@@ -108,7 +109,7 @@ class ProductService
                         'title' => $imageName,
                         'url' => $url,
                         'type' => 'catalog',
-                        'mediable_type' => 'App\Models\Product',
+                        'mediable_type' => Product::class,
                         'mediable_id' => $product->id,
                     ]);
                 }
@@ -229,7 +230,7 @@ class ProductService
                     'title' => $imageName,
                     'url' => $url,
                     'type' => 'thumbnail',
-                    'mediable_type' => 'App\Models\Product',
+                    'mediable_type' => Product::class,
                     'mediable_id' => $product->id,
                 ]);
             }
@@ -248,7 +249,7 @@ class ProductService
                         'title' => $imageName,
                         'url' => $url,
                         'type' => 'catalog',
-                        'mediable_type' => 'App\Models\Product',
+                        'mediable_type' => Product::class,
                         'mediable_id' => $product->id,
                     ]);
 
@@ -276,10 +277,15 @@ class ProductService
                 throw new \Exception('product not found');
             }
 
-            // Delete the product image (if any)
-            // if ($product->path_img) {
-            //     File::delete('admin/assets/img/product/' . $product->path_img);
-            // }
+            if ($product->thumbnail) {
+                Storage::disk('public')->delete($product->thumbnail->url);
+            }
+
+            foreach ($product->catalog as $catalogItem) {
+                Storage::disk('public')->delete($catalogItem->url);
+            }
+
+            $this->mediaRepository->deleteMediaByMediableID($product->id, Product::class);
 
             $product->delete();
 

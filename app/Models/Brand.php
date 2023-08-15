@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Brand extends Model
 {
@@ -14,6 +15,10 @@ class Brand extends Model
         'slug',
         'description',
         'is_active',
-        'path_img',
     ];
+
+    public function thumbnail() : MorphMany
+    {
+        return $this->morphMany(Media::class, 'mediable')->where('type', 'thumbnail');
+    }
 }

@@ -36,16 +36,10 @@
                             @method('PUT')
                         @endisset
                         <div class="row">
-                            <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="col-lg-11 col-sm-11 col-12">
                                 <div class="form-group">
                                     <label>Brand Name</label>
                                     <input type="text" name="name" value="{{ $brand->name ?? '' }}" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-5 col-sm-5 col-12">
-                                <div class="form-group">
-                                    <label>Slug</label>
-                                    <input type="text" name="slug" value="{{ $brand->slug ?? '' }}" required>
                                 </div>
                             </div>
                             <div class="col-lg-1 col-sm-1 col-12">
@@ -69,7 +63,7 @@
                                         <label>Upload (Single File) <a href="javascript:void(0)"
                                                 class="custom-file-container__image-clear" title="Clear Image">x</a></label>
                                         <label class="custom-file-container__custom-file">
-                                            <input name="img" type="file" class="custom-file-container__custom-file__custom-file-input"
+                                            <input name="thumbnail" type="file" class="custom-file-container__custom-file__custom-file-input"
                                                 accept="image/*">
                                             <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
                                             <span class="custom-file-container__custom-file__custom-file-control"></span>
