@@ -21,7 +21,7 @@ class Authenticate extends Middleware
         }
 
         foreach ($guards as $guard) {
-            if (!$this->auth->guard($guard)->check()) {
+            if ($this->auth->guard($guard)->check()) {
                 return redirect()->route($this->redirectTo[$guard]);
             }
         }
