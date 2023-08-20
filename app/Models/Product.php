@@ -52,4 +52,13 @@ class Product extends Model
     {
         return $this->morphMany(Media::class, 'mediable')->where('type', 'catalog');
     }
+
+    public function getCartPriceAttribute()
+    {
+        if($this->sale_price){
+            return $this->sale_price;
+        }
+
+        return $this->price;
+    }
 }
