@@ -34,4 +34,9 @@ class ProductRepository extends BaseRepository
 
         return $product;
     }
+
+    public function getNewProducts($limit)
+    {
+        return $this->model->with('thumbnail')->orderBy('created_at', 'desc')->take($limit)->get();
+    }
 }

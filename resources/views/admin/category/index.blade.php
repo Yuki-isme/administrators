@@ -150,7 +150,7 @@
                                         </td>
                                         <td class="productimgname">
                                             <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('storage/' . $category->thumbnail[0]->url) }}"
+                                                <img src="{{ asset('storage/' . $category->thumbnail->url) }}"
                                                     alt="product">
                                             </a>
                                             <a href="javascript:void(0);">{{ $category->name }}</a>

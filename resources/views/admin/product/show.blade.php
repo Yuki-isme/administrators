@@ -93,15 +93,17 @@
                             <div class="slider-product-details">
                                 <div class="owl-carousel owl-theme product-slide">
                                     <div class="slider-product">
-                                        <img src="{{ asset('admin/assets/img/product/product69.jpg') }}" alt="img">
-                                        <h4>macbookpro.jpg</h4>
+                                        <img src="{{ asset('storage/' . $product->thumbnail->url) }}" alt="img">
+                                        <h4>{{ $product->thumbnail->title }}</h4>
                                         <h6>581kb</h6>
                                     </div>
+                                    @foreach ($product->media as $media)
                                     <div class="slider-product">
-                                        <img src="{{ asset('admin/assets/img/product/product69.jpg') }}" alt="img">
-                                        <h4>macbookpro.jpg</h4>
+                                        <img src="{{ asset('storage/' . $media->url) }}" alt="img">
+                                        <h4>{{ $media->title }}</h4>
                                         <h6>581kb</h6>
                                     </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

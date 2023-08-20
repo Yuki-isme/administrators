@@ -10,7 +10,7 @@
                     <h6>Manage your product</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('products.create')  }}" class="btn btn-added">
+                    <a href="{{ route('products.create') }}" class="btn btn-added">
                         <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add product
                     </a>
                 </div>
@@ -95,7 +95,8 @@
                                 <div class="col-lg-1 col-sm-6 col-12 ms-auto">
                                     <div class="form-group">
                                         <a class="btn btn-filters ms-auto"><img
-                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}" alt="img"></a>
+                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
+                                                alt="img"></a>
                                     </div>
                                 </div>
                             </div>
@@ -134,11 +135,11 @@
                                                 <span class="checkmarks"></span>
                                             </label>
                                         </td>
-                                        <td>
-                                            {{--class="productimgname" <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('admin/assets/img/product/' . $product->images) }}"
+                                        <td class="productimgname">
+                                            <a href="javascript:void(0);" class="product-img">
+                                                <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
                                                     alt="product">
-                                            </a> --}}
+                                            </a>
                                             <a href="javascript:void(0);">{{ $product->name }}</a>
                                         </td>
                                         <td>{{ $product->category->name }}</td>
@@ -174,7 +175,8 @@
                                         </td>
                                         <td>{{ $product->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('products.show', ['id' => $product->id]) }}">
+                                            <a class="me-3"
+                                                href="{{ route('products.show', ['id' => $product->id]) }}">
                                                 <img src="{{ asset('admin/assets/img/icons/eye.svg') }}" alt="img">
                                             </a>
                                             <a class="me-3"

@@ -2,3 +2,7 @@
     background-image: url(https://mdbootstrap.com/img/new/fluid/city/008.jpg);
     height: 100vh;
 }
+
+.text-product{
+    color: black;
+}

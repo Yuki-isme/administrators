@@ -220,7 +220,7 @@ class ProductService
 
 
             if ($request->hasFile('thumbnail')) {
-                Storage::disk('public')->delete($product->thumbnail[0]->url);
+                Storage::disk('public')->delete($product->thumbnail->url);
                 $this->mediaRepository->deleteMediaByProductIDAndType($product->id, 'thumbnail');
                 $thumbImage = $request->file('thumbnail');
                 $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $thumbImage->getClientOriginalName();

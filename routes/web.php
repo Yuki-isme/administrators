@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('frontend.layout.home.index');
+Route::get('/aa', function () {
+    return view('frontend.product.detail');
 });
 
 
@@ -25,4 +26,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('auth', [AdminAuthController::class, 'login'])->name('admin.auth');
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
+
+Route::get('/',[HomeController::class, 'index'])->name('frontend.index');
+
+Route::get('/{id}',[HomeController::class, 'productDetail'])->name('frontend.productDetail');
 

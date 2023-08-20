@@ -102,7 +102,7 @@ class BrandService
             ]);
 
             if ($request->hasFile('thumbnail')) {
-                Storage::disk('public')->delete($brand->thumbnail[0]->url);
+                Storage::disk('public')->delete($brand->thumbnail->url);
                 $this->mediaRepository->deleteMediaByProductIDAndType($brand->id, 'thumbnail');
                 $thumbImage = $request->file('thumbnail');
                 $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $thumbImage->getClientOriginalName();

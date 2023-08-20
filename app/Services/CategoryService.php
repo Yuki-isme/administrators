@@ -116,7 +116,7 @@ class CategoryService
             ]);
 
             if ($request->hasFile('thumbnail')) {
-                Storage::disk('public')->delete($category->thumbnail[0]->url);
+                Storage::disk('public')->delete($category->thumbnail->url);
                 $this->mediaRepository->deleteMediaByProductIDAndType($category->id, 'thumbnail');
                 $thumbImage = $request->file('thumbnail');
                 $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $thumbImage->getClientOriginalName();

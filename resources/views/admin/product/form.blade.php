@@ -226,12 +226,12 @@
                                             <li class="ps-0">
                                                 <div class="productviews">
                                                     <div class="productviewsimg">
-                                                        <img src="{{ asset('admin/assets/img/product/' . $product->path_img) }}"alt="product"width="40"
+                                                        <img src="{{ asset('storage/' . $product->thumbnail->url) }}"alt="product"width="40"
                                                             height="40">
                                                     </div>
                                                     <div class="productviewscontent">
                                                         <div class="productviewsname">
-                                                            <p>{{ $product->path_img }}</p>
+                                                            <p>{{ $product->thumbnail->title }}</p>
                                                         </div>
                                                         <a href="javascript:void(0);" class="hideset">x</a>
                                                     </div>
