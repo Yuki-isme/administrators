@@ -39,4 +39,14 @@ class ProductRepository extends BaseRepository
     {
         return $this->model->with('thumbnail')->orderBy('created_at', 'desc')->take($limit)->get();
     }
+
+    public function getStockProduct($id)
+    {
+        return $this->model->find($id)->stock;
+    }
+
+    public function getPriceProduct($id)
+    {
+        return $this->model->find($id)->cart_price;
+    }
 }

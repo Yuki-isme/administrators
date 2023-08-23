@@ -185,7 +185,7 @@
         @foreach ($newProducts as $newProduct )
         <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
             <div class="card w-100 my-2 shadow-2-strong">
-              <a href="{{ route('frontend.productDetail', ['id' => $newProduct->id]) }}" class="text-product">
+              <a href="{{ route('productDetail', ['id' => $newProduct->id]) }}" class="text-product">
                 <img src="{{ asset('storage/' . $newProduct->thumbnail->url) }}" class="card-img-top"
                 style="aspect-ratio: 1 / 1" />
               <div class="card-body d-flex flex-column">
@@ -193,7 +193,7 @@
                 <p class="card-text">{{ $newProduct->price }} VND</p>
                 <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
               </a>
-                  <a href="{{ route('addtocart', ['id' => $newProduct->id]) }}" class="btn btn-primary shadow-0 me-1">Add to cart</a>
+                  <a href="{{ route('addToCart', ['id' => $newProduct->id]) }}" class="btn btn-primary shadow-0 me-1">Add to cart</a>
                   <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
                       class="fas fa-heart fa-lg text-secondary px-1"></i></a>
                 </div>

@@ -27,4 +27,14 @@ class HomeController extends Controller
 
         return view('frontend.product.detail', ['productDetail' => $productDetail]);
     }
+
+    public function productList()
+    {
+        return view('frontend.product.list');
+    }
+
+    public function productGrid()
+    {
+        return view('frontend.product.grid');
+    }
 }

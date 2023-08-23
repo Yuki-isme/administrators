@@ -5,7 +5,7 @@
             <div class="row gy-3">
                 <!-- Left elements -->
                 <div class="col-lg-2 col-sm-4 col-4">
-                    <a href="https://mdbootstrap.com/" target="_blank" class="float-start">
+                    <a href="https://mdbootstrap.com/" class="float-start">
                         <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="35" />
                     </a>
                 </div>
@@ -14,20 +14,29 @@
                 <!-- Center elements -->
                 <div class="order-lg-last col-lg-5 col-sm-8 col-8">
                     <div class="d-flex float-end">
-                        <a href="https://github.com/mdbootstrap/bootstrap-material-design"
-                            class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" target="_blank"> <i
-                                class="fas fa-user-alt m-1 me-md-2"></i>
-                            <p class="d-none d-md-block mb-0">Sign in</p>
-                        </a>
-                        <a href="https://github.com/mdbootstrap/bootstrap-material-design"
-                            class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" target="_blank"> <i
+                        @if (Auth::guard('web')->check())
+                            <a href="{{ route('myAccount') }}"
+                                class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
+                                    class="fas fa-user-alt m-1 me-md-2"></i>
+                                <p class="d-none d-md-block mb-0">{{ Auth::guard('web')->user()->name }}</p>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
+                                    class="fas fa-user-alt m-1 me-md-2"></i>
+                                <p class="d-none d-md-block mb-0">Sign in</p>
+                            </a>
+                        @endif
+                        <a href="{{ route('myAccount') }}"
+                            class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
                                 class="fas fa-heart m-1 me-md-2"></i>
                             <p class="d-none d-md-block mb-0">Wishlist</p>
                         </a>
-                        <a href="{{ route('cart.index') }}"
+                        <a href="{{ route('cart') }}"
                             class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
                                 class="fas fa-shopping-cart m-1 me-md-2"></i>
-                            <p class="d-none d-md-block mb-0">My cart ({{ count(cart()->getContent()) }})</p>
+                            <p class="d-none d-md-block mb-0">My cart
+                                ({{ cart()->getContent() ? count(cart()->getContent()) : 0 }})</p>
                         </a>
                     </div>
                 </div>
@@ -50,26 +59,8 @@
         </div>
     </div>
     <!-- Jumbotron -->
-    
-    @if (request()->routeIs('frontend.productDetail'))
-        <!-- Heading -->
-        <div class="bg-primary">
-            <div class="container py-4">
-                <!-- Breadcrumb -->
-                <nav class="d-flex">
-                    <h6 class="mb-0">
-                        <a href="" class="text-white-50">Home</a>
-                        <span class="text-white-50 mx-2"> > </span>
-                        <a href="" class="text-white-50">Library</a>
-                        <span class="text-white-50 mx-2"> > </span>
-                        <a href="" class="text-white"><u>Data</u></a>
-                    </h6>
-                </nav>
-                <!-- Breadcrumb -->
-            </div>
-        </div>
-        <!-- Heading -->
-    @else
+
+    @if (request()->routeIs('index'))
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <!-- Container wrapper -->
@@ -135,6 +126,93 @@
             <!-- Container wrapper -->
         </nav>
         <!-- Navbar -->
+    @elseif(request()->routeIs('productDetail'))
+        <!-- Heading -->
+        <div class="bg-primary">
+            <div class="container py-4">
+                <!-- Breadcrumb -->
+                <nav class="d-flex">
+                    <h6 class="mb-0">
+                        <a href="{{ route('index') }}" class="text-white-50">Home</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="{{ route('library') }}"
+                            class="text-white{{ request()->routeIs('library') ? '' : '-50' }}">{!! request()->routeIs('cart') ? '<u>Library</u>' : 'Library' !!}</a>
+                        @if (request()->routeIs('productDetail'))
+                            <span class="text-white-50 mx-2"> > </span>
+                            <a href="{{ route('productDetail', ['id', $productDetail->id]) }}"
+                                class="text-white{{ request()->routeIs('productDetail') ? '' : '-50' }}"><u>Data</u></a>
+                        @endif
+                    </h6>
+                </nav>
+                <!-- Breadcrumb -->
+            </div>
+        </div>
+        <!-- Heading -->
+    @elseif(request()->routeIs('cart') || request()->routeIs('order') || request()->routeIs('payment'))
+        <!-- Heading -->
+        <div class="bg-primary">
+            <div class="container py-4">
+                <!-- Breadcrumb -->
+                <nav class="d-flex">
+                    <h6 class="mb-0">
+                        <a href="{{ route('index') }}" class="text-white-50">Home</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="{{ route('cart') }}"
+                            class="text-white{{ request()->routeIs('cart') ? '' : '-50' }}">{!! request()->routeIs('cart') ? '<u>2. Shopping cart</u>' : '2. Shopping cart' !!}</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="{{ route('order') }}"
+                            class="text-white{{ request()->routeIs('order') ? '' : '-50' }}">{!! request()->routeIs('order') ? '<u>3. Order info</u>' : '3. Order info' !!}</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="{{ route('payment') }}"
+                            class="text-white{{ request()->routeIs('payment') ? '' : '-50' }}">{!! request()->routeIs('payment') ? '<u>4. Payment</u>' : '4. Payment' !!}</a>
+                    </h6>
+                </nav>
+                <!-- Breadcrumb -->
+            </div>
+        </div>
+        <!-- Heading -->
+    @elseif(request()->routeIs('myAccount'))
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <!-- Container wrapper -->
+            <div class="container justify-content-center justify-content-md-between">
+                <!-- Toggle button -->
+                <button class="navbar-toggler border py-2 text-dark" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#navbarLeftAlignExample" aria-controls="navbarLeftAlignExample"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Collapsible wrapper -->
+                <div class="collapse navbar-collapse" id="navbarLeftAlignExample">
+                    <!-- Left links -->
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#profile-section">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#all-orders-section">All Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#shipped-orders-section">Shipped
+                                Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#completed-orders-section">Completed
+                                Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#cancelled-orders-section">Cancelled
+                                Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="logout-link" href="https://www.youtube.com/">Logout</a>
+                        </li>
+                    </ul>
+                    <!-- Left links -->
+                </div>
+            </div>
+            <!-- Container wrapper -->
+        </nav>
     @endif
 
 </header>
