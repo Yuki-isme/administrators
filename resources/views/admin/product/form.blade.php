@@ -171,20 +171,27 @@
                                         <div class="col-lg-6 col-sm-6 col-12 attributeField row">
                                             <div class="col-lg-4 col-sm-4 col-12">
                                                 <div class="form-group">
-                                                    <label for="attributesData[{{ $loop->index }}][name]">Attribute Name:</label>
-                                                    <input type="text" name="attributesData[{{ $loop->index }}][name]" value="{{ $attribute->attribute->name }}" required>
+                                                    <label for="attributesData[{{ $loop->index }}][name]">Attribute
+                                                        Name:</label>
+                                                    <input type="text"
+                                                        name="attributesData[{{ $loop->index }}][name]"
+                                                        value="{{ $attribute->attribute->name }}" required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-sm-6 col-12">
                                                 <div class="form-group">
-                                                    <label for="attributesData[{{ $loop->index }}][value]">Attribute Value:</label>
-                                                    <input type="text" name="attributesData[{{ $loop->index }}][value]" value="{{ $attribute->value }}" required>
+                                                    <label for="attributesData[{{ $loop->index }}][value]">Attribute
+                                                        Value:</label>
+                                                    <input type="text"
+                                                        name="attributesData[{{ $loop->index }}][value]"
+                                                        value="{{ $attribute->value }}" required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2 col-sm-2 col-12">
                                                 <div class="form-group">
                                                     <label>Remove:</label>
-                                                    <button type="button" class="removeAttributeField btn btn-danger">Remove</button>
+                                                    <button type="button"
+                                                        class="removeAttributeField btn btn-danger">Remove</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -296,7 +303,7 @@
         })
 
         $(document).ready(function() {
-            let attributeIndex = {{ isset($product) ?  count($product->attributeValue) : 1}};
+            let attributeIndex = {{ isset($product) ? count($product->attributeValue) : 1 }};
 
             $('#addAttributeField').on('click', function() {
                 let attributeField = `
@@ -327,6 +334,22 @@
 
             $(document).on('click', '.removeAttributeField', function() {
                 $(this).closest('.attributeField').remove();
+            });
+
+            tinymce.init({
+                selector: 'textarea', // change this value according to your HTML
+                plugins: 'image',
+                toolbar: 'image',
+                image_list: [{
+                        title: 'My image 1',
+                        value: 'https://www.example.com/my1.gif'
+                    },
+                    {
+                        title: 'My image 2',
+                        value: 'http://www.moxiecode.com/my2.gif'
+                    }
+                ],
+                images_upload_url: '{{ route('upload-image')}}'
             });
 
             // $('#productForm').submit(function(e) {

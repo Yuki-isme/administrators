@@ -71,4 +71,14 @@ class ProductController extends Controller
 
         return Redirect::back()->with('alert', 'Deleted product successfully!');
     }
+
+    public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('file')) {
+            $imagePath = $request->file('file')->store('images', 'public');
+            return response()->json(['location' => asset('storage/' . $imagePath)]);
+        }
+        return response()->json(['error' => 'Image upload failed'], 400);
+    }
+
 }
