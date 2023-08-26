@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\HasPermissions;
 
 class Admin extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasPermissions;
 
     protected $fillable = [
         'name',
@@ -27,4 +28,10 @@ class Admin extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class, 'admin_role', 'admin_id', 'role_id');
+    // }
+
 }

@@ -24,9 +24,19 @@ class Category extends Model
         return $this->belongsTo(Category::class, 'parent_id')->withDefault(['name' => 'No Parent']);
     }
 
+    public function child()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
     public function thumbnail() : MorphOne
     {
         return $this->morphOne(Media::class, 'mediable')->where('type', 'thumbnail');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 
     // public function subcategories()

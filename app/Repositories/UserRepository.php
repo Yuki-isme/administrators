@@ -25,6 +25,6 @@ class UserRepository extends BaseRepository
 
     public function getInforUser()
     {
-        return $this->getUser()->infor;
+        return $this->getUser()->infor ?? null;
     }
 }

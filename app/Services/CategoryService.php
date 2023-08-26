@@ -74,7 +74,7 @@ class CategoryService
     public function update($request, $id)
     {
         try {
-            $category = $this->categoryRepository->getById($id);
+            $category = $this->categoryRepository->getCategoryById($id);
 
             if (!$category) {
                 throw new \Exception('Category not found!');
@@ -86,7 +86,13 @@ class CategoryService
                 if ($this->categoryRepository->getParentById($id)) {
                     return response()->json([
                         'title' => 'Update Status',
-                        'message' => 'Unable to disable active parent category containing subcategories',
+                        'message' => 'Unable to disable active parent category containing active subcategories',
+                        'is_active' => $category->is_active,
+                    ]);
+                }else if($category->products){
+                    return response()->json([
+                        'title' => 'Update Status',
+                        'message' => 'Unable to disable categories containing products',
                         'is_active' => $category->is_active,
                     ]);
                 }
@@ -116,7 +122,9 @@ class CategoryService
             ]);
 
             if ($request->hasFile('thumbnail')) {
-                Storage::disk('public')->delete($category->thumbnail->url);
+                if ($category->thumbnail) {
+                    Storage::disk('public')->delete($category->thumbnail->url);
+                }
                 $this->mediaRepository->deleteMediaByProductIDAndType($category->id, 'thumbnail');
                 $thumbImage = $request->file('thumbnail');
                 $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $thumbImage->getClientOriginalName();
@@ -149,10 +157,14 @@ class CategoryService
 
             DB::beginTransaction();
 
-            $category = $this->categoryRepository->getById($id);
+            $category = $this->categoryRepository->getCategoryById($id);
 
             if (!$category) {
                 throw new \Exception('Category not found');
+            }
+            dd($category->products);
+            if ($category->products) {
+                throw new \Exception('Cannot delete category have products');
             }
 
             if ($category->thumbnail) {

@@ -15,20 +15,18 @@ use Illuminate\Support\Facades\Mail;
 class CheckoutController extends Controller
 {
     private $checkoutService;
-    private $cartService;
 
-    public function __construct(CheckoutService $checkoutService, CartService $cartService)
+    public function __construct(CheckoutService $checkoutService)
     {
         $this->checkoutService = $checkoutService;
-        $this->cartService = $cartService;
     }
 
     public function order()
     {
         $user = $this->checkoutService->getUser();
         $infor = $this->checkoutService->getInforUser();
-        $carts = $this->cartService->getContent();
-        $total = $this->cartService->getTotal();
+        $carts = cart()->getContent();
+        $total = cart()->getTotal();
 
         return view('frontend.checkout.oder', ['carts' => $carts, 'total' => $total, 'user' => $user, 'infor' => $infor]);
     }
@@ -37,10 +35,10 @@ class CheckoutController extends Controller
     {
         try {
             DB::beginTransaction();
-            $cart = $this->cartService->getContent();
+            $cart = cart()->getContent();
 
             $order = Order::create([
-                'email' => $request->inpu('email'),
+                'email' => $request->input('email-address'),
                 'status' => 'placed',
             ]);
 
@@ -53,12 +51,18 @@ class CheckoutController extends Controller
                     'order_id' => $order->id,
                 ]);
             }
+
             DB::commit();
 
-            Mail::to($order->email)->send(new OrderSuccessMail($order));
+//            cart()->destroy();
+            Mail::to($order->email)
+                ->queue(new OrderSuccessMail($order));
 
+            return redirect()->route('checkout.success');
         } catch (\Exception $e) {
+            DB::rollBack();
 
+            throw $e;
         }
     }
 }

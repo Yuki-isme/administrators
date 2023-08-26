@@ -7,6 +7,7 @@ use App\Repositories\AttributeRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\BrandRepository;
+use App\Repositories\TagRepository;
 use App\Repositories\MediaRepository;
 
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,7 @@ class ProductService
     private $productRepository;
     private $categoryRepository;
     private $brandRepository;
+    private $tagRepository;
     private $attributeRepository;
     private $attributeValueRepository;
     private $mediaRepository;
@@ -30,6 +32,7 @@ class ProductService
         ProductRepository $productRepository,
         CategoryRepository $categoryRepository,
         BrandRepository $brandRepository,
+        TagRepository $tagRepository,
         AttributeRepository $attributeRepository,
         AttributeValueRepository $attributeValueRepository,
         MediaRepository $mediaRepository
@@ -37,6 +40,7 @@ class ProductService
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
         $this->brandRepository = $brandRepository;
+        $this->tagRepository = $tagRepository;
         $this->attributeRepository = $attributeRepository;
         $this->attributeValueRepository = $attributeValueRepository;
         $this->mediaRepository = $mediaRepository;
@@ -74,8 +78,26 @@ class ProductService
                 'is_hot' => $request->is_hot ?? 0,
                 'category_id' => $request->category_id,
                 'brand_id' => $request->brand_id,
-                //'images' => $imagesJson,
             ]);
+
+            if (isset($request->tags)) {
+                $tagIds = []; // Sử dụng một mảng để chứa các id của các tag
+
+                foreach ($request->tags as $item) {
+                    if (is_numeric($item)) {
+                        // Nếu là một id (đã tồn tại), thêm id vào mảng $tagIds
+                        $tagIds[] = $item;
+                    } else {
+                        // Nếu không phải id, tạo mới tag và thêm id của tag mới vào mảng $tagIds
+                        $tag = $this->tagRepository->create(['name' => $item]);
+                        $tagIds[] = $tag->id;
+                    }
+                }
+
+                // Đồng bộ hóa tất cả các tag (cả cũ và mới) với sản phẩm
+                $product->tags()->sync($tagIds);
+            }
+
 
             foreach ($request->input('attributesData', []) as $attributeData) {
                 $attribute = $this->attributeRepository->create(['name' => $attributeData['name']]);
@@ -150,7 +172,7 @@ class ProductService
                 ]);
             }
 
-            $product= $this->productRepository->update($id, [
+            $product = $this->productRepository->update($id, [
                 'name' => $request->name,
                 'price' => $request->price,
                 'stock' => $request->stock,
@@ -164,6 +186,24 @@ class ProductService
                 'category_id' => $request->category_id,
                 'brand_id' => $request->brand_id,
             ]);
+
+            if (isset($request->tags)) {
+                $tagIds = []; // Sử dụng một mảng để chứa các id của các tag
+
+                foreach ($request->tags as $item) {
+                    if (is_numeric($item)) {
+                        // Nếu là một id (đã tồn tại), thêm id vào mảng $tagIds
+                        $tagIds[] = $item;
+                    } else {
+                        // Nếu không phải id, tạo mới tag và thêm id của tag mới vào mảng $tagIds
+                        $tag = $this->tagRepository->create(['name' => $item]);
+                        $tagIds[] = $tag->id;
+                    }
+                }
+
+                // Đồng bộ hóa tất cả các tag (cả cũ và mới) với sản phẩm
+                $product->tags()->sync($tagIds);
+            }
 
 
             foreach ($request->input('attributesData', []) as $attributeData) {
@@ -181,7 +221,6 @@ class ProductService
                     // Update existing attribute value
 
                     $this->attributeValueRepository->update($existingAttributeValue[0]->id, ['value' => $attributeData['value']]);
-
                 } else {
                     // Create new attribute value
                     $this->attributeValueRepository->create([
@@ -190,7 +229,6 @@ class ProductService
                         'value' => $attributeData['value'],
                     ]);
                 }
-
             }
 
 
@@ -201,13 +239,12 @@ class ProductService
                 $attributeId = $existingAttributeValue->attribute_id;
 
 
-                $isAttributeValueInRequest = collect($request->input('attributesData', []))->contains(function ($attributeValueData) use ($attributeId)
-                {
+                $isAttributeValueInRequest = collect($request->input('attributesData', []))->contains(function ($attributeValueData) use ($attributeId) {
                     //kiểm tra attribute có tồn tại trong bảng attribute không và id của nó có trùng với attribute_id trong bảng value không
                     $attribute = $this->attributeRepository->findByName($attributeValueData['name']);
                     return $attribute && $attribute->id === $attributeId;
                 });
-                    //nếu không có attribute hoặc không trùng id thì xóa value
+                //nếu không có attribute hoặc không trùng id thì xóa value
                 if (!$isAttributeValueInRequest) {
                     $existingAttributeValue->delete();
 
@@ -252,7 +289,6 @@ class ProductService
                         'mediable_type' => Product::class,
                         'mediable_id' => $product->id,
                     ]);
-
                 }
             }
 
@@ -271,18 +307,41 @@ class ProductService
 
             DB::beginTransaction();
 
-            $product = $this->productRepository->getById($id);
+            $product = $this->productRepository->getProductById($id);
 
             if (!$product) {
                 throw new \Exception('product not found');
             }
 
+            $attributeValue = $product->attributeValue;
+
+            // Xóa các attribute_values liên quan đến sản phẩm
+            $attributeValue->each(function ($item) {
+                $item->delete();
+            });
+
+            foreach ($attributeValue as $item) {
+                $attributeId = $item->attribute_id;
+
+                // Kiểm tra xem còn bản ghi nào khác liên quan đến attribute này không
+                $check = $this->attributeValueRepository->existsByAttributeId($attributeId);
+
+                if (!$check) {
+                    // Không còn liên quan, xóa attribute
+                    $this->attributeRepository->getById($attributeId)->delete();
+                }
+            }
+
+            $product->tags()->detach();
+
             if ($product->thumbnail) {
                 Storage::disk('public')->delete($product->thumbnail->url);
             }
 
-            foreach ($product->catalog as $catalogItem) {
-                Storage::disk('public')->delete($catalogItem->url);
+            if ($product->media) {
+                foreach ($product->media as $Item) {
+                    Storage::disk('public')->delete($Item->url);
+                }
             }
 
             $this->mediaRepository->deleteMediaByMediableID($product->id, Product::class);

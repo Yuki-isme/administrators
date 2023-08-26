@@ -140,6 +140,10 @@ class BrandService
                 throw new \Exception('Brand not found');
             }
 
+            if ($brand->products){
+                throw new \Exception('Can brand has products');
+            }
+
             if ($brand->thumbnail) {
                 Storage::disk('public')->delete($brand->thumbnail->url);
             }

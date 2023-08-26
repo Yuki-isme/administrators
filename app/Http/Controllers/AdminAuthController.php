@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Http\Request;
 
@@ -18,6 +19,7 @@ class AdminAuthController extends Controller
         $credentials = $request->only('username', 'password');
         //dd($credentials);
         if (Auth::guard('admin')->attempt($credentials)) {
+
             return redirect()->route('admin.dashboard');
         }
 

@@ -5,19 +5,19 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-8 col-lg-8 mb-4">
-                    <div class="card mb-4 border shadow-0">
-                        <div class="p-4 d-flex justify-content-between">
-                            <div class="">
-                                <h5>Have an account?</h5>
-                                <p class="mb-0 text-wrap ">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center flex-column flex-md-row">
-                                <a href="#"
-                                    class="btn btn-outline-primary me-0 me-md-2 mb-2 mb-md-0 w-100">Register</a>
-                                <a href="#" class="btn btn-primary shadow-0 text-nowrap w-100">Sign in</a>
+                    @if (!Auth::guard('web')->check())
+                        <div class="card mb-4 border shadow-0">
+                            <div class="p-4 d-flex justify-content-between">
+                                <div class="">
+                                    <h5>Have an account?</h5>
+                                    <p class="mb-0 text-wrap ">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center flex-column flex-md-row">
+                                    <a href="#" class="btn btn-primary shadow-0 text-nowrap w-100">Sign in</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
 
                     <!-- Checkout -->
                     <div class="card shadow-0 border">
@@ -27,21 +27,24 @@
                                 <div class="col-6 mb-3">
                                     <p class="mb-0">First name</p>
                                     <div class="form-outline">
-                                        <input type="text" id="typeText" placeholder="Type here" class="form-control" value="{{ $user->name }}" />
+                                        <input type="text" id="typeText" placeholder="Type here" class="form-control"
+                                            value="{{ $user->name ?? '' }}" />
                                     </div>
                                 </div>
 
                                 <div class="col-6">
                                     <p class="mb-0">Last name</p>
                                     <div class="form-outline">
-                                        <input type="text" id="typeText" placeholder="Type here" class="form-control" value="{{ $user->name }}" />
+                                        <input type="text" id="typeText" placeholder="Type here" class="form-control"
+                                            value="{{ $user->name ?? '' }}" />
                                     </div>
                                 </div>
 
                                 <div class="col-6 mb-3">
                                     <p class="mb-0">Phone</p>
                                     <div class="form-outline">
-                                        <input type="tel" id="typePhone" value="+48 " class="form-control" value="999999999"/>
+                                        <input type="tel" id="typePhone" value="+48 " class="form-control"
+                                            value="999999999" />
                                     </div>
                                 </div>
 
@@ -49,7 +52,7 @@
                                     <p class="mb-0">Email</p>
                                     <div class="form-outline">
                                         <input type="email" id="typeEmail" placeholder="example@gmail.com"
-                                            class="form-control" value="{{ $user->email }}"/>
+                                            class="form-control" value="{{ $user->email ?? '' }}" />
                                     </div>
                                 </div>
                             </div>
@@ -144,14 +147,16 @@
                                     <p class="mb-0">House</p>
                                     <div class="form-outline">
                                         <input type="text" id="typeText" placeholder="Type here"
-                                            class="form-control" value="{{ isset($infor) ? $infor->house_number : '' }}"/>
+                                            class="form-control"
+                                            value="{{ isset($infor) ? $infor->house_number : '' }}" />
                                     </div>
                                 </div>
 
                                 <div class="col-sm-4 col-6 mb-3">
                                     <p class="mb-0">Street Name</p>
                                     <div class="form-outline">
-                                        <input type="text" id="typeText" class="form-control" value="{{ isset($infor) ? $infor->street_name : '' }}"/>
+                                        <input type="text" id="typeText" class="form-control"
+                                            value="{{ isset($infor) ? $infor->street_name : '' }}" />
                                     </div>
                                 </div>
 
@@ -171,7 +176,7 @@
                             <div class="mb-3">
                                 <p class="mb-0">Message to seller</p>
                                 <div class="form-outline">
-                                    <textarea class="form-control" id="textAreaExample1" rows="2" >{{ isset($infor) ? $infor->note : '' }}</textarea>
+                                    <textarea class="form-control" id="textAreaExample1" rows="2">{{ isset($infor) ? $infor->note : '' }}</textarea>
                                 </div>
                             </div>
 
@@ -205,7 +210,7 @@
                         <hr />
                         <div class="d-flex justify-content-between">
                             <p class="mb-2">Total price:</p>
-                            <p class="mb-2 fw-bold text-danger">{{ $total  }} VND</p>
+                            <p class="mb-2 fw-bold text-danger">{{ $total }} VND</p>
                             {{-- + $ship + $tax - $discount --}}
                         </div>
 
@@ -217,24 +222,38 @@
                         <hr />
                         <h6 class="text-dark my-4">Items in cart</h6>
 
-                        @foreach ($carts as $item)
+                        @if (isset($carts))
+                            @foreach ($carts as $item)
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="me-3 position-relative">
+                                        <span
+                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary">
+                                            {{ $item['amount'] }}
+                                        </span>
+                                        <img src="{{ asset('storage/' . $item['img']) }}"
+                                            style="height: 96px; width: 96x;" class="img-sm rounded border" />
+                                    </div>
+                                    <div class="">
+                                        <a href="#" class="nav-link">
+                                            {{ $item['name'] }}
+                                        </a>
+                                        <div class="price text-muted">Total: {{ $item['amount'] * $item['price'] }} VND
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            @else
                             <div class="d-flex align-items-center mb-4">
                                 <div class="me-3 position-relative">
-                                    <span
-                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary">
-                                        {{$item['amount']}}
-                                    </span>
-                                    <img src="{{ asset('storage/' . $item['img']) }}"
-                                        style="height: 96px; width: 96x;" class="img-sm rounded border" />
+
                                 </div>
                                 <div class="">
                                     <a href="#" class="nav-link">
-                                        {{$item['name']}}
+                                        No Item
                                     </a>
-                                    <div class="price text-muted">Total: {{ $item['amount'] * $item['price'] }} VND</div>
                                 </div>
                             </div>
-                        @endforeach
+                        @endif
                     </div>
                 </div>
             </div>

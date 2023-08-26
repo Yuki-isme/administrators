@@ -94,12 +94,12 @@
                                             <li class="ps-0">
                                                 <div class="productviews">
                                                     <div class="productviewsimg">
-                                                        <img src="{{ asset('admin/assets/img/category/' . $category->path_img) }}"alt="product"width="40"
+                                                        <img src="{{ asset('storage/' . $category->thumbnail->url) }}"alt="product"width="40"
                                                             height="40">
                                                     </div>
                                                     <div class="productviewscontent">
                                                         <div class="productviewsname">
-                                                            <p>{{ $category->path_img }}</p>
+                                                            <p>{{ $category->thumbnail->title }}</p>
                                                         </div>
                                                         <a href="javascript:void(0);" class="hideset">x</a>
                                                     </div>

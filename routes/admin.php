@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AdminController;
 
 Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     //category
@@ -71,6 +74,62 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
     Route::put('/{id}', [ProductController::class, 'update'])->name('update');
 
     Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+});
+
+Route::group(['prefix' => 'tags', 'as' => 'tags.'], function () {
+
+    Route::get('/', [TagController::class, 'index'])->name('index');
+
+    Route::get('/create', [TagController::class, 'create'])->name('create');
+    Route::post('/', [TagController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [TagController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [TagController::class, 'update'])->name('update');
+
+    Route::delete('/{id}', [TagController::class, 'destroy'])->name('destroy');
+});
+
+Route::group(['prefix' => 'permissions', 'as' => 'permissions.'], function () {
+
+    Route::get('/', [PermissionController::class, 'index'])->name('index');
+
+    // Route::get('/create', [PermissionController::class, 'create'])->name('create');
+    // Route::post('/', [PermissionController::class, 'store'])->name('store');
+
+    // Route::get('/{id}', [PermissionController::class, 'show'])->name('show');
+
+    // Route::get('/{id}/edit', [PermissionController::class, 'edit'])->name('edit');
+    // Route::put('/{id}', [PermissionController::class, 'update'])->name('update');
+
+    // Route::delete('/{id}', [PermissionController::class, 'destroy'])->name('destroy');
+});
+
+Route::group(['prefix' => 'roles', 'as' => 'roles.'], function () {
+
+    Route::get('/', [RoleController::class, 'index'])->name('index');
+
+    Route::get('/create', [RoleController::class, 'create'])->name('create');
+    Route::post('/', [RoleController::class, 'store'])->name('store');
+
+    Route::get('/{id}', [RoleController::class, 'show'])->name('show');
+
+    Route::get('/{id}/edit', [RoleController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [RoleController::class, 'update'])->name('update');
+
+    Route::delete('/{id}', [RoleController::class, 'destroy'])->name('destroy');
+});
+
+Route::group(['prefix' => 'admins', 'as' => 'admins.'], function () {
+
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+
+    Route::get('/create', [AdminController::class, 'create'])->name('create');
+    Route::post('/', [AdminController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [AdminController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [AdminController::class, 'update'])->name('update');
+
+    Route::delete('/{id}', [AdminController::class, 'destroy'])->name('destroy');
 });
 
 Route::get('/dashboard', function () {

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('infors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('phone_number');
             $table->string('province_city');
             $table->string('district_town');
             $table->string('commune_ward');

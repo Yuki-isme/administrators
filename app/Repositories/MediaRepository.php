@@ -22,6 +22,6 @@ class MediaRepository extends BaseRepository
     }
 
     public function deleteMediaByMediableID($mediable_id, $mediable_type){
-        return $this->model->where('mediable_id', $mediable_id)->where('$mediable_type', $mediable_type)->delete();
+        return $this->model->where('mediable_id', $mediable_id)->where('mediable_type', $mediable_type)->delete();
     }
 }

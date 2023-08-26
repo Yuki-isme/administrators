@@ -36,19 +36,13 @@
                             @method('PUT')
                         @endisset
                         <div class="row">
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Product Name</label>
                                     <input type="text" name="name" value="{{ $product->name ?? '' }}" required>
                                 </div>
                             </div>
-                            {{-- <div class="col-lg-3 col-sm-3 col-12">
-                                <div class="form-group">
-                                    <label>Slug</label>
-                                    <input type="text" name="slug" value="{{ $product->slug ?? '' }}" required>
-                                </div>
-                            </div> --}}
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Category</label>
                                     <select id="parent_id" name="parent_id"
@@ -56,14 +50,14 @@
                                         <option value="0">No category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
-                                                {{ isset($product) && $product->category_id == $category->id ? 'Selected' : '' }}
+                                                {{ isset($product) && in_array($product->category_id, $category->child->pluck('id')->toArray()) ? 'Selected' : '' }}
                                                 {{ $category->is_active == 0 ? 'Disabled' : '' }}> {{ $category->name }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Category</label>
                                     <select id="category_id" name="category_id"
@@ -78,7 +72,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Brand</label>
                                     <select name="brand_id" class="disabled-results form-control form-small">
@@ -89,6 +83,20 @@
                                                 {{ $brand->is_active == 0 ? 'Disabled' : '' }}> {{ $brand->name }}
                                             </option>
                                         @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <select id="tags" name="tags[]"
+                                        class="disabled-results form-control form-small"multiple>
+                                        {{-- @foreach ($tags as $tag)
+                                            <option value="{{ $tag->id }}" --}}
+                                        {{-- {{ isset($product) && in_array($product->category_id, $category->child->pluck('id')->toArray()) ? 'Selected' : '' }} --}}>
+                                        {{-- {{ $category->name }}
+                                            </option>
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -336,10 +344,39 @@
                 $(this).closest('.attributeField').remove();
             });
 
+            $(document).ready(function() {
+                $('#tags').select2({
+                    tags: true,
+                    ajax: {
+                        url: '{{ route('tags.index') }}',
+                        data: function(params) {
+                            var query = {
+                                q: params.term,
+                                page: params.page || 1,
+                                _token: '{{ csrf_token() }}'
+                            }
+
+                            // Query parameters will be ?search=[term]&type=public
+                            return query;
+                        },
+                        dataType: 'json',
+                        processResults: function(data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data.data,
+                                pagination: {
+                                    more: params.page < data.lastPage,
+                                }
+                            }
+                        }
+                    },
+                })
+            })
+
             tinymce.init({
                 selector: 'textarea', // change this value according to your HTML
-                plugins: 'image',
-                toolbar: 'image',
+                plugins: 'image wordcount',
+                toolbar: 'undo redo | blocks | bold italic | alignleft aligncentre alignright alignjustify | indent outdent | bullist numlist',
                 image_list: [{
                         title: 'My image 1',
                         value: 'https://www.example.com/my1.gif'
@@ -349,7 +386,7 @@
                         value: 'http://www.moxiecode.com/my2.gif'
                     }
                 ],
-                images_upload_url: '{{ route('upload-image')}}'
+                images_upload_url: '{{ route('upload-image') }}'
             });
 
             // $('#productForm').submit(function(e) {

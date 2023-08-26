@@ -32,10 +32,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            @elseif ($errors->any())
+            @elseif ($errors->has('common'))
                 <div class="alert alert-danger" id="alert" style="position: relative;">
                     <ul>
-                        @foreach ($errors->get() as $error)
+                        @foreach ($errors->get('common') as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>

@@ -1,5 +1,4 @@
 <div class="header">
-
     <div class="header-left active">
         <a href="index.html" class="logo">
             <img src="{{ asset('admin/assets/img/logo.png') }}" alt="">
@@ -99,8 +98,8 @@
                         <span class="user-img"><img src="{{ asset('admin/assets/img/profiles/avator1.jpg') }}" alt="">
                             <span class="status online"></span></span>
                         <div class="profilesets">
-                            <h6>John Doe</h6>
-                            <h5>Admin</h5>
+                            <h6>{{ Auth::guard('admin')->user()->name}}</h6>
+                            <h5>@if(Auth::guard('admin')->check()){{ Auth::guard('admin')->user()->roles[0]->name}}@endif</h5>
                         </div>
                     </div>
                     <hr class="m-0">

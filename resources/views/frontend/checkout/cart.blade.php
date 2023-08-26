@@ -11,7 +11,7 @@
                         <div class="m-4">
                             <h4 class="card-title mb-4">Your shopping cart</h4>
                             @if (session()->has('cart'))
-                                @foreach (cart()->getContent() as $item)
+                                @foreach (cart()->getContent() as $id => $item)
                                     <div class="row gy-3 mb-4">
                                         <div class="col-lg-5">
                                             <div class="me-lg-5">
@@ -19,7 +19,7 @@
                                                     <img src="{{ asset('storage/' . $item['img']) }}"
                                                         class="border rounded me-3" style="width: 96px; height: 96px" />
                                                     <div class="">
-                                                        <a href="#" class="nav-link">{{ $item['name'] }}</a>
+                                                        <a href="#" class="nav-link">{{ $item['name'] . $id}}</a>
                                                         <p class="text-muted">Yellow, Jeans</p>
                                                     </div>
                                                 </div>
@@ -37,7 +37,7 @@
                                                 </select>
                                             </div>
                                             <div class="">
-                                                <text class="h6">{{ $item['price'] * $item['amount'] }} VND</text>
+                                                <span class="h6">{{ $item['price'] * $item['amount'] }} VND</span>
                                                 <br />
                                                 <small class="text-muted text-nowrap">
                                                     {{ $products[$item['id']]['price'] }} VND / per item
@@ -47,9 +47,10 @@
                                         <div
                                             class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
                                             <div class="float-md-end">
-                                                <a href="#!" class="btn btn-light border px-2 icon-hover-primary"><i
-                                                        class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
+
                                                 <form action = "{{ route('deleteItem', ['id'=>$item['id']]) }}" method="POST">
+                                                    <a href="#!" class="btn btn-light border px-2 icon-hover-primary"><i
+                                                        class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
                                                     @csrf
                                                     @method('delete')
                                                     <input class="btn btn-light border text-danger icon-hover-danger" type="submit" value="Remove">

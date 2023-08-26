@@ -17,8 +17,13 @@ class Brand extends Model
         'is_active',
     ];
 
-    public function thumbnail() : MorphOne
+    public function thumbnail(): MorphOne
     {
         return $this->morphOne(Media::class, 'mediable')->where('type', 'thumbnail');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

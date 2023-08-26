@@ -6,6 +6,7 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Services\BrandService;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 
 class BrandController extends Controller
 {
@@ -18,12 +19,16 @@ class BrandController extends Controller
 
     public function index()
     {
+        //dd(Auth::guard('admin')->user());
+        $this->authorize('viewAny', [Brand::class, Auth::guard('admin')->user()]);
         $brands = $this->brandService->getAllBrands();
         return view('admin.brand.index', ['brands' => $brands]);
     }
 
     public function create()
     {
+        $this->authorize('create', Brand::class);
+
         return view('admin.brand.form');
     }
 
@@ -41,6 +46,7 @@ class BrandController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update', Brand::class);
         $brand = $this->brandService->getBrandById($id);
 
         return view('admin.brand.form', ['brand' => $brand]);
@@ -54,7 +60,7 @@ class BrandController extends Controller
 
         $this->brandService->update($request, $id);
 
-        return Redirect::route('categories.index')->with('success', 'Updated category successfully!');
+        return Redirect::route('brands.index')->with('success', 'Updated category successfully!');
     }
 
     public function destroy($id)
