@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Services\AdminService;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\Admin\AdminRequest;
+use App\Http\Requests\Admin\AdminUpdateRequest;
 
 class AdminController extends Controller
 {
@@ -20,7 +23,6 @@ class AdminController extends Controller
     public function index()
     {
         $admins = $this->adminService->index();
-        //dd($admins);
 
         return view('admin.admin.index', ['admins' => $admins]);
     }
@@ -30,15 +32,19 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        $roles = $this->adminService->getRoles();
+
+        return view('admin.admin.form', ['roles' => $roles]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AdminRequest $request)
     {
-        //
+        $this->adminService->store($request);
+
+        return Redirect::route('admins.index')->with('success', 'Created Success');
     }
 
     /**
@@ -46,7 +52,7 @@ class AdminController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
@@ -54,15 +60,21 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $admin = $this->adminService->getAdminRoles($id);
+        $roles = $this->adminService->getRoles();
+
+        return view('admin.admin.form', ['admin' => $admin, 'roles' => $roles]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AdminUpdateRequest $request, string $id)
     {
-        //
+        dd($request);
+        $this->adminService->update($request, $id);
+
+        return Redirect::route('admins.index')->with('success', 'Updated Success');
     }
 
     /**
@@ -70,6 +82,8 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->adminService->destroy($id);
+
+        return Redirect::route('admins.index')->with('success', 'Deleted Success');
     }
 }

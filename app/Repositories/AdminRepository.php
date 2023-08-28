@@ -32,4 +32,9 @@ class AdminRepository extends BaseRepository
     {
         return $this->model->with('roles.permissions')->get();
     }
+
+    public function getAdminRoles($id)
+    {
+        return $this->model->with('roles')->find($id);
+    }
 }

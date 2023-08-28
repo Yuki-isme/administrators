@@ -20,7 +20,7 @@ class BrandController extends Controller
     public function index()
     {
         //dd(Auth::guard('admin')->user());
-        $this->authorize('viewAny', [Brand::class, Auth::guard('admin')->user()]);
+        $this->authorize('viewAny', Brand::class);
         $brands = $this->brandService->getAllBrands();
         return view('admin.brand.index', ['brands' => $brands]);
     }

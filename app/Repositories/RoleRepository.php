@@ -26,4 +26,9 @@ class RoleRepository extends BaseRepository
     {
         return $this->model->with('permissions', 'admins')->find($id);
     }
+
+    public function getRolesAdmin()
+    {
+        return $this->model->with('admins')->get();
+    }
 }

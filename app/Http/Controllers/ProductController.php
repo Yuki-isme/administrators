@@ -33,6 +33,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->catalog);
         $this->productService->store($request);
 
         return Redirect::route('products.index')->with('success', 'Created product successfully!');

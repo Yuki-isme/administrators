@@ -4,17 +4,26 @@ namespace App\Services;
 
 use App\Repositories\RoleRepository;
 use App\Repositories\AdminRepository;
-use App\Repositories\PermissionRepository;
+use App\Repositories\MediaRepository;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\CommonException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+
+use App\Models\Admin;
 
 class AdminService
 {
     private $adminRepository;
+    private $roleRepository;
+    private $mediaRepository;
 
-    public function __construct(AdminRepository $adminRepository)
+    public function __construct(AdminRepository $adminRepository, RoleRepository $roleRepository, MediaRepository $mediaRepository)
     {
         $this->adminRepository = $adminRepository;
+        $this->roleRepository = $roleRepository;
+        $this->mediaRepository = $mediaRepository;
     }
 
     public function index()
@@ -22,14 +31,9 @@ class AdminService
         return $this->adminRepository->index();
     }
 
-    public function getPermissions()
+    public function getRoles()
     {
-
-    }
-
-    public function getAdmins()
-    {
-
+        return $this->roleRepository->getRolesAdmin();
     }
 
     public function store($request)
@@ -37,13 +41,28 @@ class AdminService
         try
         {
             DB::beginTransaction();
-            $role = $this->adminRepository->create([
+            $admin = $this->adminRepository->create([
                 'name' => $request->name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
             ]);
 
-            $role->permissions()->sync($request->permissions);
+            $admin->roles()->sync($request->roles);
 
-            $role->admins()->sync($request->admins);
+            if ($request->hasFile('avatar')) {
+                $avatar = $request->file('avatar');
+                $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $avatar->getClientOriginalName();
+                $url =  $avatar->storeAs('avatars', $imageName, 'public');
+
+                $this->mediaRepository->create([
+                    'title' => $imageName,
+                    'url' => $url,
+                    'type' => 'thumbnail',
+                    'mediable_type' => Admin::class,
+                    'mediable_id' => $admin->id,
+                ]);
+            }
 
             DB::commit();
         }
@@ -55,9 +74,9 @@ class AdminService
         }
     }
 
-    public function getRoleById($id)
+    public function getAdminRoles($id)
     {
-        return $this->adminRepository;
+        return $this->adminRepository->getAdminRoles($id);
     }
 
     public function update($request, $id)
@@ -65,13 +84,36 @@ class AdminService
         try
         {
             DB::beginTransaction();
-            $role = $this->adminRepository->update($id,[
+            $admin = $this->adminRepository->update($id,[
                 'name' => $request->name,
+                'username' => $request->username,
+                'email' => $request->email,
             ]);
 
-            $role->permissions()->sync($request->permissions);
+            if ($request->has('password')) {
+                $admin['password'] = Hash::make($request->password);
+            }
 
-            $role->admins()->sync($request->admins);
+            $role = $request->roles ?? [];
+
+            $admin->roles()->sync($role);
+
+            if ($request->hasFile('avatar')) {
+                if ($admin->avatar) {
+                    Storage::disk('public')->delete($admin->avatar->url);
+                }
+                $avatar = $request->file('avatar');
+                $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $avatar->getClientOriginalName();
+                $url =  $avatar->storeAs('avatars', $imageName, 'public');
+
+                $this->mediaRepository->create([
+                    'title' => $imageName,
+                    'url' => $url,
+                    'type' => 'avatar',
+                    'mediable_type' => Admin::class,
+                    'mediable_id' => $admin->id,
+                ]);
+            }
 
             DB::commit();
         }
@@ -89,13 +131,11 @@ class AdminService
 
             DB::beginTransaction();
 
-            // $role = $this->adminRepository;
+            $admin = $this->adminRepository->getAdminRoles($id);
 
-            // $role->permissions()->detach();
+            $admin->roles()->detach();
 
-            // $role->admins()->detach();
-
-            // $role->delete();
+            $admin->delete();
 
             DB::commit();
         } catch (\Exception $e) {

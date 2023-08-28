@@ -15,7 +15,7 @@ class Role extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class)->orderBy('role_id')->orderBy('permission_id');
+        return $this->belongsToMany(Permission::class, 'role_permission')->orderBy('role_id')->orderBy('permission_id');
     }
 
     public function admins()

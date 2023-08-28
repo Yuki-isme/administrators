@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\CategoryService;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
@@ -17,6 +19,7 @@ class CategoryController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', [Category::class, Auth::guard('admin')->user()]);
         $categories = $this->categoryService->getAllCategories();
 
         return view('admin.category.index', ['categories' => $categories]);

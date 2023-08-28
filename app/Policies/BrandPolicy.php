@@ -10,6 +10,7 @@ use Illuminate\Auth\Access\Response;
 class BrandPolicy
 {
     private $admin;
+
     function __construct (){
         $this->admin = Auth::guard('admin')->user();
     }

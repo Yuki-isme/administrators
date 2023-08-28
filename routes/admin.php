@@ -93,8 +93,8 @@ Route::group(['prefix' => 'permissions', 'as' => 'permissions.'], function () {
 
     Route::get('/', [PermissionController::class, 'index'])->name('index');
 
-    // Route::get('/create', [PermissionController::class, 'create'])->name('create');
-    // Route::post('/', [PermissionController::class, 'store'])->name('store');
+    Route::get('/create', [PermissionController::class, 'create'])->name('create');
+    Route::post('/', [PermissionController::class, 'store'])->name('store');
 
     // Route::get('/{id}', [PermissionController::class, 'show'])->name('show');
 

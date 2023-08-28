@@ -5,6 +5,7 @@ use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -49,4 +50,7 @@ Route::get('/deleteItem/{id}',[CartController::class, 'deleteItem'])->name('dele
 Route::get('/cart',[CartController::class, 'index'])->name('cart');
 Route::get('/order', [CheckoutController::class, 'order'])->name('order');
 Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
+
+Route::get('/vnpay',[PaymentController::class, 'vnPay'])->name('vnPay');
+Route::get('/vnpay_return',[PaymentController::class, 'vnPayReturn'])->name('vnPayReturn');
 

@@ -164,13 +164,13 @@
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <label>Description</label>
-                                    <textarea class="form-control" name="description" required>{{ $product->description ?? '' }}</textarea>
+                                    <textarea class="form-control" id="desccription" name="description" required>{{ $product->description ?? '' }}</textarea>
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <label>Content</label>
-                                    <textarea class="form-control" name="content" required>{{ $product->content ?? '' }}</textarea>
+                                    <textarea class="form-control" id="content" name="content" required>{{ $product->content ?? '' }}</textarea>
                                 </div>
                             </div>
                             <div id="attributeFields" class="row">
@@ -226,10 +226,22 @@
 
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                    <div class="custom-file-container" data-upload-id="myFirstImage">
+                                    {{-- <div class="custom-file-container" data-upload-id="mySecondImage">
                                         <label>Upload catalog</label>
                                         <input name="catalog[]" type="file" class="form-control" accept="image/*"
                                             multiple>
+                                    </div> --}}
+                                    <div class="custom-file-container" data-upload-id="mySecondImage">
+                                        <label>Upload catalog (Allow Multiple)
+                                            <a href="javascript:void(0)" class="custom-file-container__image-clear"
+                                                title="Clear Image">x</a></label>
+                                        <label class="custom-file-container__custom-file">
+                                            <input name="catalog[]" type="file"
+                                                class="custom-file-container__custom-file__custom-file-input" multiple />
+                                            <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                                            <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                        </label>
+                                        <div class="custom-file-container__image-preview"></div>
                                     </div>
                                 </div>
                             </div>
@@ -371,23 +383,15 @@
                         }
                     },
                 })
-            })
-
-            tinymce.init({
+                tinymce.init({
                 selector: 'textarea', // change this value according to your HTML
                 plugins: 'image wordcount',
                 toolbar: 'undo redo | blocks | bold italic | alignleft aligncentre alignright alignjustify | indent outdent | bullist numlist',
-                image_list: [{
-                        title: 'My image 1',
-                        value: 'https://www.example.com/my1.gif'
-                    },
-                    {
-                        title: 'My image 2',
-                        value: 'http://www.moxiecode.com/my2.gif'
-                    }
-                ],
                 images_upload_url: '{{ route('upload-image') }}'
             });
+            })
+
+           
 
             // $('#productForm').submit(function(e) {
             //     e.preventDefault();

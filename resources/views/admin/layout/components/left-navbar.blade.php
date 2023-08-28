@@ -139,10 +139,13 @@
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('admin/assets/img/icons/users1.svg') }}"
                             alt="img"><span>
-                            Users</span> <span class="menu-arrow"></span></a>
+                            Users Admin</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="newuser.html">New User </a></li>
-                        <li><a href="userlists.html">Users List</a></li>
+                        <li><a href="{{ route('admins.index') }}" class="{{ request()->routeIs('admins.index') ? 'show active' : '' }}">Users List</a></li>
+                        <li><a href="{{ route('admins.create') }}" class="{{ request()->routeIs('admins.create') ? 'show active' : '' }}">New User </a></li>
+                        <li><a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.index') ? 'show active' : '' }}">Roles List</a></li>
+                        <li><a href="{{ route('roles.create') }}" class="{{ request()->routeIs('roles.create') ? 'show active' : '' }}">New Role </a></li>
+                        <li><a href="{{ route('permissions.index') }}" class="{{ request()->routeIs('permissions.index') ? 'show active' : '' }}">Permissions List</a></li>
                     </ul>
                 </li>
                 <li class="submenu">

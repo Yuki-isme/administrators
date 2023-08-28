@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\HasPermissions;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Admin extends Authenticatable
 {
@@ -33,5 +34,10 @@ class Admin extends Authenticatable
     // {
     //     return $this->belongsToMany(Role::class, 'admin_role', 'admin_id', 'role_id');
     // }
+
+    public function avatar() : MorphOne
+    {
+        return $this->morphOne(Media::class, 'mediable')->where('type', 'avatar');
+    }
 
 }

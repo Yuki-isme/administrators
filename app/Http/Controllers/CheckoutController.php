@@ -11,6 +11,7 @@ use App\Models\Item;
 use App\Mail\OrderSuccessMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 
 class CheckoutController extends Controller
 {
@@ -54,7 +55,9 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-//            cart()->destroy();
+            return Redirect::route('vnPay', ['oder_id' => $order->id, 'total', cart()->getTotal()]);
+
+            //            cart()->destroy();
             Mail::to($order->email)
                 ->queue(new OrderSuccessMail($order));
 
@@ -64,5 +67,10 @@ class CheckoutController extends Controller
 
             throw $e;
         }
+    }
+
+    public function success()
+    {
+        return view('frontend.checkout.success');
     }
 }

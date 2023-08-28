@@ -132,7 +132,7 @@
                                         <td>{{ ucwords(str_replace('_', ' ', $permission->name)) }}</td>
                                         <td>{{ implode(', ', $permission->roles->pluck('name')->toArray()) }}</td>
                                         <td>
-                                            {{-- {{ $permission->created_at->format('H:i:s d/m/Y') }} --}}
+                                            {{ $permission->created_at->format('H:i:s d/m/Y') }}
                                         </td>
                                         <td>
                                             <a class="me-3"
