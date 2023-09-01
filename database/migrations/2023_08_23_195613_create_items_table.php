@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('amount');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('order_id');
-            $table->softDeletes();
-            $table->timestamps();
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('product_id')->references('id')->on('products');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

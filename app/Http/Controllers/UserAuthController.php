@@ -15,7 +15,7 @@ class UserAuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
         //dd($credentials);
         if (Auth::guard('web')->attempt($credentials)) {
             return redirect()->route('index');
@@ -30,8 +30,5 @@ class UserAuthController extends Controller
         return redirect()->route('index');
     }
 
-    public function myAccount()
-    {
-        return view('frontend.user.account');
-    }
+
 }

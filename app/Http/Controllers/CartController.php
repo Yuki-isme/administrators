@@ -31,4 +31,13 @@ class CartController extends Controller
         $total = $this->cartService->getTotal();
         return view('frontend.checkout.cart', ['products' => $products, 'total' => $total]);
     }
+
+    public function deleteItem($id)
+    {
+        $this->cartService->remove($id);
+        $products = $this->cartService->index();
+        $total = $this->cartService->getTotal();
+        
+        return view('frontend.checkout.cart', ['products' => $products, 'total' => $total]);
+    }
 }

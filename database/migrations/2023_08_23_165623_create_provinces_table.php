@@ -20,11 +20,9 @@ return new class extends Migration
             $table->string('code_name')->nullable();
             $table->unsignedBigInteger('administrative_unit_id')->nullable();
             $table->unsignedBigInteger('administrative_region_id')->nullable();
-
-            $table->timestamps();
-
             $table->foreign('administrative_unit_id')->references('id')->on('administrative_unit');
             $table->foreign('administrative_region_id')->references('id')->on('administrative_region');
+            $table->timestamps();
         });
     }
 

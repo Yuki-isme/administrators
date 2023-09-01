@@ -25,6 +25,12 @@ class UserRepository extends BaseRepository
 
     public function getInforUser()
     {
-        return $this->getUser()->infor ?? null;
+        $user = $this->getUser();
+
+        if ($user) {
+            return $user->load('info.district', 'info.ward');
+        }
+
+        return null;
     }
 }

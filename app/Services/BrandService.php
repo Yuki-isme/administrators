@@ -82,7 +82,6 @@ class BrandService
             if ($request->ajax()) {
                 $brand = $this->brandRepository->update($id, [
                     'is_active' => $request->is_active,
-
                 ]);
                 DB::commit();
 

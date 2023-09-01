@@ -1,7 +1,7 @@
 @extends('admin.layout.layout')
 
 @section('content')
-
+    {{-- {{dd($product->tags)}} --}}
     <div class="page-wrapper">
 
         <div class="content">
@@ -47,10 +47,9 @@
                                     <label>Category</label>
                                     <select id="parent_id" name="parent_id"
                                         class="disabled-results form-control form-small">
-                                        <option value="0">No category</option>
+
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
-                                                {{ isset($product) && in_array($product->category_id, $category->child->pluck('id')->toArray()) ? 'Selected' : '' }}
                                                 {{ $category->is_active == 0 ? 'Disabled' : '' }}> {{ $category->name }}
                                             </option>
                                         @endforeach
@@ -59,16 +58,10 @@
                             </div>
                             <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
-                                    <label>Category</label>
+                                    <label>Sub Category</label>
                                     <select id="category_id" name="category_id"
                                         class="disabled-results form-control form-small">
                                         <option value="0">No category</option>
-                                        {{-- @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}"
-                                                {{ isset($product) && $product->category_id == $category->id ? 'Selected' : '' }}
-                                                {{ $category->is_active == 0 ? 'Disabled' : '' }}> {{ $category->name }}
-                                            </option>
-                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -76,7 +69,6 @@
                                 <div class="form-group">
                                     <label>Brand</label>
                                     <select name="brand_id" class="disabled-results form-control form-small">
-                                        <option value="0">No brand</option>
                                         @foreach ($brands as $brand)
                                             <option value="{{ $brand->id }}"
                                                 {{ isset($product) && $product->brand_id == $brand->id ? 'Selected' : '' }}
@@ -88,89 +80,98 @@
                             </div>
                             <div class="col-lg-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label>Category</label>
+                                    <label>Tags</label>
                                     <select id="tags" name="tags[]"
                                         class="disabled-results form-control form-small"multiple>
-                                        {{-- @foreach ($tags as $tag)
-                                            <option value="{{ $tag->id }}" --}}
-                                        {{-- {{ isset($product) && in_array($product->category_id, $category->child->pluck('id')->toArray()) ? 'Selected' : '' }} --}}>
-                                        {{-- {{ $category->name }}
-                                            </option>
-                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>SKU</label>
                                     <input type="text" name="sku" value="{{ $product->sku ?? '' }}" required>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Stock</label>
                                     <div class="col-lg-12">
                                         <div class="input-group">
                                             <input class="form-control" type="number" name="stock"
-                                                value="{{ $product->stock ?? '' }}" required>
-                                            <span class="input-group-text">$</span>
+                                                value="{{ $product->stock ?? '' }}">
+                                            <span class="input-group-text">Item</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-3 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Price</label>
                                     <div class="col-lg-12">
                                         <div class="input-group">
-                                            <input class="form-control" aria-label="Amount (to the nearest dollar)"
+                                            <input class="form-control"
                                                 type="number" name="price" value="{{ $product->price ?? '' }}"
-                                                step="0.01" required>
-                                            <span class="input-group-text">$</span>
+                                                >
+                                            <span class="input-group-text">VND</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-1 col-sm-1 col-12">
+                            <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
-                                    <label>Feature</label>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_feature" role="switch"
-                                            value="1"
-                                            {{ isset($product) ? ($product->feature == 1 ? 'checked' : '') : 'checked' }}>
+                                    <label>Sale Price</label>
+                                    <div class="col-lg-12">
+                                        <div class="input-group">
+                                            <input class="form-control"
+                                                type="number" name="sale_price" value="{{ $product->sale_price ?? '' }}"
+                                                >
+                                            <span class="input-group-text">VND</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-1 col-sm-1 col-12">
-                                <div class="form-group">
-                                    <label>Active</label>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_active" role="switch"
-                                            value="1"
-                                            {{ isset($product) ? ($product->is_active == 1 ? 'checked' : '') : 'checked' }}>
+                            <div class="col-lg-2 col-sm-2 col-12">
+                                <div class="row">
+                                    <div class="col-lg-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Feature</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" name="is_feature"
+                                                    role="switch" value="1"
+                                                    {{ isset($product) ? ($product->feature == 1 ? 'checked' : '') : 'checked' }}>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Active</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" name="is_active"
+                                                    role="switch" value="1"
+                                                    {{ isset($product) ? ($product->is_active == 1 ? 'checked' : '') : 'checked' }}>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Hot</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" name="is_hot"
+                                                    role="switch" value="1"
+                                                    {{ isset($product) ? ($product->is_hot == 1 ? 'checked' : '') : 'checked' }}>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-1 col-sm-1 col-12">
-                                <div class="form-group">
-                                    <label>Hot</label>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_hot" role="switch"
-                                            value="1"
-                                            {{ isset($product) ? ($product->is_hot == 1 ? 'checked' : '') : 'checked' }}>
+                            <div class="col-lg-2 col-sm-2 col-12">
+                                <div class="form-group d-flex justify-content-center align-items-center h-100">
+                                    <div class="col-lg-12 text-center"> <!-- Thêm class text-center -->
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-info me-2" id="addAttributeField">Add
+                                                Attribute</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea class="form-control" id="desccription" name="description" required>{{ $product->description ?? '' }}</textarea>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label>Content</label>
-                                    <textarea class="form-control" id="content" name="content" required>{{ $product->content ?? '' }}</textarea>
                                 </div>
                             </div>
                             <div id="attributeFields" class="row">
@@ -208,6 +209,19 @@
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control" id="desccription" name="description">{{ $product->description ?? '' }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Content</label>
+                                    <textarea class="form-control" id="content" name="content">{{ $product->content ?? '' }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
                                     <div class="custom-file-container" data-upload-id="myFirstImage">
                                         <label>Upload Image <a href="javascript:void(0)"
                                                 class="custom-file-container__image-clear"
@@ -215,8 +229,8 @@
                                         <label class="custom-file-container__custom-file">
                                             <input name="thumbnail" type="file"
                                                 class="custom-file-container__custom-file__custom-file-input"
-                                                accept="image/*">
-                                            <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                                                accept="image/*" {{ isset($product) ? '' : 'required' }}>
+
                                             <span class="custom-file-container__custom-file__custom-file-control"></span>
                                         </label>
                                         <div class="custom-file-container__image-preview"></div>
@@ -226,19 +240,15 @@
 
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                    {{-- <div class="custom-file-container" data-upload-id="mySecondImage">
-                                        <label>Upload catalog</label>
-                                        <input name="catalog[]" type="file" class="form-control" accept="image/*"
-                                            multiple>
-                                    </div> --}}
                                     <div class="custom-file-container" data-upload-id="mySecondImage">
                                         <label>Upload catalog (Allow Multiple)
                                             <a href="javascript:void(0)" class="custom-file-container__image-clear"
                                                 title="Clear Image">x</a></label>
                                         <label class="custom-file-container__custom-file">
                                             <input name="catalog[]" type="file"
-                                                class="custom-file-container__custom-file__custom-file-input" multiple />
-                                            <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                                                class="custom-file-container__custom-file__custom-file-input" multiple
+                                                accept="image/*" {{ isset($product) ? '' : 'required' }} />
+
                                             <span class="custom-file-container__custom-file__custom-file-control"></span>
                                         </label>
                                         <div class="custom-file-container__image-preview"></div>
@@ -250,30 +260,50 @@
                                 <div class="col-lg-12">
                                     <div class="product-list">
                                         <ul class="row">
-                                            <li class="ps-0">
+                                            <li class="ps-0" data-media-id="{{ $product->thumbnail->id }}">
                                                 <div class="productviews">
                                                     <div class="productviewsimg">
-                                                        <img src="{{ asset('storage/' . $product->thumbnail->url) }}"alt="product"width="40"
-                                                            height="40">
+                                                        <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
+                                                            alt="product" width="40" height="40">
                                                     </div>
                                                     <div class="productviewscontent">
                                                         <div class="productviewsname">
                                                             <p>{{ $product->thumbnail->title }}</p>
+                                                            <input type="hidden" name="thumbnail_update"
+                                                                value="{{ $product->thumbnail->id }}">
                                                         </div>
                                                         <a href="javascript:void(0);" class="hideset">x</a>
                                                     </div>
                                                 </div>
                                             </li>
+                                            @foreach ($product->media as $media)
+                                                <li class="ps-0" data-media-id="{{ $media->id }}">
+                                                    <div class="productviews">
+                                                        <div class="productviewsimg">
+                                                            <img src="{{ asset('storage/' . $media->url) }}" alt="product"
+                                                                width="40" height="40">
+                                                        </div>
+                                                        <div class="productviewscontent">
+                                                            <div class="productviewsname">
+                                                                <p>{{ $media->title }}</p>
+                                                                <input type="hidden" name="catalog_update[]"
+                                                                    value="{{ $media->id }}">
+                                                            </div>
+                                                            <a href="javascript:void(0);" class="hideset">x</a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
                             @endisset
+
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <input type="submit" class="btn btn-submit me-2" value="Submit">
                                     <a href="{{ route('products.index') }}" class="btn btn-cancel">Cancel</a>
-                                    <button type="button" class="btn btn-info me-2" id="addAttributeField"
-                                        style="height: 50.6px;">Add Attribute</button>
+
                                 </div>
                             </div>
                         </div>
@@ -290,37 +320,147 @@
 @push('custom-script')
     <script>
         $(document).ready(function() {
-
             $('#close-alert').on('click', function() {
                 $('#alert').hide();
             });
         });
 
         $(document).ready(function() {
-            // $('.select2').select2({
-            //     theme: 'bootstrap-5'
-            // });
+            var categorySelect = $('#category_id');
 
-            $('#category_id').select2({
+            // Thiết lập Select2 cho sub category
+            categorySelect.select2({
                 ajax: {
                     url: '{{ route('categories.get-children') }}',
                     data: function(params) {
+                        var parentId = $('#parent_id').val();
+
                         var query = {
-                            parent_id: $('#parent_id').val(),
+                            term: params.term,
+                            parent_id: parentId,
                             _token: '{{ csrf_token() }}'
-                        }
+                        };
 
                         return query;
                     },
                     dataType: 'json',
-                    processResults: function(data, params) {
+                    processResults: function(data) {
+                        // Thêm tùy chọn "No category" nếu parent_id là 0
+                        var parentId = $('#parent_id').val();
+                        if (parentId == '0') {
+                            categorySelect.empty(); // Xóa toàn bộ tùy chọn hiện có
+                            categorySelect.append('<option value="0">No category</option>');
+                        }
+
                         return {
-                            results: data,
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                };
+                            })
+                        };
+                    }
+                }
+            });
+
+            $('#parent_id').change(function() {
+                // Xóa tất cả tùy chọn hiện có trong category_id
+                categorySelect.empty();
+
+                // Thêm tùy chọn "No category" nếu parent_id là 0
+                var parentId = $('#parent_id').val();
+                if (parentId == '0') {
+                    categorySelect.append('<option value="0">No category</option>');
+                }
+
+                // Triggers a change event to reload the select2 data
+                categorySelect.trigger('change');
+            });
+
+
+
+            var subid = '{{ $product->category_id ?? '' }}';
+            var subvalue = '{{ isset($product->category) ? $product->category->name : '' }}';
+
+            if (subid) {
+                $.ajax({
+                    url: '{{ route('categories.get-parent') }}',
+                    data: {
+                        childId: subid,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response) {
+                            // Lấy thông tin parent category
+                            var parentCategory = response;
+
+                            // Lặp qua tất cả các option trong dropdown
+                            $('#parent_id option').each(function() {
+                                // Nếu giá trị của option trùng với ID của parent category
+                                if ($(this).val() == parentCategory.id) {
+                                    // Đặt thuộc tính 'selected' cho option này
+                                    $(this).attr('selected', 'selected');
+                                }
+                            });
+
+                            // Cập nhật select2 cho #parent_id
+                            $('#parent_id').select2();
+
+                            // Tạo option cho #category_id
+                            var option = new Option(subvalue, subid, true, true);
+                            $('#category_id').append(option).trigger('change');
+                        }
+                    }
+                });
+            }
+
+
+
+        });
+
+        $(document).ready(function() {
+            $('#tags').select2({
+                tags: true,
+                ajax: {
+                    url: '{{ route('tags.index') }}',
+                    data: function(params) {
+                        var query = {
+                            q: params.term,
+                            page: params.page || 1,
+                            _token: '{{ csrf_token() }}'
+                        }
+
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    },
+                    dataType: 'json',
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.data,
+                            pagination: {
+                                more: params.page < data.lastPage,
+                            }
                         }
                     }
                 },
             })
+
+            @if (isset($product))
+                var productTags = @json($product->tags->pluck('id'));
+                var productTagNames = @json($product->tags->pluck('name'));
+                var tagsSelect = $('#tags');
+
+                $.each(productTags, function(index, tagId) {
+                    var option = new Option(productTagNames[index], tagId, true, true);
+                    tagsSelect.append(option).trigger('change');
+                });
+            @endif
+
         })
+
 
         $(document).ready(function() {
             let attributeIndex = {{ isset($product) ? count($product->attributeValue) : 1 }};
@@ -355,66 +495,30 @@
             $(document).on('click', '.removeAttributeField', function() {
                 $(this).closest('.attributeField').remove();
             });
+        });
 
-            $(document).ready(function() {
-                $('#tags').select2({
-                    tags: true,
-                    ajax: {
-                        url: '{{ route('tags.index') }}',
-                        data: function(params) {
-                            var query = {
-                                q: params.term,
-                                page: params.page || 1,
-                                _token: '{{ csrf_token() }}'
-                            }
 
-                            // Query parameters will be ?search=[term]&type=public
-                            return query;
-                        },
-                        dataType: 'json',
-                        processResults: function(data, params) {
-                            params.page = params.page || 1;
-                            return {
-                                results: data.data,
-                                pagination: {
-                                    more: params.page < data.lastPage,
-                                }
-                            }
-                        }
-                    },
-                })
-                tinymce.init({
-                selector: 'textarea', // change this value according to your HTML
-                plugins: 'image wordcount',
-                toolbar: 'undo redo | blocks | bold italic | alignleft aligncentre alignright alignjustify | indent outdent | bullist numlist',
-                images_upload_url: '{{ route('upload-image') }}'
-            });
-            })
 
-           
+        tinymce.init({
+            selector: 'textarea', // change this value according to your HTML
+            plugins: 'image wordcount',
+            toolbar: 'undo redo | blocks | link image | bold italic | alignleft aligncentre alignright alignjustify | indent outdent | bullist numlist',
+            images_upload_url: '{{ route('upload-image') }}'
+        });
 
-            // $('#productForm').submit(function(e) {
-            //     e.preventDefault();
-            //     let formData = new FormData(this);
+        // Bắt sự kiện khi bấm vào nút "x"
+        $('.hideset').on('click', function() {
+            // Lấy media-id từ thuộc tính data-media-id của thẻ cha <li>
+            var mediaId = $(this).closest('li').data('media-id');
 
-            //     $.ajax({
-            //         url: "{{ route('products.store') }}",
-            //         type: "POST",
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
-            //         success: function(data) {
-            //             alert(data.message);
-            //         },
-            //         error: function(xhr, status, error) {
-            //             if (xhr.responseJSON && xhr.responseJSON.error) {
-            //                 alert(xhr.responseJSON.error);
-            //             } else {
-            //                 alert("An error occurred while saving the product.");
-            //             }
-            //         }
-            //     });
-            // });
+            // Xóa thẻ <li> khỏi DOM
+            $(this).closest('li').remove();
+
+            // Xóa mediaId khỏi mảng catalog_update
+            var index = catalogUpdate.indexOf(mediaId);
+            if (index !== -1) {
+                catalogUpdate.splice(index, 1);
+            }
         });
     </script>
 @endpush

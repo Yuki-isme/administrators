@@ -37,16 +37,23 @@ class ProductRepository extends BaseRepository
 
     public function getNewProducts($limit)
     {
-        return $this->model->with('thumbnail')->orderBy('created_at', 'desc')->take($limit)->get();
+        return $this->model->with('thumbnail')->where('is_hot', '1')->orderBy('created_at', 'desc')->take($limit)->get();
     }
 
     public function getStockProduct($id)
     {
-        return $this->model->find($id)->stock;
+        return $this->model->find($id)->stock ?? 0;
     }
 
     public function getPriceProduct($id)
     {
-        return $this->model->find($id)->cart_price;
+        return $this->model->find($id)->cart_price ?? 0;
+    }
+
+    //home
+
+    public function getProducts()
+    {
+        return $this->model->with('thumbnail')->get();
     }
 }

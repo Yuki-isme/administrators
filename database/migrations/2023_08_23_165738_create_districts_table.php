@@ -20,11 +20,9 @@ return new class extends Migration
             $table->string('code_name')->nullable();
             $table->string('province_code', 20)->nullable();
             $table->unsignedBigInteger('administrative_unit_id')->nullable();
-
-            $table->timestamps();
-
             $table->foreign('administrative_unit_id')->references('id')->on('administrative_unit');
             $table->foreign('province_code')->references('code')->on('provinces');
+            $table->timestamps();
         });
     }
 

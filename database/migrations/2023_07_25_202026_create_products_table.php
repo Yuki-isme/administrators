@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('stock')->default(0);
             $table->unsignedBigInteger('price')->default(0);
             $table->unsignedBigInteger('sale_price')->default(0);
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->text('content')->nullable();
             $table->integer('is_active')->default(1);
             $table->integer('is_hot')->default(0);

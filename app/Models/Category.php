@@ -21,7 +21,7 @@ class Category extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Category::class, 'parent_id')->withDefault(['name' => 'No Parent']);
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
     public function child()
@@ -29,7 +29,7 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-    public function thumbnail() : MorphOne
+    public function thumbnail(): MorphOne
     {
         return $this->morphOne(Media::class, 'mediable')->where('type', 'thumbnail');
     }

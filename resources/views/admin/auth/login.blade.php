@@ -76,7 +76,7 @@
                                 <input type="submit" class="btn btn-login" value="Sign In">
                             </div>
                         </form>
-                        <div class="signinform text-center">
+                        {{-- <div class="signinform text-center">
                             <h4>
                                 Don’t have an account?
                                 <a href="signup.html" class="hover-a">Sign Up</a>
@@ -102,7 +102,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="login-img">

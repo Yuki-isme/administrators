@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\ProductService;
 use Illuminate\Support\Facades\Redirect;
-
+use App\Http\Requests\Product\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -31,9 +31,9 @@ class ProductController extends Controller
         return view('admin.product.form', ['categories' => $categories, 'brands' => $brands]);
     }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        dd($request->catalog);
+
         $this->productService->store($request);
 
         return Redirect::route('products.index')->with('success', 'Created product successfully!');

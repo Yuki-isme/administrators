@@ -17,14 +17,19 @@ class CategoryRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function getCategories()
+    {
+        return $this->model->with('parent.parent.parent')->get();
+    }
+
     public function getAllCategories()
     {
-        return $this->model->with('thumbnail','child')->where('parent_id', 0)->get(); //lấy tất cả category có parent_id = 0
+        return $this->model->with('thumbnail','child.child.child')->where('parent_id', 0)->get(); //lấy tất cả category có parent_id = 0 kèm con
     }
 
     public function getAllSub()
     {
-        return $this->model->with('parent')->where('parent_id', '!=', 0)->get(); //lấy tất cả category có parent_id != 0
+        return $this->model->with('parent')->where('parent_id', '!=', 0)->get(); //lấy tất cả category có parent_id != 0 kèm cha
     }
 
     public function getCategoryById($id)

@@ -32,7 +32,6 @@ class CartService
             $cart[$id]['amount'] += $request->amount ?? 1;
         } else {
             $cart[$id] = [
-                'id' => $id,
                 'name' => $product->name,
                 'price' => $product->cart_price,
                 'amount' => $request->amount ?? 1,
@@ -53,7 +52,7 @@ class CartService
 
         unset($cart[$id]);
 
-        return session()->push('cart', $cart);
+        return session()->put('cart', $cart);
     }
 
     public function destroy()
@@ -70,8 +69,8 @@ class CartService
     {
 
         $total = 0;
-
-        if(session()->has('cart')){
+        //dd(session()->get('cart'));
+        if(session()->has('cart') && count(cart()->getContent()) > 0){
             $cart = session()->get('cart');
             foreach ($cart as $item) {
                 $total += $item['amount'] * $item['price'];
@@ -96,10 +95,10 @@ class CartService
         $products = [];
 
         if (session()->has('cart')) {
-            foreach (session()->get('cart') as $cart) {
-                $products[$cart['id']] = [
-                    'price' => $this->productRepository->getPriceProduct($cart['id']),
-                    'stock' => $this->productRepository->getStockProduct($cart['id']),
+            foreach (session()->get('cart') as $id => $cart) {
+                $products[$id] = [
+                    'price' => $this->productRepository->getPriceProduct($id),
+                    'stock' => $this->productRepository->getStockProduct($id),
                 ];
             }
         }

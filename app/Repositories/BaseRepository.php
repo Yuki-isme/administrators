@@ -38,4 +38,9 @@ class BaseRepository
     public function getModel($name){
         return $name::class;
     }
+
+    public function query()
+    {
+        return $this->model->query();
+    }
 }

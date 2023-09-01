@@ -19,21 +19,21 @@ class BrandController extends Controller
 
     public function index()
     {
-        //dd(Auth::guard('admin')->user());
-        $this->authorize('viewAny', Brand::class);
+        //$this->authorize('viewAny', Brand::class);
         $brands = $this->brandService->getAllBrands();
         return view('admin.brand.index', ['brands' => $brands]);
     }
 
     public function create()
     {
-        $this->authorize('create', Brand::class);
+        //$this->authorize('create', Brand::class);
 
         return view('admin.brand.form');
     }
 
     public function store(Request $request)
     {
+        //$this->authorize('create', Brand::class);
         $this->brandService->store($request);
 
         return Redirect::route('brands.index')->with('success', 'Created brand successfully!');
@@ -46,7 +46,7 @@ class BrandController extends Controller
 
     public function edit($id)
     {
-        $this->authorize('update', Brand::class);
+        //$this->authorize('update', Brand::class);
         $brand = $this->brandService->getBrandById($id);
 
         return view('admin.brand.form', ['brand' => $brand]);
@@ -54,6 +54,7 @@ class BrandController extends Controller
 
     public function update(Request $request, $id)
     {
+        //$this->authorize('update', Brand::class);
         if($request->ajax()){
             return $this->brandService->update($request, $id);
         }

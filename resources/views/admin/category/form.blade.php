@@ -29,7 +29,7 @@
             <div class="card">
                 <div class="card-body">
                     <form method="post"
-                        action="{{ isset($category) ? ( isset($sub) ? route('categories.sub_update', $category->id) : route('categories.update', $category->id) ) : ( isset($sub) ? route('categories.sub_store') : route('categories.store') ) }}"
+                        action="{{ isset($category) ? (isset($sub) ? route('categories.sub_update', $category->id) : route('categories.update', $category->id)) : (isset($sub) ? route('categories.sub_store') : route('categories.store')) }}"
                         enctype="multipart/form-data">
                         @csrf
                         @isset($category)
@@ -43,25 +43,32 @@
                                 </div>
                             </div>
                             @isset($sub)
-                            <div class="col-lg-3 col-sm-3 col-12">
-                                <div class="form-group">
-                                    <label>Parent Category</label>
-                                    <select name="parent_id" class="disabled-results form-control form-small">
-                                        <option value="0">No Parent</option>
+                                {{-- {{dd($parents)}} --}}
 
+                                <div class="col-lg-3 col-sm-3 col-12">
+                                    <div class="form-group">
+                                        <label>Parent Category</label>
+                                        <select name="parent_id" class="disabled-results form-control form-small">
                                             @foreach ($parents as $parent)
-                                                <option value="{{ $parent->id }}" {{ isset($category) && $category->parent_id == $parent->id ? 'Selected' : '' }} {{ $parent->is_active == 0 ? 'Disabled' : '' }}> {{ $parent->name }} </option>
+                                                @if (isset($category) && $category->id == $parent->id)
+                                                @else
+                                                    <option value="{{ $parent->id }}"
+                                                        {{ isset($category) && $category->parent_id == $parent->id ? 'Selected' : '' }}
+                                                        {{ $parent->is_active == 0 ? 'Disabled' : '' }}> {{ $parent->name }} :
+                                                        {{ isset($parent->parent->parent->parent) ? '4' : (isset($parent->parent->parent) ? '3' : (isset($parent->parent) ? '2' : '1')) }}
+                                                    </option>
+                                                @endif
                                             @endforeach
-
-                                    </select>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
                             @endisset
                             <div class="col-lg-1 col-sm-1 col-12">
                                 <div class="form-group">
                                     <label>Is Active</label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="is_active" role="switch" value="1"
+                                        <input class="form-check-input" type="checkbox" name="is_active" role="switch"
+                                            value="1"
                                             {{ isset($category) ? ($category->is_active == 1 ? 'checked' : '') : 'checked' }}>
                                     </div>
                                 </div>
@@ -78,9 +85,10 @@
                                         <label>Upload Image <a href="javascript:void(0)"
                                                 class="custom-file-container__image-clear" title="Clear Image">x</a></label>
                                         <label class="custom-file-container__custom-file">
-                                            <input name="thumbnail" type="file" class="custom-file-container__custom-file__custom-file-input"
+                                            <input name="thumbnail" type="file"
+                                                class="custom-file-container__custom-file__custom-file-input"
                                                 accept="image/*">
-                                            <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+
                                             <span class="custom-file-container__custom-file__custom-file-control"></span>
                                         </label>
                                         <div class="custom-file-container__image-preview"></div>
@@ -112,7 +120,8 @@
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <input type="submit" class="btn btn-submit me-2" value="Submit">
-                                    <a href="{{ isset($sub) ? route('categories.sub_index') : route('categories.index') }}" class="btn btn-cancel">Cancel</a>
+                                    <a href="{{ isset($sub) ? route('categories.sub_index') : route('categories.index') }}"
+                                        class="btn btn-cancel">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -133,5 +142,6 @@
                 $('#alert').hide();
             });
         });
+
     </script>
 @endpush

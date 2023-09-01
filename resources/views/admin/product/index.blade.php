@@ -121,7 +121,6 @@
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Status</th>
-                                    <th>Feature</th>
                                     <th>Create At</th>
                                     <th>Action</th>
                                 </tr>
@@ -161,17 +160,6 @@
                                                         data-bs-original-title="ion-close-round"></i>
                                                 @endif
                                             </a>
-                                        </td>
-                                        <td>
-                                            @if ($product->features)
-                                                <i class="ion-checkmark-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-checkmark-round"
-                                                    data-bs-original-title="ion-checkmark-round"></i>
-                                            @else
-                                                <i class="ion-close-round" data-bs-toggle="tooltip"
-                                                    aria-label="ion-close-round"
-                                                    data-bs-original-title="ion-close-round"></i>
-                                            @endif
                                         </td>
                                         <td>{{ $product->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>

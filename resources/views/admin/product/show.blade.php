@@ -14,12 +14,12 @@
                 <div class="col-lg-8 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="bar-code-view">
+                            {{-- <div class="bar-code-view">
                                 <img src="{{ asset('admin/assets/img/barcode1.png') }}" alt="barcode">
                                 <a class="printimg">
                                     <img src="{{ asset('admin/assets/img/icons/printer.svg') }}" alt="print">
                                 </a>
-                            </div>
+                            </div> --}}
                             <div class="productdetails">
                                 <ul class="product-bar">
                                     <li>
@@ -43,44 +43,28 @@
                                         <h6>{{ $product->brand->name }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Unit</h4>
-                                        <h6>Piece</h6>
-                                    </li>
-                                    <li>
                                         <h4>SKU</h4>
-                                        <h6>PT0001</h6>
+                                        <h6>{{ $product->sku}}</h6>
                                     </li>
                                     <li>
-                                        <h4>Minimum Qty</h4>
-                                        <h6>5</h6>
-                                    </li>
-                                    <li>
-                                        <h4>Quantity</h4>
-                                        <h6>50</h6>
-                                    </li>
-                                    <li>
-                                        <h4>Tax</h4>
-                                        <h6>0.00 %</h6>
-                                    </li>
-                                    <li>
-                                        <h4>Discount Type</h4>
-                                        <h6>Percentage</h6>
+                                        <h4>Stock</h4>
+                                        <h6>{{ $product->stock }}</h6>
                                     </li>
                                     <li>
                                         <h4>Price</h4>
-                                        <h6>1500.00</h6>
+                                        <h6>{{ $product->price }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Status</h4>
-                                        <h6>Active</h6>
+                                        <h4>Sale Price</h4>
+                                        <h6>{{ $product->sale_price }}</h6>
                                     </li>
                                     <li>
                                         <h4>Description</h4>
-                                        <h6>{{ $product->description }}</h6>
+                                        <h6>{!! $product->description !!}</h6>
                                     </li>
                                     <li>
                                         <h4>Content</h4>
-                                        <h6>{{ $product->content }}</h6>
+                                        <h6>{!! $product->content !!}</h6>
                                     </li>
                                 </ul>
                             </div>

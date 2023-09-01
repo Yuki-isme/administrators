@@ -24,6 +24,11 @@ class CategoryService
         $this->mediaRepository = $mediaRepository;
     }
 
+    public function getCategories()
+    {
+        return $this->categoryRepository->getCategories(); //lấy tất cả category có parent_id = 0
+    }
+
     public function getAllCategories()
     {
         return $this->categoryRepository->getAllCategories(); //lấy tất cả category có parent_id = 0
@@ -89,7 +94,7 @@ class CategoryService
                         'message' => 'Unable to disable active parent category containing active subcategories',
                         'is_active' => $category->is_active,
                     ]);
-                }else if($category->products){
+                } else if ($category->products) {
                     return response()->json([
                         'title' => 'Update Status',
                         'message' => 'Unable to disable categories containing products',
@@ -162,8 +167,8 @@ class CategoryService
             if (!$category) {
                 throw new \Exception('Category not found');
             }
-            dd($category->products);
-            if ($category->products) {
+
+            if ($category->products->count() > 0) {
                 throw new \Exception('Cannot delete category have products');
             }
 
@@ -189,27 +194,59 @@ class CategoryService
         return $this->categoryRepository->getAllSub();
     }
 
-    public function getChildrenByParent_id($request)
+    public function browseTrees($parent)
     {
-        if ($request->parent_id == 0) {
-            return response()->json([]);
+        $leafCategories = [];
+
+        if ($parent->child->isEmpty()) {
+            // Nếu không có con nào, trả về category hiện tại
+            $leafCategories[] = $parent;
+        } else {
+            // Nếu có con, lặp qua từng con và thực hiện đệ quy
+            foreach ($parent->child as $child) {
+                $leafCategories = array_merge($leafCategories, $this->browseTrees($child));
+            }
         }
 
-        $categories = $this->categoryRepository->getChildrenByParent_id($request->parent_id);
-
-        $childCategory = $categories->map(function ($category) {
-            $is_active = $category->is_active;
-            $disabled = $is_active ? '' : 'disabled'; // Thêm 'disabled' vào thẻ nếu $is_active == 0
-
-            return [
-                'id' => $category->id,
-                'text' => $category->name,
-                'is_active' => $category->is_active,
-                'disabled' => $disabled, // Thêm thuộc tính 'disabled' vào mảng nếu cần
-            ];
-        });
-
-        return response()->json($childCategory);
+        return $leafCategories;
     }
 
+    public function getChildrenByParent_id($request)
+    {
+        $term = $request->term;
+        $parent_id = $request->parent_id;
+
+        $parent = Category::find($parent_id);
+        $leafCategories = [];
+
+        if ($parent) {
+            $leafCategories = $this->browseTrees($parent);
+        }
+
+        // Lọc theo $term nếu có
+        if (!empty($term)) {
+            $leafCategories = collect($leafCategories)->filter(function ($category) use ($term) {
+                return stripos($category->name, $term) !== false;
+            })->toArray();
+        }
+
+        return response()->json($leafCategories);
+    }
+
+    public function getParentByChildren_id( $request)
+    {
+        $category = Category::find($request->childId);
+        $parentCategory = null;
+
+        while ($category) {
+            $parentCategory = $category;
+            $category = $category->parent;
+        }
+
+        if ($parentCategory) {
+            return response()->json($parentCategory);
+        }
+
+        return response()->json(null);
+    }
 }

@@ -11,7 +11,7 @@
                 </div>
                 <div class="page-btn">
                     <a href="
-                    {{-- {{ route('permissions.create')  }} --}}
+                    {{ route('permissions.create')  }}
                     " class="btn btn-added">
                         <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add Permission
                     </a>

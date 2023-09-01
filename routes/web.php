@@ -36,20 +36,26 @@ Route::post('auth', [UserAuthController::class, 'login'])->name('auth');
 Route::get('logout', [UserAuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => 'auth:web'], function () {
-    Route::get('myAccount', [UserAuthController::class, 'myAccount'])->name('myAccount');
+    Route::get('myAccount', [HomeController::class, 'myAccount'])->name('myAccount');
 });
 
 Route::get('/',[HomeController::class, 'index'])->name('index');
 Route::get('/product/{id}',[HomeController::class, 'productDetail'])->name('productDetail');
-Route::get('/list',[HomeController::class, 'productList'])->name('productList');
-Route::get('/grid',[HomeController::class, 'productGrid'])->name('productGrid');
+Route::get('/list',[HomeController::class, 'list'])->name('list');
+Route::get('/listbycategory/{id}',[HomeController::class, 'listByCategory'])->name('listByCategory');
+Route::get('/listbybrand/{id}',[HomeController::class, 'listByBrand'])->name('listByBrand');
 Route::get('/library', [HomeController::class, 'library'])->name('library');
 
 Route::get('/addToCart/{id}',[CartController::class, 'add'])->name('addToCart');
-Route::get('/deleteItem/{id}',[CartController::class, 'deleteItem'])->name('deleteItem');
+Route::delete('/deleteItem/{id}',[CartController::class, 'deleteItem'])->name('deleteItem');
 Route::get('/cart',[CartController::class, 'index'])->name('cart');
+
 Route::get('/order', [CheckoutController::class, 'order'])->name('order');
+Route::get('/districts', [CheckoutController::class, 'getDistricts'])->name('getDistricts');
+Route::get('/wards', [CheckoutController::class, 'getWards'])->name('getWards');
+Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
 Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
+Route::get('/success', [CheckoutController::class, 'success'])->name('success');
 
 Route::get('/vnpay',[PaymentController::class, 'vnPay'])->name('vnPay');
 Route::get('/vnpay_return',[PaymentController::class, 'vnPayReturn'])->name('vnPayReturn');

@@ -46,6 +46,8 @@ Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     Route::delete('/sub/{id}', [CategoryController::class, 'subDestroy'])->name('sub_destroy');
 
     Route::get('/children', [CategoryController::class, 'getChildrenByParent_id'])->name('get-children');
+    Route::get('/parent',  [CategoryController::class, 'getParentByChildren_id'])->name('get-parent');
+
 });
 
 Route::group(['prefix' => 'brands', 'as' => 'brands.'], function () {

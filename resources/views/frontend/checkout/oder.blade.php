@@ -13,7 +13,8 @@
                                     <p class="mb-0 text-wrap ">Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center flex-column flex-md-row">
-                                    <a href="#" class="btn btn-primary shadow-0 text-nowrap w-100">Sign in</a>
+                                    <a href="{{ route('login') }}" class="btn btn-primary shadow-0 text-nowrap w-100">Sign
+                                        in</a>
                                 </div>
                             </div>
                         </div>
@@ -22,168 +23,132 @@
                     <!-- Checkout -->
                     <div class="card shadow-0 border">
                         <div class="p-4">
-                            <h5 class="card-title mb-3">Guest checkout</h5>
-                            <div class="row">
-                                <div class="col-6 mb-3">
-                                    <p class="mb-0">First name</p>
-                                    <div class="form-outline">
-                                        <input type="text" id="typeText" placeholder="Type here" class="form-control"
-                                            value="{{ $user->name ?? '' }}" />
+                            <h5 class="card-title mb-3">Order Info</h5>
+                            <form action="{{ route("checkout") }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <p class="mb-0">Name</p>
+                                        <div class="form-outline">
+                                            <input type="text" id="typeText" placeholder="Type here"
+                                                class="form-control" name="name" value="{{ $user->name ?? '' }}" required/>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-6">
-                                    <p class="mb-0">Last name</p>
-                                    <div class="form-outline">
-                                        <input type="text" id="typeText" placeholder="Type here" class="form-control"
-                                            value="{{ $user->name ?? '' }}" />
+                                    <div class="col-6 mb-3">
+                                        <p class="mb-0">Phone</p>
+                                        <div class="form-outline">
+                                            <input type="tel" id="typePhone" name="phone_number"
+                                                value="{{ $user->phone ?? '' }}" class="form-control" required/>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-6 mb-3">
-                                    <p class="mb-0">Phone</p>
-                                    <div class="form-outline">
-                                        <input type="tel" id="typePhone" value="+48 " class="form-control"
-                                            value="999999999" />
-                                    </div>
-                                </div>
-
-                                <div class="col-6 mb-3">
-                                    <p class="mb-0">Email</p>
-                                    <div class="form-outline">
-                                        <input type="email" id="typeEmail" placeholder="example@gmail.com"
-                                            class="form-control" value="{{ $user->email ?? '' }}" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                <label class="form-check-label" for="flexCheckDefault">Keep me up to date on news</label>
-                            </div>
-
-                            <hr class="my-4" />
-
-                            <h5 class="card-title mb-3">Shipping info</h5>
-
-                            <div class="row mb-3">
-                                <div class="col-lg-4 mb-3">
-                                    <!-- Default checked radio -->
-                                    <div class="form-check h-100 border rounded-3">
-                                        <div class="p-3">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                id="flexRadioDefault1" checked />
-                                            <label class="form-check-label" for="flexRadioDefault1">
-                                                Express delivery <br />
-                                                <small class="text-muted">3-4 days via Fedex </small>
-                                            </label>
+                                    <div class="col-6 mb-3">
+                                        <p class="mb-0">Email</p>
+                                        <div class="form-outline">
+                                            <input type="email" id="typeEmail" placeholder="example@gmail.com"
+                                                class="form-control" name="email" value="{{ $user->email ?? '' }}" required/>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 mb-3">
-                                    <!-- Default radio -->
-                                    <div class="form-check h-100 border rounded-3">
-                                        <div class="p-3">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                id="flexRadioDefault2" />
-                                            <label class="form-check-label" for="flexRadioDefault2">
-                                                Post office <br />
-                                                <small class="text-muted">20-30 days via post </small>
-                                            </label>
+
+                                <hr class="my-4" />
+
+                                <h5 class="card-title mb-3">Payment Methods</h5>
+
+                                <div class="row mb-3">
+                                    <div class="col-lg-4 mb-3">
+                                        <!-- Default checked radio -->
+                                        <div class="form-check h-100 border rounded-3">
+                                            <div class="p-3">
+                                                <input class="form-check-input" type="radio" name="payment_method"
+                                                    id="paymentMethod1" value="1" checked />
+                                                <label class="form-check-label" for="paymentMethod1">
+                                                    Payment on delivery <br />
+                                                    <small class="text-muted">Call to confirm order </small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 mb-3">
+                                        <!-- Default radio -->
+                                        <div class="form-check h-100 border rounded-3">
+                                            <div class="p-3">
+                                                <input class="form-check-input" type="radio" name="payment_method"
+                                                    id="paymentMethod2" value="2" />
+                                                <label class="form-check-label" for="paymentMethod2">
+                                                    Pay via vnpay <br />
+                                                    <small class="text-muted">Instant order confirmation </small>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 mb-3">
-                                    <!-- Default radio -->
-                                    <div class="form-check h-100 border rounded-3">
-                                        <div class="p-3">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                                id="flexRadioDefault3" />
-                                            <label class="form-check-label" for="flexRadioDefault3">
-                                                Self pick-up <br />
-                                                <small class="text-muted">Come to our shop </small>
-                                            </label>
+
+                                <hr class="my-4" />
+
+                                <h5 class="card-title mb-3">Address</h5>
+
+                                <div class="row">
+
+                                    <div class="col-sm-4 mb-3">
+                                        <p class="mb-0">Province / City</p>
+                                        <select id="province_id" name="province_code" class="form-select select2" required>
+                                            @foreach ($provinces as $province)
+                                                <option value="{{ $province->code }}"
+                                                    {{ isset($user->info->province_code) && $user->info->province_code == $province->code ? 'selected' : '' }}>
+                                                    {{ $province->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-4 mb-3">
+                                        <p class="mb-0">District / Town</p>
+                                        <select id="district_id" name="district_code" class="form-select select2" required>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-4 mb-3">
+                                        <p class="mb-0">Commune / Ward</p>
+                                        <select id="ward_id" name="ward_code" class="form-select select2" required>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4 mb-3">
+                                        <p class="mb-0">House</p>
+                                        <div class="form-outline">
+                                            <input type="text" id="typeText" placeholder="Type here" name="house"
+                                                class="form-control" value="{{ $user->info->house ?? '' }}" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-6 mb-3">
+                                        <p class="mb-0">Street Name</p>
+                                        <div class="form-outline">
+                                            <input type="text" id="typeText" class="form-control" placeholder="Type here" name="street"
+                                                value="{{ $user->info->street ?? '' }}" required/>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                {{-- <div class="col-sm-8 mb-3">
-                                    <p class="mb-0">Address</p>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" value="1"
+                                        id="flexCheckDefault1" name="save"/>
+                                    <label class="form-check-label" for="flexCheckDefault1">Save this address</label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <p class="mb-0">Message to seller</p>
                                     <div class="form-outline">
-                                        <input type="text" id="typeText" placeholder="Type here" class="form-control" />
-                                    </div>
-                                </div> --}}
-
-                                <div class="col-sm-4 mb-3">
-                                    <p class="mb-0">Province / City</p>
-                                    <select class="form-select">
-                                        <option value="1">New York</option>
-                                        <option value="2">Moscow</option>
-                                        <option value="3">Samarqand</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-4 mb-3">
-                                    <p class="mb-0">District / Town</p>
-                                    <select class="form-select">
-                                        <option value="1">New York</option>
-                                        <option value="2">Moscow</option>
-                                        <option value="3">Samarqand</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-4 mb-3">
-                                    <p class="mb-0">Commune / Ward</p>
-                                    <select class="form-select">
-                                        <option value="1">New York</option>
-                                        <option value="2">Moscow</option>
-                                        <option value="3">Samarqand</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-4 mb-3">
-                                    <p class="mb-0">House</p>
-                                    <div class="form-outline">
-                                        <input type="text" id="typeText" placeholder="Type here"
-                                            class="form-control"
-                                            value="{{ isset($infor) ? $infor->house_number : '' }}" />
+                                        <textarea class="form-control" id="textAreaExample1" placeholder="Type here" rows="2" name="note" required>{{ $user->info->note ?? '' }}</textarea>
                                     </div>
                                 </div>
 
-                                <div class="col-sm-4 col-6 mb-3">
-                                    <p class="mb-0">Street Name</p>
-                                    <div class="form-outline">
-                                        <input type="text" id="typeText" class="form-control"
-                                            value="{{ isset($infor) ? $infor->street_name : '' }}" />
-                                    </div>
+                                <div class="float-end">
+                                    <a class="btn btn-light border" href="{{ route('cart') }}">Cancel</a>
+                                    <input class="btn btn-success shadow-0 border" type="submit" value="Place Order">
                                 </div>
-
-                                <div class="col-sm-4 col-6 mb-3">
-                                    <p class="mb-0">Zip</p>
-                                    <div class="form-outline">
-                                        <input type="text" id="typeText" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1" />
-                                <label class="form-check-label" for="flexCheckDefault1">Save this address</label>
-                            </div>
-
-                            <div class="mb-3">
-                                <p class="mb-0">Message to seller</p>
-                                <div class="form-outline">
-                                    <textarea class="form-control" id="textAreaExample1" rows="2">{{ isset($infor) ? $infor->note : '' }}</textarea>
-                                </div>
-                            </div>
-
-                            <div class="float-end">
-                                <button class="btn btn-light border">Cancel</button>
-                                <button class="btn btn-success shadow-0 border">Continue</button>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     <!-- Checkout -->
@@ -242,7 +207,7 @@
                                     </div>
                                 </div>
                             @endforeach
-                            @else
+                        @else
                             <div class="d-flex align-items-center mb-4">
                                 <div class="me-3 position-relative">
 
@@ -260,3 +225,83 @@
         </div>
     </section>
 @endsection
+
+@push('custom-script')
+    <script>
+        $(document).ready(function() {
+            $('select.select2').select2();
+
+            // Lấy mã quận/huyện từ bảng info (nếu có).
+            var userDistrictCode = '{{ isset($user->info->district_code) ? $user->info->district_code : '' }}';
+            var userDistrict = '{{ isset($user->info->district_code) ? $user->info->district->name : '' }}';
+
+            // Thiết lập Select2 cho quận/huyện
+            $('#district_id').select2({
+                ajax: {
+                    url: '{{ route('getDistricts') }}',
+                    data: function(params) {
+                        var query = {
+                            term: params.term,
+                            province_code: $('#province_id').val(),
+                            _token: '{{ csrf_token() }}'
+                        };
+
+                        return query;
+                    },
+                    dataType: 'json',
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.code,
+                                    text: item.name
+                                };
+                            })
+                        };
+                    }
+                }
+            });
+
+            // Thiết lập giá trị mặc định cho quận/huyện nếu có dữ liệu từ info.
+            if (userDistrictCode) {
+                $('#district_id').append('<option value="' + userDistrictCode + '">' + userDistrict + '</option>');
+            }
+
+            // Lấy mã xã/phường từ bảng info (nếu có).
+            var userWardCode = '{{ isset($user->info->ward_code) ? $user->info->ward_code : '' }}';
+            var userWard = '{{ isset($user->info->ward_code) ? $user->info->ward->name : '' }}';
+
+            // Thiết lập Select2 cho xã/phường
+            $('#ward_id').select2({
+                ajax: {
+                    url: '{{ route('getWards') }}',
+                    data: function(params) {
+                        var query = {
+                            term: params.term,
+                            district_code: $('#district_id').val(),
+                            _token: '{{ csrf_token() }}'
+                        };
+
+                        return query;
+                    },
+                    dataType: 'json',
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.code,
+                                    text: item.name
+                                };
+                            })
+                        };
+                    }
+                }
+            });
+
+            // Thiết lập giá trị mặc định cho xã/phường nếu có dữ liệu từ info.
+            if (userWardCode) {
+                $('#ward_id').append('<option value="' + userWardCode + '">' + userWard + '</option>');
+            }
+        });
+    </script>
+@endpush

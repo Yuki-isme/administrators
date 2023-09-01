@@ -5,7 +5,7 @@
             <div class="row gy-3">
                 <!-- Left elements -->
                 <div class="col-lg-2 col-sm-4 col-4">
-                    <a href="https://mdbootstrap.com/" class="float-start">
+                    <a href="{{ route('index') }}" class="float-start">
                         <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="35" />
                     </a>
                 </div>
@@ -16,24 +16,22 @@
                     <div class="d-flex float-end">
                         @if (Auth::guard('web')->check())
                             <a href="{{ route('myAccount') }}"
-                                class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
-                                    class="fas fa-user-alt m-1 me-md-2"></i>
+                                class="me-1 border rounded py-1 px-3 d-flex align-items-center">
+                                <i class="fas fa-user-alt m-1 me-md-2"></i>
                                 <p class="d-none d-md-block mb-0">{{ Auth::guard('web')->user()->name }}</p>
                             </a>
                         @else
                             <a href="{{ route('login') }}"
-                                class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
+                                class="me-1 border rounded py-1 px-3 d-flex align-items-center"> <i
                                     class="fas fa-user-alt m-1 me-md-2"></i>
                                 <p class="d-none d-md-block mb-0">Sign in</p>
                             </a>
                         @endif
-                        <a href="{{ route('myAccount') }}"
-                            class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
-                                class="fas fa-heart m-1 me-md-2"></i>
+                        <a href="{{ route('index') }}" class="me-1 border rounded py-1 px-3 d-flex align-items-center">
+                            <i class="fas fa-heart m-1 me-md-2"></i>
                             <p class="d-none d-md-block mb-0">Wishlist</p>
                         </a>
-                        <a href="{{ route('cart') }}"
-                            class="border rounded py-1 px-3 nav-link d-flex align-items-center"> <i
+                        <a href="{{ route('cart') }}" class="border rounded py-1 px-3 d-flex align-items-center"> <i
                                 class="fas fa-shopping-cart m-1 me-md-2"></i>
                             <p class="d-none d-md-block mb-0">My cart
                                 ({{ cart()->getContent() ? count(cart()->getContent()) : 0 }})</p>
@@ -77,46 +75,78 @@
                     <!-- Left links -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" aria-current="page" href="#">Home</a>
+                            <a class="nav-link text-dark" aria-current="page" href="{{ route('index') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">Categories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">Hot offers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">Gift boxes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">Projects</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">Menu item</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">Menu name</a>
+                            <a class="nav-link text-dark" aria-current="page" href="{{ route('list') }}">All
+                                Products</a>
                         </li>
                         <!-- Navbar dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown"
-                                role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                                Others
+                            <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button"
+                                data-mdb-toggle="dropdown" aria-expanded="false">
+                                Categories
                             </a>
                             <!-- Dropdown menu -->
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="#">Action</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Another action</a>
+                                {{-- <li>
+                                    <a class="dropdown-item" href="#">All Products</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider" />
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </li>
+                                </li> --}}
+                                @foreach ($categories as $category)
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{{ route('listByCategory', ['id' => $category->id]) }}">{{ $category->name }}</a>
+                                        <ul class="sub-menu">
+                                            @foreach ($category->child as $child)
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('listByCategory', ['id' => $child->id]) }}">{{ $child->name }}</a>
+                                                    @if (@isset($child->child))
+                                                        <ul class="sub-child-menu">
+                                                            @foreach ($child->child as $subChild)
+                                                                <li>
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ route('listByCategory', ['id' => $subChild->id]) }}">{{ $subChild->name }}</a>
+                                                                    @if (@isset($subChild->child))
+                                                                        <div class="sub-sub-child-container">
+                                                                            <ul class="sub-sub-child-menu">
+                                                                                @foreach ($subChild->child as $subSubChild)
+                                                                                    <li>
+                                                                                        <a class="dropdown-item"
+                                                                                            href="{{ route('listByCategory', ['id' => $subSubChild->id]) }}">{{ $subSubChild->name }}</a>
+                                                                                    </li>
+                                                                                @endforeach
+                                                                            </ul>
+                                                                        </div>
+                                                                    @endif
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown"
+                                role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                                Brands
+                            </a>
+                            <!-- Dropdown menu -->
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @foreach ($brands as $brand)
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{{ route('listByBrand', ['id' => $brand->id]) }}">{{ $brand->name }}</a>
+                                    </li>
+                                @endforeach
                             </ul>
                         </li>
                     </ul>
@@ -148,7 +178,10 @@
             </div>
         </div>
         <!-- Heading -->
-    @elseif(request()->routeIs('cart') || request()->routeIs('order') || request()->routeIs('payment'))
+    @elseif(request()->routeIs('cart') ||
+            request()->routeIs('order') ||
+            request()->routeIs('payment') ||
+            request()->routeIs('success'))
         <!-- Heading -->
         <div class="bg-primary">
             <div class="container py-4">
@@ -158,13 +191,17 @@
                         <a href="{{ route('index') }}" class="text-white-50">Home</a>
                         <span class="text-white-50 mx-2"> > </span>
                         <a href="{{ route('cart') }}"
-                            class="text-white{{ request()->routeIs('cart') ? '' : '-50' }}">{!! request()->routeIs('cart') ? '<u>2. Shopping cart</u>' : '2. Shopping cart' !!}</a>
-                        <span class="text-white-50 mx-2"> > </span>
-                        <a href="{{ route('order') }}"
-                            class="text-white{{ request()->routeIs('order') ? '' : '-50' }}">{!! request()->routeIs('order') ? '<u>3. Order info</u>' : '3. Order info' !!}</a>
-                        <span class="text-white-50 mx-2"> > </span>
-                        <a href="{{ route('payment') }}"
-                            class="text-white{{ request()->routeIs('payment') ? '' : '-50' }}">{!! request()->routeIs('payment') ? '<u>4. Payment</u>' : '4. Payment' !!}</a>
+                            class="text-white{{ request()->routeIs('cart') ? '' : '-50' }}">{!! request()->routeIs('cart') ? '<u>Shopping cart</u>' : 'Shopping cart' !!}</a>
+                        @if (request()->routeIs('order') || request()->routeIs('success'))
+                            <span class="text-white-50 mx-2"> > </span>
+                            <a href="{{ route('order') }}"
+                                class="text-white{{ request()->routeIs('order') ? '' : '-50' }}">{!! request()->routeIs('order') ? '<u>Order info</u>' : 'Order info' !!}</a>
+                            @if (request()->routeIs('success'))
+                                <span class="text-white-50 mx-2"> > </span>
+                                <a
+                                class="text-white{{ request()->routeIs('success') ? '' : '-50' }}">{!! request()->routeIs('success') ? '<u>Success</u>' : 'Success' !!}</a>
+                            @endif
+                        @endif
                     </h6>
                 </nav>
                 <!-- Breadcrumb -->
@@ -172,7 +209,8 @@
         </div>
         <!-- Heading -->
     @elseif(request()->routeIs('myAccount'))
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary custom-nav current-page">
             <!-- Container wrapper -->
             <div class="container justify-content-center justify-content-md-between">
                 <!-- Toggle button -->
@@ -187,13 +225,17 @@
                     <!-- Left links -->
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
+                            <a class="nav-link" id="home" href="{{ route('index') }}">Home</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#profile-section">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#all-orders-section">All Orders</a>
+                            <a class="nav-link" data-bs-toggle="tab" href="#all-orders-section">All
+                                Orders</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#shipped-orders-section">Shipped
+                            <a class="nav-link" data-bs-toggle="tab" href="#shipping-orders-section">Shipping
                                 Orders</a>
                         </li>
                         <li class="nav-item">
@@ -205,7 +247,7 @@
                                 Orders</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="logout-link" href="https://www.youtube.com/">Logout</a>
+                            <a class="nav-link" id="logout" href="{{ route('index') }}">Logout</a>
                         </li>
                     </ul>
                     <!-- Left links -->
@@ -213,6 +255,23 @@
             </div>
             <!-- Container wrapper -->
         </nav>
+        <!-- Navbar -->
+    @elseif(request()->routeIs('listByCategory') || request()->routeIs('listByBrand') || request()->routeIs('list'))
+        <!-- Heading -->
+        <div class="bg-primary mb-4">
+            <div class="container py-4">
+                <h3 class="text-white mt-2">{{ request()->routeIs('list') ? 'All Product' : (request()->routeIs('listByCategory') ? $category->name : (request()->routeIs('listByBrand') ? $brand->name : 'Product')) }}</h3>
+                <!-- Breadcrumb -->
+                <nav class="d-flex mb-2">
+                    <h6 class="mb-0">
+                        <a href="" class="text-white-50">Home</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="" class="text-white"><u>Library</u></a>
+                    </h6>
+                </nav>
+                <!-- Breadcrumb -->
+            </div>
+        </div>
+        <!-- Heading -->
     @endif
-
 </header>

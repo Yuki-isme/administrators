@@ -65,10 +65,12 @@ class ProductService
     {
         try {
             DB::beginTransaction();
+
             $product = $this->productRepository->create([
                 'name' => $request->name,
-                'price' => $request->price,
-                'stock' => $request->stock,
+                'price' => $request->price ?? 0,
+                'sale_price' => $request->sale_price ?? 0,
+                'stock' => $request->stock ?? 0,
                 'sku' => $request->sku,
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,
@@ -174,8 +176,9 @@ class ProductService
 
             $product = $this->productRepository->update($id, [
                 'name' => $request->name,
-                'price' => $request->price,
-                'stock' => $request->stock,
+                'price' => $request->price ?? 0,
+                'sale_price' => $request->sale_price ?? 0,
+                'stock' => $request->stock ?? 0,
                 'sku' => $request->sku,
                 'slug' => Str::slug($request->name),
                 'description' => $request->description,
@@ -272,12 +275,16 @@ class ProductService
                 ]);
             }
 
+            if (isset($request->catalog_update)) {
+                foreach ($product->media as $item) {
+                    if (!in_array($item->id, $request->catalog_update)) {
+                        Storage::disk('public')->delete($item->url);
+                        $this->mediaRepository->delete($item->id);
+                    }
+                }
+            }
 
             if (isset($request->catalog)) {
-                foreach ($product->media as $item) {
-                    Storage::disk('public')->delete($item->url);
-                }
-                $this->mediaRepository->deleteMediaByProductIDAndType($product->id, 'catalog');
                 foreach ($request->catalog as $item) {
                     $imageName = Carbon::now()->format('Y-m-d-H-i-s') . '-' . $item->getClientOriginalName();
                     $url = $item->storeAs('catalog', $imageName, 'public');
@@ -291,6 +298,7 @@ class ProductService
                     ]);
                 }
             }
+
 
             DB::commit();
         } catch (\Exception $e) {

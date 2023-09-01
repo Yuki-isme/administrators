@@ -19,7 +19,7 @@
                                                     <img src="{{ asset('storage/' . $item['img']) }}"
                                                         class="border rounded me-3" style="width: 96px; height: 96px" />
                                                     <div class="">
-                                                        <a href="#" class="nav-link">{{ $item['name'] . $id}}</a>
+                                                        <a href="#" class="nav-link">{{ $item['name']}}</a>
                                                         <p class="text-muted">Yellow, Jeans</p>
                                                     </div>
                                                 </div>
@@ -30,7 +30,7 @@
                                             <div class="">
                                                 <select style="width: 100px" class="form-select me-4"
                                                     value={{ $item['amount'] }}>
-                                                    @for ($i = 1; $i <= $products[$item['id']]['stock']; $i++)
+                                                    @for ($i = 1; $i <= $products[$id]['stock']; $i++)
                                                         <option {{ $i == $item['amount'] ? 'Selected' : '' }}>
                                                             {{ $i }}</option>
                                                     @endfor
@@ -40,7 +40,7 @@
                                                 <span class="h6">{{ $item['price'] * $item['amount'] }} VND</span>
                                                 <br />
                                                 <small class="text-muted text-nowrap">
-                                                    {{ $products[$item['id']]['price'] }} VND / per item
+                                                    {{ $products[$id]['price'] }} VND / per item
                                                 </small>
                                             </div>
                                         </div>
@@ -48,7 +48,7 @@
                                             class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
                                             <div class="float-md-end">
 
-                                                <form action = "{{ route('deleteItem', ['id'=>$item['id']]) }}" method="POST">
+                                                <form action = "{{ route('deleteItem', ['id'=>$id]) }}" method="POST">
                                                     <a href="#!" class="btn btn-light border px-2 icon-hover-primary"><i
                                                         class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
                                                     @csrf

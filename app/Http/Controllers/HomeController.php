@@ -17,8 +17,10 @@ class HomeController extends Controller
     public function index($limit = 8)
     {
         $newProducts = $this->homeService->getNewProducts($limit);
+        $categories = $this->homeService->getCategory();
+        $brands = $this->homeService->getBrand();
 
-        return view('frontend.home.index', ['newProducts' => $newProducts]);
+        return view('frontend.home.index', ['newProducts' => $newProducts, 'categories' => $categories, 'brands' => $brands]);
     }
 
     public function productDetail($id)
@@ -28,13 +30,25 @@ class HomeController extends Controller
         return view('frontend.product.detail', ['productDetail' => $productDetail]);
     }
 
-    public function productList()
+    public function list()
+    {
+        $products = $this->homeService->getProducts();
+
+        return view('frontend.product.list', ['products' => $products]);
+    }
+
+    public function listByCategory($id)
     {
         return view('frontend.product.list');
     }
 
-    public function productGrid()
+    public function listByBrand($id)
     {
-        return view('frontend.product.grid');
+        return view('frontend.product.list');
+    }
+
+    public function myAccount()
+    {
+        return view('frontend.user.account');
     }
 }

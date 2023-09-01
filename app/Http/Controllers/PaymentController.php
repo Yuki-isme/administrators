@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Order;
+use App\Mail\OrderSuccessMail;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -28,7 +32,7 @@ class PaymentController extends Controller
             "vnp_Locale" => $vnp_Locale,
             "vnp_OrderInfo" => "Thanh toan GD:" . $vnp_TxnRef,
             "vnp_OrderType" => "other",
-            "vnp_ReturnUrl" => route('vnPayReturn'),
+            "vnp_ReturnUrl" => route('vnPayReturn', ['oder_id' => $request->oder_id]),
             "vnp_TxnRef" => $vnp_TxnRef,
             "vnp_ExpireDate" => Carbon::now()->addMinutes(30)->format('YmdHis')
         );
@@ -53,7 +57,7 @@ class PaymentController extends Controller
 
         $vnp_Url = $vnp_Url . "?" . $query;
         if (isset($vnp_HashSecret)) {
-            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         header('Location: ' . $vnp_Url);
@@ -62,9 +66,25 @@ class PaymentController extends Controller
 
     public function vnPayReturn(Request $request)
     {
-        if($request->vnp_TransationStatus == 00){
-            return redirect()->route('checkout_success');
+        if ($request->vnp_TransationStatus == '00') {
+            $order = Order::with('items', 'province', 'district', 'ward')->find($request->oder_id);
+
+            try {
+                DB::beginTransaction();
+                $order->update([
+                    'payment_method' => 'Pay via VNPAY',
+                    'status' => 'Place order success',
+                ]);
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollback();
+            }
+
+            Mail::to($order->email)
+                ->queue(new OrderSuccessMail($order));
+
+            return view('frontend.checkout.success');
         }
-        return redirect()->route('checkout_failed');
-    } 
+        return view('frontend.checkout.failed');
+    }
 }

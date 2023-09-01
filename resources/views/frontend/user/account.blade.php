@@ -1,7 +1,7 @@
 @extends('frontend.layout.layout')
 
 @section('content')
-    <section class="bg-light py-5">
+    <section class="bg-light">
         <div class="container mt-5">
             <div class="tab-content">
                 <div id="profile-section" class="tab-pane fade show active">
@@ -13,12 +13,12 @@
                                     <form>
                                         <!-- Profile form fields -->
                                         <div class="form-outline mb-4">
-                                            <input type="text" id="name" class="form-control" />
+                                            <input type="text" id="name" class="form-control" value="{{ Auth::guard('web')->user()->name }}"/>
                                             <label class="form-label" for="name">Name</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input type="email" id="email" class="form-control" />
+                                            <input type="email" id="email" class="form-control" value="{{ Auth::guard('web')->user()->email }}" readonly/>
                                             <label class="form-label" for="email">Email</label>
                                         </div>
 
@@ -155,15 +155,15 @@
                     </div>
                 </div>
 
-                <div id="shipped-orders-section" class="tab-pane fade">
+                <div id="shipping-orders-section" class="tab-pane fade">
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Shipped Orders</h5>
+                                    <h5 class="card-title">Shipping Orders</h5>
                                     <form>
-                                        <!-- Shipped Orders form fields -->
-                                        Shipped Orders
+                                        <!-- Shipping Orders form fields -->
+                                        Shipping Orders
                                     </form>
                                 </div>
                             </div>
@@ -206,3 +206,32 @@
         </div>
     </section>
 @endsection
+
+@push('custom-script')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("a.nav-link").click(function(e) {
+                e.preventDefault();
+
+                // Kiểm tra nếu liên kết được nhấp là "Logout"
+                if ($(this).attr("id") === "logout" || $(this).attr("id") === "home") {
+                    window.location.href =$(this).attr("href") ;
+                } else {
+                    var targetSection = $(this).attr("href");
+
+                    // Loại bỏ lớp 'active' khỏi tất cả các liên kết
+                    $("a.nav-link").removeClass("active");
+
+                    // Thêm lớp 'active' cho liên kết được nhấp
+                    $(this).addClass("active");
+
+                    // Loại bỏ lớp 'show active' khỏi tất cả các tab-pane
+                    $(".tab-pane").removeClass("show active");
+
+                    // Hiển thị tab-pane tương ứng và cập nhật màu chữ
+                    $(targetSection).addClass("show active");
+                }
+            });
+        });
+    </script>
+@endpush

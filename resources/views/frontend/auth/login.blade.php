@@ -15,6 +15,26 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/mdb.min.css') }}" />
     <!-- Custom styles -->
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}" />
+
+    <style>
+        .alert {
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .close-alert {
+            border: none;
+            background-color: transparent;
+            color: inherit;
+            font-size: 1.5rem;
+            position: absolute;
+            top: 50%;
+            right: 1000;
+            transform: translateY(-50%);
+        }
+    </style>
 </head>
 
 <body>
@@ -44,24 +64,21 @@
                                         <form action="{{ route('auth') }}" method="POST">
                                             @csrf
                                             <div class="form-outline mb-4">
-                                                <input name="email" type="email" id="form1Example1"
-                                                    class="form-control" />
-                                                <label class="form-label" for="form1Example1">Email address</label>
+                                                <input name="username" type="text" id="form1Example1"
+                                                    class="form-control" required />
+                                                <label class="form-label" for="form1Example1">User name</label>
                                             </div>
 
                                             <div class="form-outline mb-4">
                                                 <input name="password" type="password" id="form1Example2"
-                                                    class="form-control" />
+                                                    class="form-control" required />
                                                 <label class="form-label" for="form1Example2">Password</label>
                                             </div>
                                             @if ($errors->has('login'))
                                                 <div class="alert alert-danger" id="alert"
                                                     style="position: relative;">
-                                                    <ul>
-                                                        @foreach ($errors->get('login') as $error)
-                                                            <li>{{ $error }}</li>
-                                                        @endforeach
-                                                    </ul>
+                                                    <p class="close-alert" style="font-size: 14px">
+                                                        {{ $errors->first('login') }}</p>
                                                     <button type="button" class="close-alert" id="close-alert"
                                                         style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
                                                         <span aria-hidden="true">&times;</span>
@@ -124,6 +141,13 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
+
+            $('#close-alert').on('click', function() {
+                $('#alert').hide();
+            });
+        });
+        
+        $(document).ready(function() {
             // Bắt sự kiện khi nhấp vào tab Sign In
             $("#signin-tab").click(function(e) {
                 e.preventDefault();
@@ -136,26 +160,6 @@
                 e.preventDefault();
                 $("#signup-form").addClass("show active");
                 $("#signin-form").removeClass("show active");
-            });
-        });
-
-        $(document).ready(function() {
-            $("a.nav-link").click(function(e) {
-                e.preventDefault();
-
-                if ($(this).text() === "Logout") {
-                    window.location.href = "https://www.youtube.com/";
-                } else {
-                    var targetSection = $(this).attr("href");
-
-                    // Ẩn tất cả các mục điều hướng
-                    $("a.nav-link").removeClass("show active");
-                    $(".tab-pane").removeClass("show active");
-
-                    // Hiển thị mục điều hướng và phần tương ứng được nhấp
-                    $(this).addClass("show active");
-                    $(targetSection).addClass("show active");
-                }
             });
         });
     </script>

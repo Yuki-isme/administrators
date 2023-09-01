@@ -7,6 +7,7 @@ use App\Services\CategoryService;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
+use App\Http\Requests\Category\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -19,7 +20,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $this->authorize('viewAny', [Category::class, Auth::guard('admin')->user()]);
+        //$this->authorize('viewAny', [Category::class, Auth::guard('admin')->user()]);
         $categories = $this->categoryService->getAllCategories();
 
         return view('admin.category.index', ['categories' => $categories]);
@@ -30,7 +31,7 @@ class CategoryController extends Controller
         return view('admin.category.form');
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         $this->categoryService->store($request);
 
@@ -51,7 +52,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, string $id)
     {
-        if($request->ajax()){
+        if ($request->ajax()) {
             return $this->categoryService->update($request, $id);
         }
         $this->categoryService->update($request, $id);
@@ -76,7 +77,7 @@ class CategoryController extends Controller
 
     public function subCreate()
     {
-        $parents = $this->categoryService->getAllCategories();
+        $parents = $this->categoryService->getCategories();
 
         return view('admin.category.form', ['parents' => $parents, 'sub' => 'sub']);
     }
@@ -90,14 +91,14 @@ class CategoryController extends Controller
     public function subEdit($id)
     {
         $category = $this->categoryService->getCategoryById($id);
-        $parents = $this->categoryService->getAllCategories();
+        $parents = $this->categoryService->getCategories();
 
         return view('admin.category.form', ['category' => $category, 'parents' => $parents, 'sub' => 'sub']);
     }
 
     public function subUpdate(Request $request, $id)
     {
-        if($request->ajax()){
+        if ($request->ajax()) {
             return $this->categoryService->update($request, $id);
         }
         $this->categoryService->update($request, $id);
@@ -112,5 +113,25 @@ class CategoryController extends Controller
     public function getChildrenByParent_id(Request $request)
     {
         return $this->categoryService->getChildrenByParent_id($request);
+    }
+
+    public function getParentByChildren_id(Request $request)
+    {
+
+        return $this->categoryService->getParentByChildren_id($request);
+
+        $category = Category::find($request->childId);
+        $parentCategory = null;
+
+        while ($category) {
+            $parentCategory = $category;
+            $category = $category->parent;
+        }
+
+        if ($parentCategory) {
+            return response()->json($parentCategory);
+        }
+
+        return response()->json(null);
     }
 }

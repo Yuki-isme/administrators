@@ -190,7 +190,7 @@
                 style="aspect-ratio: 1 / 1" />
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ $newProduct->name }}</h5>
-                <p class="card-text">{{ $newProduct->price }} VND</p>
+                <p class="card-text">{{ $newProduct->cart_price }} VND</p>
                 <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
               </a>
                   <a href="{{ route('addToCart', ['id' => $newProduct->id]) }}" class="btn btn-primary shadow-0 me-1">Add to cart</a>

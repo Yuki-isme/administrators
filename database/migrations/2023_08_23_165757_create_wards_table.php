@@ -20,12 +20,9 @@ return new class extends Migration
             $table->string('code_name')->nullable();
             $table->string('district_code', 20)->nullable();
             $table->unsignedBigInteger('administrative_unit_id')->nullable();
-            // Thêm các trường khác theo yêu cầu
-
-            $table->timestamps();
-
             $table->foreign('administrative_unit_id')->references('id')->on('administrative_unit');
             $table->foreign('district_code')->references('code')->on('districts');
+            $table->timestamps();
         });
     }
 
