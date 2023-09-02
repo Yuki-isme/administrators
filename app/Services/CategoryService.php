@@ -26,12 +26,12 @@ class CategoryService
 
     public function getCategories()
     {
-        return $this->categoryRepository->getCategories(); //lấy tất cả category có parent_id = 0
+        return $this->categoryRepository->getCategories();
     }
 
     public function getAllCategories()
     {
-        return $this->categoryRepository->getAllCategories(); //lấy tất cả category có parent_id = 0
+        return $this->categoryRepository->getAllCategories();
     }
 
     public function store($request)

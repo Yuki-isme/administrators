@@ -3,116 +3,56 @@
     height: 100vh;
 }
 
-.text-product{
+.text-product {
     color: black;
 }
 
-/* Ẩn tất cả các danh sách con ban đầu */
-.sub-menu,
-.sub-child-menu,
-.sub-sub-child-menu {
-    display: none;
-}
 
-/* Hiển thị danh sách con của category khi hover vào mục chính */
-.dropdown-menu li:hover .sub-menu {
-    display: block;
-}
-
-/* Hiển thị danh sách con của child khi hover vào child */
-.dropdown-menu li ul li:hover .sub-child-menu {
-    display: block;
-}
-
-/* Hiển thị danh sách con của subChild khi hover vào subChild */
-.dropdown-menu li ul li ul li:hover .sub-sub-child-menu {
-    display: block;
-}
-
-/* Định dạng danh sách con */
-.sub-menu,
-.sub-child-menu,
-.sub-sub-child-menu {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    background-color: #FFFFFF; /* Màu nền cho danh sách con */
-    border: 1px solid #ccc; /* Viền cho danh sách con */
-    padding: 10px; /* Khoảng cách bên trong danh sách con */
-    z-index: 1; /* Để đảm bảo danh sách con hiển thị trên các phần tử khác */
-    border-radius: 10px; /* Bo tròn viền của danh sách con */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Làm mờ viền của danh sách con */
-}
-
-/* Định dạng các mục trong danh sách con */
-.sub-menu li,
-.sub-child-menu li,
-.sub-sub-child-menu li {
-    display: block;
-    margin: 5px 0;
-}
-
-/* Định dạng các liên kết trong danh sách con */
-.sub-menu li a,
-.sub-child-menu li a,
-.sub-sub-child-menu li a {
-    color: #333; /* Màu văn bản cho các liên kết */
-    text-decoration: none;
-    display: block; /* Biến đổi thành phần block để có thể thêm chiều rộng (width) */
-    width: 100%; /* Thiết lập chiều rộng là 100% */
-    padding: 10px 15px; /* 10px cho padding trên/dưới, 15px cho padding trái/phải */
-}
-
-/* Đổi màu chữ khi hover vào các liên kết trong danh sách con */
-.sub-menu li a:hover,
-.sub-child-menu li a:hover,
-.sub-sub-child-menu li a:hover {
-    color: inherit; /* Kế thừa màu văn bản của cha khi hover */
-}
-
-.dropdown-menu ul  {
-    padding: 0;
-    margin: 0;
-}
-.dropdown-menu a {
-    padding: 10px 15px; /* 10px cho padding trên/dưới, 15px cho padding trái/phải */
-}
 
 .custom-nav {
     box-shadow: none;
 }
 
 .current-page .nav-link {
-    color: #fff !important; /* Màu trắng và !important để ghi đè lên các giá trị màu khác */
+    color: #fff !important;
+    /* Màu trắng và !important để ghi đè lên các giá trị màu khác */
 }
 
 .current-page .nav-link.active {
-    color: #000 !important; /* Màu đen và !important để ghi đè lên giá trị màu khác */
+    color: #000 !important;
+    /* Màu đen và !important để ghi đè lên giá trị màu khác */
 }
 
 /* CSS */
 
 .main-img {
-    max-height: 600px; /* Đặt chiều cao tối đa cho div */
+    max-height: 600px;
+    /* Đặt chiều cao tối đa cho div */
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Ẩn phần nào của ảnh vượt quá khung của div */
+    overflow: hidden;
+    /* Ẩn phần nào của ảnh vượt quá khung của div */
 }
 
 .img-feature {
-    max-width: 100%; /* Đảm bảo ảnh không vượt quá chiều rộng của div */
-    height: 100%; /* Đảm bảo ảnh chiếm hết chiều cao của div */
-    object-fit: contain; /* Đảm bảo ảnh thu nhỏ để vừa khung mà không làm mất đi phần nào của nó */
+    max-width: 100%;
+    /* Đảm bảo ảnh không vượt quá chiều rộng của div */
+    height: 100%;
+    /* Đảm bảo ảnh chiếm hết chiều cao của div */
+    object-fit: contain;
+    /* Đảm bảo ảnh thu nhỏ để vừa khung mà không làm mất đi phần nào của nó */
 }
 
 .thumbnail {
-    border: 2px solid transparent; /* Viền mặc định là trong suốt */
+    border: 2px solid transparent;
+    /* Viền mặc định là trong suốt */
 }
 
 /* Lớp CSS cho ảnh được chọn */
 .thumbnail.selected {
-    border-color: black; /* Đổi màu viền thành đen khi ảnh được chọn */
+    border-color: black;
+    /* Đổi màu viền thành đen khi ảnh được chọn */
 }
 
 .no-spin::-webkit-inner-spin-button,
@@ -122,3 +62,61 @@
     margin: 0;
 }
 
+
+
+.custom-nav-list {
+    position: relative;
+}
+
+.custom-nav-list ul ul {
+    background-color: white;
+}
+
+.custom-nav-list li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.custom-nav-list li ul {
+    visibility: hidden;
+    opacity: 0;
+    min-width: 150px;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transition: all .3s;
+}
+
+.custom-nav-list li:hover > ul {
+    top: 0;
+    visibility: visible;
+    opacity: 1;
+}
+
+.custom-nav-list ul li ul {
+    padding: 0;
+}
+
+.custom-nav-list ul li ul li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.custom-nav-list ul ul {
+    background-color: white;
+    border-radius: 4px; /* Bo tròn bốn góc */
+}
+
+.custom-nav-list ul li ul {
+    padding: 0;
+    border-radius: 4px; /* Bo tròn bốn góc */
+}
+
+.custom-nav-list ul li ul li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}

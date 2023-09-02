@@ -43,4 +43,14 @@ class HomeService
     {
         return $this->productRepository->getProducts();
     }
+
+    public function getCategories()
+    {
+        return $this->categoryRepository->getListCategories();
+    }
+
+    public function getBrands()
+    {
+        return $this->brandRepository->getAllBrands();
+    }
 }

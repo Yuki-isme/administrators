@@ -82,10 +82,10 @@ class CategoryController extends Controller
         return view('admin.category.form', ['parents' => $parents, 'sub' => 'sub']);
     }
 
-    public function subStore(Request $request)
+    public function subStore(CategoryRequest $request)
     {
         $this->categoryService->store($request);
-        return Redirect::route('categories.sub_index')->with('success', 'Updated sub category successfully!');
+        return Redirect::route('categories.sub_index')->with('success', 'Created sub category successfully!');
     }
 
     public function subEdit($id)

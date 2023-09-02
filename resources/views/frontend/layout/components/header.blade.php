@@ -6,7 +6,7 @@
                 <!-- Left elements -->
                 <div class="col-lg-2 col-sm-4 col-4">
                     <a href="{{ route('index') }}" class="float-start">
-                        <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="35" />
+                        <img src="{{ asset('frontend/img/mdb-transaprent-noshadows.png') }}" height="35" />
                     </a>
                 </div>
                 <!-- Left elements -->
@@ -88,31 +88,25 @@
                                 Categories
                             </a>
                             <!-- Dropdown menu -->
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {{-- <li>
-                                    <a class="dropdown-item" href="#">All Products</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider" />
-                                </li> --}}
-                                @foreach ($categories as $category)
-                                    <li>
-                                        <a class="dropdown-item"
-                                            href="{{ route('listByCategory', ['id' => $category->id]) }}">{{ $category->name }}</a>
-                                        <ul class="sub-menu">
-                                            @foreach ($category->child as $child)
-                                                <li>
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('listByCategory', ['id' => $child->id]) }}">{{ $child->name }}</a>
-                                                    @if (@isset($child->child))
-                                                        <ul class="sub-child-menu">
-                                                            @foreach ($child->child as $subChild)
-                                                                <li>
-                                                                    <a class="dropdown-item"
-                                                                        href="{{ route('listByCategory', ['id' => $subChild->id]) }}">{{ $subChild->name }}</a>
-                                                                    @if (@isset($subChild->child))
-                                                                        <div class="sub-sub-child-container">
-                                                                            <ul class="sub-sub-child-menu">
+                            <nav class="custom-nav-list">
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    @foreach ($categories as $category)
+                                        <li>
+                                            <a class="dropdown-item"
+                                                href="{{ route('listByCategory', ['id' => $category->id]) }}">{{ $category->name }}</a>
+                                            <ul>
+                                                @foreach ($category->child as $child)
+                                                    <li>
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('listByCategory', ['id' => $child->id]) }}">{{ $child->name }}</a>
+                                                        @if (@isset($child->child))
+                                                            <ul>
+                                                                @foreach ($child->child as $subChild)
+                                                                    <li>
+                                                                        <a class="dropdown-item"
+                                                                            href="{{ route('listByCategory', ['id' => $subChild->id]) }}">{{ $subChild->name }}</a>
+                                                                        @if (@isset($subChild->child))
+                                                                            <ul>
                                                                                 @foreach ($subChild->child as $subSubChild)
                                                                                     <li>
                                                                                         <a class="dropdown-item"
@@ -120,20 +114,19 @@
                                                                                     </li>
                                                                                 @endforeach
                                                                             </ul>
-                                                                        </div>
-                                                                    @endif
-                                                                </li>
-                                                            @endforeach
-                                                        </ul>
-                                                    @endif
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </li>
-                                @endforeach
-                            </ul>
+                                                                        @endif
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endif
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </nav>
                         </li>
-
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown"
                                 role="button" data-mdb-toggle="dropdown" aria-expanded="false">
@@ -199,7 +192,7 @@
                             @if (request()->routeIs('success'))
                                 <span class="text-white-50 mx-2"> > </span>
                                 <a
-                                class="text-white{{ request()->routeIs('success') ? '' : '-50' }}">{!! request()->routeIs('success') ? '<u>Success</u>' : 'Success' !!}</a>
+                                    class="text-white{{ request()->routeIs('success') ? '' : '-50' }}">{!! request()->routeIs('success') ? '<u>Success</u>' : 'Success' !!}</a>
                             @endif
                         @endif
                     </h6>
@@ -260,11 +253,13 @@
         <!-- Heading -->
         <div class="bg-primary mb-4">
             <div class="container py-4">
-                <h3 class="text-white mt-2">{{ request()->routeIs('list') ? 'All Product' : (request()->routeIs('listByCategory') ? $category->name : (request()->routeIs('listByBrand') ? $brand->name : 'Product')) }}</h3>
+                <h3 class="text-white mt-2">
+                    {{ request()->routeIs('list') ? 'All Product' : (request()->routeIs('listByCategory') ? $category->name : (request()->routeIs('listByBrand') ? $brand->name : 'Product')) }}
+                </h3>
                 <!-- Breadcrumb -->
                 <nav class="d-flex mb-2">
                     <h6 class="mb-0">
-                        <a href="" class="text-white-50">Home</a>
+                        <a href="{{ route('index') }}" class="text-white-50">Home</a>
                         <span class="text-white-50 mx-2"> > </span>
                         <a href="" class="text-white"><u>Library</u></a>
                     </h6>

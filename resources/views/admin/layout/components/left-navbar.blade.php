@@ -52,8 +52,8 @@
                             alt="img"><span>
                             Tag</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('brands.index') }}" class="{{ request()->routeIs('brands.index') ? 'show active' : '' }}">Tag List</a></li>
-                        <li><a href="{{ route('brands.create') }}" class="{{ request()->routeIs('brands.create') ? 'show active' : '' }}">Add Tag</a></li>
+                        <li><a>Tag List</a></li>
+                        <li><a>Add Tag</a></li>
                     </ul>
                 </li>
                 {{-- <li class="submenu">

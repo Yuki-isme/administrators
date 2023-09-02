@@ -16,7 +16,7 @@
                     <!-- Collapsible wrapper -->
                     <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
                         <div class="accordion" id="accordionPanelsStayOpenExample">
-                            <div class="accordion-item">
+                            {{-- <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingOne">
                                     <button class="accordion-button text-dark bg-light" type="button"
                                         data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseOne"
@@ -39,6 +39,39 @@
                                         </ul>
                                     </div>
                                 </div>
+                            </div> --}}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingCategory">
+                                    <button class="accordion-button text-dark bg-light" type="button"
+                                        data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseCategory"
+                                        aria-expanded="true" aria-controls="panelsStayOpen-collapseCategory">
+                                        Categories
+                                    </button>
+                                </h2>
+                                <div id="panelsStayOpen-collapseCategory" class="accordion-collapse collapse show"
+                                    aria-labelledby="headingCategory">
+                                    <div class="accordion-body">
+                                        <div>
+                                            <!-- Checked checkbox -->
+                                            @foreach ($categories as $index => $category)
+                                                <div class="form-check {{ $index >= 5 ? 'hidden-category' : '' }}">
+                                                    <input class="form-check-input category-checkbox" type="checkbox" {{ isset($category_check) && $category_check == $category->id ? 'checked' : ''}}
+                                                        value="{{ $category->id }}"
+                                                        id="flexCheckChecked{{ $index + 1 }}" />
+                                                    <label class="form-check-label"
+                                                        for="flexCheckChecked{{ $index + 1 }}">{{ $category->name }}</label>
+                                                </div>
+                                            @endforeach
+                                            @if (count($categories) > 5)
+                                                <div id="showAllCategories" class="show-all-categories">
+                                                    <label class="form-check-label" id="allCategoriesLabel">All Categories</label>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingTwo">
@@ -52,52 +85,26 @@
                                     aria-labelledby="headingTwo">
                                     <div class="accordion-body">
                                         <div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked1" checked />
-                                                <label class="form-check-label" for="flexCheckChecked1">Mercedes</label>
-                                                <span class="badge badge-secondary float-end">120</span>
-                                            </div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked2" checked />
-                                                <label class="form-check-label" for="flexCheckChecked2">Toyota</label>
-                                                <span class="badge badge-secondary float-end">15</span>
-                                            </div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked3" checked />
-                                                <label class="form-check-label" for="flexCheckChecked3">Mitsubishi</label>
-                                                <span class="badge badge-secondary float-end">35</span>
-                                            </div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked4" checked />
-                                                <label class="form-check-label" for="flexCheckChecked4">Nissan</label>
-                                                <span class="badge badge-secondary float-end">89</span>
-                                            </div>
                                             <!-- Default checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault" />
-                                                <label class="form-check-label" for="flexCheckDefault">Honda</label>
-                                                <span class="badge badge-secondary float-end">30</span>
+                                            @foreach ($brands as $index => $brand)
+                                                <div class="form-check {{ $index >= 5 ? 'hidden-brand' : '' }}">
+                                                    <input class="form-check-input brand-checkbox" type="checkbox" {{ isset($brand_check) && $brand_check == $brand->id ? 'checked' : ''}}
+                                                        value="{{ $brand->id }}"
+                                                        id="flexCheckDefault{{ $index + 1 }}" />
+                                                    <label class="form-check-label"
+                                                        for="flexCheckDefault{{ $index + 1 }}">{{ $brand->name }}</label>
+                                                </div>
+                                            @endforeach
+                                            @if (count($brands) > 5)
+                                            <div id="showAllBrands" class="show-all-brands">
+                                                <label class="form-check-label">All Brands</label>
                                             </div>
-                                            <!-- Default checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault" />
-                                                <label class="form-check-label" for="flexCheckDefault">Suzuki</label>
-                                                <span class="badge badge-secondary float-end">30</span>
-                                            </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            {{-- <span class="badge badge-secondary float-end">30</span> --}}
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
                                     <button class="accordion-button text-dark bg-light" type="button"
@@ -234,105 +241,110 @@
                 </div>
                 <!-- sidebar -->
                 <!-- content -->
+                
                 <div class="col-lg-9">
-                    <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
-                        <strong class="d-block py-2">{{ count($products) }} Items found </strong>
-                        <div class="ms-auto">
-                            <select class="form-select d-inline-block w-auto border pt-1">
-                                <option value="0">Best match</option>
-                                <option value="1">Recommended</option>
-                                <option value="2">High rated</option>
-                                <option value="3">Randomly</option>
-                            </select>
-                        </div>
-                    </header>
+                    <div id="products-pagination">
+                        <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                            <strong class="d-block py-2">{{ $count = isset($products) ? count($products) : 0}} Items found </strong>
+                            <div class="ms-auto">
+                                <select class="form-select d-inline-block w-auto border pt-1">
+                                    <option value="0">Best match</option>
+                                    <option value="1">Recommended</option>
+                                    <option value="2">High rated</option>
+                                    <option value="3">Randomly</option>
+                                </select>
+                            </div>
+                        </header>
 
-                    <div id="products-container">
-                        @foreach ($products as $product)
-                            <div class="row justify-content-center mb-3 product">
-                                <div class="col-md-12">
-                                    <div class="card shadow-0 border rounded-3">
-                                        <div class="card-body">
-                                            <div class="row g-0">
-                                                <div class="col-xl-3 col-md-4 d-flex justify-content-center">
-                                                    <div
-                                                        class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                                                        <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
-                                                            class="w-100" />
-                                                        <a href="#!">
-                                                            <div class="hover-overlay">
-                                                                <div class="mask"
-                                                                    style="background-color: rgba(253, 253, 253, 0.15);">
+
+                        <div id="products-container">
+                            @foreach ($products as $product)
+                                <div class="row justify-content-center mb-3 product">
+                                    <div class="col-md-12">
+                                        <div class="card shadow-0 border rounded-3">
+                                            <div class="card-body">
+                                                <div class="row g-0">
+                                                    <div class="col-xl-3 col-md-4 d-flex justify-content-center">
+                                                        <div
+                                                            class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
+                                                            <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
+                                                                class="w-100" />
+                                                            <a href="{{ route('productDetail', ['id'=>$product->id]) }}">
+                                                                <div class="hover-overlay">
+                                                                    <div class="mask"
+                                                                        style="background-color: rgba(253, 253, 253, 0.15);">
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </a>
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-xl-5 col-md-4 col-sm-6">
-                                                    <h5>{{ $product->name }}</h5>
-                                                    <div class="d-flex flex-row">
-                                                        <span class="text-muted" style="font-size: 14px">SKU:
-                                                            {{ $product->sku }}</span>
+                                                    <div class="col-xl-5 col-md-4 col-sm-6">
+                                                        <h5><a href="{{ route('productDetail', ['id'=>$product->id]) }}" style="color: inherit">{{ $product->name }}</a></h5>
+                                                        <div class="d-flex flex-row">
+                                                            <span class="text-muted" style="font-size: 14px">SKU:
+                                                                {{ $product->sku }}</span>
 
-                                                    </div>
+                                                        </div>
 
-                                                    <p class="text mb-4 mb-md-0">
-                                                        {!! $product->description !!}
-                                                    </p>
-                                                </div>
-                                                <div class="col-xl-4 col-md-4 col-sm-6">
-                                                    <div class="d-flex flex-row align-items-center mb-1">
-                                                        <h4 class="mb-1 me-2">
-                                                            {{ number_format($product->cart_price, 0, ',', '.') }} VND</h4>
-                                                        @if ($product->cart_price < $product->price)
-                                                            <span class="text-danger"><s>{{ number_format($product->price, 0, ',', '.') }}
-                                                                    VND</s></span>
-                                                        @endif
+                                                        <p class="text mb-4 mb-md-0">
+                                                            {!! $product->description !!}
+                                                        </p>
                                                     </div>
-                                                    <h6 class="text-success">Free shipping</h6>
-                                                    <div class="mt-4">
-                                                        <button class="btn btn-primary shadow-0" type="button">Buy
-                                                            this</button>
-                                                        <a href="#!"
-                                                            class="btn btn-light border px-2 pt-2 icon-hover"><i
-                                                                class="fas fa-heart fa-lg px-1"></i></a>
+                                                    <div class="col-xl-4 col-md-4 col-sm-6">
+                                                        <div class="d-flex flex-row align-items-center mb-1">
+                                                            <h4 class="mb-1 me-2">
+                                                                {{ number_format($product->cart_price, 0, ',', '.') }} VND
+                                                            </h4>
+                                                            @if ($product->cart_price < $product->price)
+                                                                <span class="text-danger"><s>{{ number_format($product->price, 0, ',', '.') }}
+                                                                        VND</s></span>
+                                                            @endif
+                                                        </div>
+                                                        <h6 class="text-success">Free shipping</h6>
+                                                        <div class="mt-4">
+                                                            <button class="btn btn-primary shadow-0" type="button">Add to cart</button>
+                                                            <a href="#!"
+                                                                class="btn btn-light border px-2 pt-2 icon-hover"><i
+                                                                    class="fas fa-heart fa-lg px-1"></i></a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
 
-                    <hr />
+                        <hr />
 
-                    <!-- Pagination -->
-                    <nav id="pagination" aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-                        <ul class="pagination">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            @php
-                                $totalPages = ceil(count($products) / 5);
-                            @endphp
-                            @for ($i = 1; $i <= $totalPages; $i++)
-                                <li class="page-item{{ $i === 1 ? ' active' : '' }}">
-                                    <a class="page-link" href="#"
-                                        data-page="{{ $i }}">{{ $i }}</a>
+                        <!-- Pagination -->
+                        <nav id="pagination" aria-label="Page navigation example"
+                            class="d-flex justify-content-center mt-3">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
                                 </li>
-                            @endfor
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- Pagination -->
+                                @php
+                                    $totalPages = ceil($count / 5);
+                                @endphp
+                                @for ($i = 1; $i <= $totalPages; $i++)
+                                    <li class="page-item{{ $i === 1 ? ' active' : '' }}">
+                                        <a class="page-link" href="#"
+                                            data-page="{{ $i }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- Pagination -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -341,7 +353,7 @@
 
 @push('custom-script')
     <script>
-        $(document).ready(function() {
+        function initializePagination() {
             // Xác định chiều cao của phần tử mục tiêu
             const targetElement = $('#products-container');
             const targetElementHeight = targetElement.height();
@@ -368,8 +380,8 @@
 
                 // Cuộn trang web về đầu
                 $('html, body').animate({
-                    scrollTop: targetElement.offset().top
-                }, 'slow');
+                    scrollTop: 0
+                }, 1);
             });
 
             // Xử lý sự kiện khi bấm vào nút "Previous"
@@ -385,10 +397,7 @@
                 $('#pagination .page-item').removeClass('active');
                 $(this).addClass('active');
 
-                // Cuộn trang web về đầu
-                $('html, body').animate({
-                    scrollTop: targetElement.offset().top
-                }, 'slow');
+
             });
 
             // Xử lý sự kiện khi bấm vào nút "Next"
@@ -409,10 +418,96 @@
                 $('#pagination .page-item').removeClass('active');
                 $(this).addClass('active');
 
-                // Cuộn trang web về đầu
-                $('html, body').animate({
-                    scrollTop: targetElement.offset().top
-                }, 1);
+            });
+        }
+
+        // Gọi hàm để khởi tạo lại phân trang sau khi cập nhật danh sách sản phẩm
+        initializePagination();
+
+
+
+        $(document).ready(function() {
+            // Ẩn danh sách category và brand ban đầu
+            $(".hidden-category").hide();
+            $(".hidden-brand").hide();
+
+            // Biến để theo dõi category và brand hiện tại được chọn
+            var selectedCategory = $('.category-checkbox:checked').val() || null;
+            var selectedBrand = $('.brand-checkbox:checked').val() || null;
+
+            // Function để gửi AJAX request với category và brand đã chọn
+            function sendAjaxRequest() {
+                $.ajax({
+                    url: "{{ route('listByCategoryBrand') }}",
+                    type: "POST",
+                    data: {
+                        category_id: selectedCategory,
+                        brand_id: selectedBrand,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        // Xử lý phản hồi từ máy chủ (cập nhật danh sách sản phẩm, vv.)
+                        console.log(response);
+                        $("#products-pagination").html(response.html);
+                        initializePagination();
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            // Xử lý sự kiện khi checkbox category thay đổi trạng thái
+            $(".category-checkbox").change(function() {
+                var newCategory = $(this).prop("checked") ? $(this).val() : null;
+
+                // Kiểm tra xem đã chọn category khác hoặc bỏ chọn category hiện tại
+                if (newCategory !== selectedCategory) {
+                    selectedCategory = newCategory;
+                    // Hủy chọn tất cả các checkbox category khác
+                    $(".category-checkbox").not(this).prop("checked", false);
+                    sendAjaxRequest();
+                }
+            });
+
+            // Xử lý sự kiện khi checkbox brand thay đổi trạng thái
+            $(".brand-checkbox").change(function() {allCategoriesLabel
+                var newBrand = $(this).prop("checked") ? $(this).val() : null;
+
+                // Kiểm tra xem đã chọn brand khác hoặc bỏ chọn brand hiện tại
+                if (newBrand !== selectedBrand) {
+                    selectedBrand = newBrand;
+                    // Hủy chọn tất cả các checkbox brand khác
+                    $(".brand-checkbox").not(this).prop("checked", false);
+                    sendAjaxRequest();
+                }
+            });
+
+            // Xử lý sự kiện khi nhấn vào "All Categories"
+            $("#showAllCategories").click(function() {
+
+                $(".hidden-category").toggle();
+                // Cập nhật nội dung của label
+                var allCategoriesLabel = $("#allCategoriesLabel");
+                if (allCategoriesLabel.text() === "All Categories") {
+                    allCategoriesLabel.text("Shortlist");
+                } else {
+                    allCategoriesLabel.text("All Categories");
+                }
+
+            });
+
+            // Xử lý sự kiện khi nhấn vào "All Brands"
+            $("#showAllBrands").click(function() {
+                
+                $(".hidden-brand").toggle();
+                // Cập nhật nội dung của label
+                var allBrandsLabel = $("#allBrandsLabel");
+                if (allBrandsLabel.text() === "All Brands") {
+                    allBrandsLabel.text("Shortlist");
+                } else {
+                    allBrandsLabel.text("All Brands");
+                }
             });
         });
     </script>

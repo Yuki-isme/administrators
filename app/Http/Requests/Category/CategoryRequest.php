@@ -33,7 +33,7 @@ class CategoryRequest extends FormRequest
         return [
             'name.required' => 'Bạn phải nhập tên của Danh mục!',
             'name.min' => 'Tên Danh mục tối thiểu là 3 ký tự!',
-            'name.max' => 'Tên Danh mục không vượt quá 10 ký tự!',
+            'name.max' => 'Tên Danh mục không vượt quá 15 ký tự!',
             'thumbnail.required' => 'Bạn phải tải lên ảnh!',
             'thumbnail.image' => 'Bạn phải tải định dạng ảnh!',
         ];

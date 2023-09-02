@@ -17,14 +17,16 @@ class CategoryRepository extends BaseRepository
         parent::__construct($model);
     }
 
-    public function getCategories()
-    {
-        return $this->model->with('parent.parent.parent')->get();
-    }
+    
 
     public function getAllCategories()
     {
         return $this->model->with('thumbnail','child.child.child')->where('parent_id', 0)->get(); //lấy tất cả category có parent_id = 0 kèm con
+    }
+
+    public function getCategories()
+    {
+        return $this->model->with('parent.parent.parent.parent')->get();
     }
 
     public function getAllSub()
@@ -45,6 +47,10 @@ class CategoryRepository extends BaseRepository
     public function getParentById($id){
         return $this->model->where('id', $id)->whereHas('child', function ($query) {
             $query->where('is_active', 1);
-        })->exists();//trả về true nếu tồn category này có category con có is active = 1
+        })->exists();//trả về true nếu category này có category con có is active = 1
+    }
+
+    public function getListCategories(){
+        return $this->model->get();
     }
 }

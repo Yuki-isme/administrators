@@ -44,6 +44,7 @@ Route::get('/product/{id}',[HomeController::class, 'productDetail'])->name('prod
 Route::get('/list',[HomeController::class, 'list'])->name('list');
 Route::get('/listbycategory/{id}',[HomeController::class, 'listByCategory'])->name('listByCategory');
 Route::get('/listbybrand/{id}',[HomeController::class, 'listByBrand'])->name('listByBrand');
+Route::post('/listbycategorybrand',[HomeController::class, 'listByCategoryBrand'])->name('listByCategoryBrand');
 Route::get('/library', [HomeController::class, 'library'])->name('library');
 
 Route::get('/addToCart/{id}',[CartController::class, 'add'])->name('addToCart');
