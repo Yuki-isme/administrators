@@ -55,7 +55,8 @@
                                             <!-- Checked checkbox -->
                                             @foreach ($categories as $index => $category)
                                                 <div class="form-check {{ $index >= 5 ? 'hidden-category' : '' }}">
-                                                    <input class="form-check-input category-checkbox" type="checkbox" {{ isset($category_check) && $category_check == $category->id ? 'checked' : ''}}
+                                                    <input class="form-check-input category-checkbox" type="checkbox"
+                                                        {{ isset($category_check) && $category_check == $category->id ? 'checked' : '' }}
                                                         value="{{ $category->id }}"
                                                         id="flexCheckChecked{{ $index + 1 }}" />
                                                     <label class="form-check-label"
@@ -64,7 +65,8 @@
                                             @endforeach
                                             @if (count($categories) > 5)
                                                 <div id="showAllCategories" class="show-all-categories">
-                                                    <label class="form-check-label" id="allCategoriesLabel">All Categories</label>
+                                                    <label class="form-check-label" id="allCategoriesLabel">All
+                                                        Categories</label>
                                                 </div>
                                             @endif
                                         </div>
@@ -88,7 +90,8 @@
                                             <!-- Default checkbox -->
                                             @foreach ($brands as $index => $brand)
                                                 <div class="form-check {{ $index >= 5 ? 'hidden-brand' : '' }}">
-                                                    <input class="form-check-input brand-checkbox" type="checkbox" {{ isset($brand_check) && $brand_check == $brand->id ? 'checked' : ''}}
+                                                    <input class="form-check-input brand-checkbox" type="checkbox"
+                                                        {{ isset($brand_check) && $brand_check == $brand->id ? 'checked' : '' }}
                                                         value="{{ $brand->id }}"
                                                         id="flexCheckDefault{{ $index + 1 }}" />
                                                     <label class="form-check-label"
@@ -96,9 +99,9 @@
                                                 </div>
                                             @endforeach
                                             @if (count($brands) > 5)
-                                            <div id="showAllBrands" class="show-all-brands">
-                                                <label class="form-check-label">All Brands</label>
-                                            </div>
+                                                <div id="showAllBrands" class="show-all-brands">
+                                                    <label class="form-check-label">All Brands</label>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
@@ -116,17 +119,14 @@
                                 <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show"
                                     aria-labelledby="headingThree">
                                     <div class="accordion-body">
-                                        <div class="range">
-                                            <input type="range" class="form-range" id="customRange1" />
-                                        </div>
                                         <div class="row mb-3">
                                             <div class="col-6">
                                                 <p class="mb-0">
                                                     Min
                                                 </p>
                                                 <div class="form-outline">
-                                                    <input type="number" id="typeNumber" class="form-control" />
-                                                    <label class="form-label" for="typeNumber">$0</label>
+                                                    <input type="number" id="minPrice" class="form-control" />
+                                                    <label class="form-label" for="minPrice">VND</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
@@ -134,17 +134,15 @@
                                                     Max
                                                 </p>
                                                 <div class="form-outline">
-                                                    <input type="number" id="typeNumber" class="form-control" />
-                                                    <label class="form-label" for="typeNumber">$1,0000</label>
+                                                    <input type="number" id="maxPrice" class="form-control" />
+                                                    <label class="form-label" for="maxPrice">VND</label>
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button"
-                                            class="btn btn-white w-100 border border-secondary">apply</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="accordion-item">
+                            {{-- <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
                                     <button class="accordion-button text-dark bg-light" type="button"
                                         data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseFour"
@@ -173,8 +171,8 @@
                                             for="btn-check4">XXL</label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="accordion-item">
+                            </div> --}}
+                            {{-- <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
                                     <button class="accordion-button text-dark bg-light" type="button"
                                         data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseFive"
@@ -235,41 +233,43 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
                 <!-- sidebar -->
                 <!-- content -->
-                
+
                 <div class="col-lg-9">
+
+                    <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                        <strong class="d-block py-2"
+                            id="countProduct">{{ $count = isset($products) ? count($products) : 0 }} Items found
+                        </strong>
+                        <div class="ms-auto">
+                            <select id="sortProduct" class="form-select d-inline-block w-auto border pt-1">
+                                <option value="price_asc">Prices ascending</option>
+                                <option value="price_desc">Prices descending</option>
+                                <option value="latest">Latest</option> <!-- Thêm lựa chọn Latest -->
+                                <option value="oldest">Oldest</option>
+                            </select>
+                        </div>
+                    </header>
                     <div id="products-pagination">
-                        <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
-                            <strong class="d-block py-2">{{ $count = isset($products) ? count($products) : 0}} Items found </strong>
-                            <div class="ms-auto">
-                                <select class="form-select d-inline-block w-auto border pt-1">
-                                    <option value="0">Best match</option>
-                                    <option value="1">Recommended</option>
-                                    <option value="2">High rated</option>
-                                    <option value="3">Randomly</option>
-                                </select>
-                            </div>
-                        </header>
-
-
                         <div id="products-container">
                             @foreach ($products as $product)
                                 <div class="row justify-content-center mb-3 product">
                                     <div class="col-md-12">
                                         <div class="card shadow-0 border rounded-3">
-                                            <div class="card-body">
+                                            <div class="card-body" style="height: 150px">
                                                 <div class="row g-0">
                                                     <div class="col-xl-3 col-md-4 d-flex justify-content-center">
                                                         <div
                                                             class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                                                            <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
+                                                            <img src="{{ asset('storage/' . $product->thumbnail->url) }}" style="height: 50%;"
                                                                 class="w-100" />
-                                                            <a href="{{ route('productDetail', ['id'=>$product->id]) }}">
+                                                            <a
+                                                                href="{{ route('productDetail', ['id' => $product->id]) }}">
                                                                 <div class="hover-overlay">
                                                                     <div class="mask"
                                                                         style="background-color: rgba(253, 253, 253, 0.15);">
@@ -279,7 +279,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-xl-5 col-md-4 col-sm-6">
-                                                        <h5><a href="{{ route('productDetail', ['id'=>$product->id]) }}" style="color: inherit">{{ $product->name }}</a></h5>
+                                                        <h5><a href="{{ route('productDetail', ['id' => $product->id]) }}"
+                                                                style="color: inherit">{{ $product->name }}</a></h5>
                                                         <div class="d-flex flex-row">
                                                             <span class="text-muted" style="font-size: 14px">SKU:
                                                                 {{ $product->sku }}</span>
@@ -301,8 +302,9 @@
                                                             @endif
                                                         </div>
                                                         <h6 class="text-success">Free shipping</h6>
-                                                        <div class="mt-4">
-                                                            <button class="btn btn-primary shadow-0" type="button">Add to cart</button>
+                                                        <div class="mt-3">
+                                                            <button class="btn btn-primary shadow-0" type="button">Add to
+                                                                cart</button>
                                                             <a href="#!"
                                                                 class="btn btn-light border px-2 pt-2 icon-hover"><i
                                                                     class="fas fa-heart fa-lg px-1"></i></a>
@@ -318,32 +320,16 @@
 
                         <hr />
 
-                        <!-- Pagination -->
-                        <nav id="pagination" aria-label="Page navigation example"
-                            class="d-flex justify-content-center mt-3">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                @php
-                                    $totalPages = ceil($count / 5);
-                                @endphp
-                                @for ($i = 1; $i <= $totalPages; $i++)
-                                    <li class="page-item{{ $i === 1 ? ' active' : '' }}">
-                                        <a class="page-link" href="#"
-                                            data-page="{{ $i }}">{{ $i }}</a>
-                                    </li>
-                                @endfor
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                        <!-- Pagination -->
+                        <div id="paginations">
+                            <!-- Pagination -->
+                            <nav id="pagination" aria-label="Page navigation example"
+                                class="d-flex justify-content-center mt-3">
+                                <ul class="pagination">
+
+                                </ul>
+                            </nav>
+                            <!-- Pagination -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -353,78 +339,148 @@
 
 @push('custom-script')
     <script>
+        const itemsPerPage = 5;
+        var globalTotalPage = Math.ceil({{$count}}/itemsPerPage);
+
         function initializePagination() {
-            // Xác định chiều cao của phần tử mục tiêu
-            const targetElement = $('#products-container');
-            const targetElementHeight = targetElement.height();
+            
+            let currentPage = 1; // Trang hiện tại mặc định
+            const totalPages = globalTotalPage;
+            const maxVisiblePages = 7; // Số trang tối đa hiển thị
 
-            // Hiển thị ban đầu chỉ 5 sản phẩm đầu tiên
+            // Hiển thị ban đầu chỉ 1 sản phẩm đầu tiên
             $('.product').hide();
-            $('.product:lt(5)').show();
+            $('.product:lt('+ itemsPerPage +')').show();
 
-            // Xử lý sự kiện khi bấm vào số trang
-            $('#pagination .page-link').on('click', function(e) {
-                e.preventDefault();
-                const page = $(this).data('page');
-                const itemsPerPage = 5;
-                const start = (page - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
+            // Tạo danh sách các trang
+            function generatePageNumbers(currentPage) {
+                const pages = [];
+                for (let i = 1; i <= totalPages; i++) {
+                    pages.push(i);
+                }
 
-                // Ẩn tất cả sản phẩm và hiển thị các sản phẩm thuộc trang đã chọn
-                $('.product').hide();
-                $('.product').slice(start, end).show();
+                if (totalPages <= maxVisiblePages) {
+                    return pages; // Nếu tổng số trang ít hơn hoặc bằng maxVisiblePages, hiển thị tất cả.
+                } else if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
+                    return pages.slice(0, maxVisiblePages); // Ở đầu danh sách, hiển thị 7 trang đầu.
+                } else if (currentPage >= totalPages - Math.floor(maxVisiblePages / 2)) {
+                    return pages.slice(totalPages - maxVisiblePages); // Ở cuối danh sách, hiển thị 7 trang cuối.
+                } else {
+                    return pages.slice(currentPage - Math.floor(maxVisiblePages / 2) - 1, currentPage + Math.floor(
+                        maxVisiblePages / 2)); // Hiển thị 7 trang xung quanh trang hiện tại.
+                }
+            }
 
-                // Đánh dấu trang đã chọn
-                $('#pagination .page-item').removeClass('active');
-                $(this).parent().addClass('active');
+            function updatePagination(currentPage) {
+                const pages = generatePageNumbers(currentPage);
+                const paginationList = $('#pagination .pagination');
+                const prevButton = $('#pagination .page-link.prev-page-link');
+                const nextButton = $('#pagination .page-link.next-page-link');
+                const firstButton = $('#pagination .page-link.first-page-link');
+                const lastButton = $('#pagination .page-link.last-page-link');
 
-                // Cuộn trang web về đầu
-                $('html, body').animate({
-                    scrollTop: 0
-                }, 1);
-            });
+                paginationList.empty();
 
-            // Xử lý sự kiện khi bấm vào nút "Previous"
-            $('#pagination .page-item:first-child').on('click', function(e) {
-                e.preventDefault();
-                const page = 1;
+                // Nút "First"
+                if (currentPage > 1) {
+                    paginationList.append(`
+                <li class="page-item">
+                    <a class="page-link first-page-link" href="#" aria-label="First" data-page="1">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+            `);
+                } else {
+                    paginationList.append(`
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;&laquo;</span>
+                </li>
+            `);
+                }
 
-                // Ẩn tất cả sản phẩm và hiển thị các sản phẩm của trang đầu tiên
-                $('.product').hide();
-                $('.product:lt(5)').show();
+                // Nút "Previous"
+                if (currentPage > 1) {
+                    paginationList.append(`
+                <li class="page-item">
+                    <a class="page-link prev-page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            `);
+                } else {
+                    paginationList.append(`
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+            `);
+                }
 
-                // Đánh dấu trang đầu tiên là trang hiện tại
-                $('#pagination .page-item').removeClass('active');
-                $(this).addClass('active');
+                pages.forEach((page) => {
+                    const activeClass = currentPage === page ? 'active' : '';
+                    paginationList.append(`
+                <li class="page-item ${activeClass}">
+                    <a class="page-link" href="#" data-page="${page}">${page}</a>
+                </li>
+            `);
+                });
 
+                // Nút "Next"
+                if (currentPage < totalPages) {
+                    paginationList.append(`
+                <li class="page-item">
+                    <a class="page-link next-page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            `);
+                } else {
+                    paginationList.append(`
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+            `);
+                }
 
-            });
+                // Nút "Last"
+                if (currentPage < totalPages) {
+                    paginationList.append(`
+                <li class="page-item">
+                    <a class="page-link last-page-link" href="#" aria-label="Last" data-page="${totalPages}">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            `);
+                } else {
+                    paginationList.append(`
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;&raquo;</span>
+                </li>
+            `);
+                }
 
-            // Xử lý sự kiện khi bấm vào nút "Next"
-            $('#pagination .page-item:last-child').on('click', function(e) {
-                e.preventDefault();
-                const page = {{ $totalPages }};
+                // Sự kiện khi bấm vào số trang
+                $('#pagination .page-link').on('click', function(e) {
+                    e.preventDefault();
+                    const page = $(this).data('page');
+                    const start = (page - 1) * itemsPerPage;
+                    const end = start + itemsPerPage;
 
-                // Tính chỉ số sản phẩm cuối cùng trên trang cuối
-                const itemsPerPage = 5;
-                const start = (page - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
+                    // Ẩn tất cả sản phẩm và hiển thị các sản phẩm thuộc trang đã chọn
+                    $('.product').hide();
+                    $('.product').slice(start, end).show();
 
-                // Ẩn tất cả sản phẩm và hiển thị các sản phẩm của trang cuối cùng
-                $('.product').hide();
-                $('.product').slice(start, end).show();
+                    // Cập nhật trang hiện tại và thanh phân trang
+                    currentPage = page;
+                    updatePagination(currentPage);
+                });
+            }
 
-                // Đánh dấu trang cuối cùng là trang hiện tại
-                $('#pagination .page-item').removeClass('active');
-                $(this).addClass('active');
-
-            });
+            // Mặc định hiển thị trang đầu tiên
+            updatePagination(1);
         }
 
         // Gọi hàm để khởi tạo lại phân trang sau khi cập nhật danh sách sản phẩm
         initializePagination();
-
-
 
         $(document).ready(function() {
             // Ẩn danh sách category và brand ban đầu
@@ -435,7 +491,12 @@
             var selectedCategory = $('.category-checkbox:checked').val() || null;
             var selectedBrand = $('.brand-checkbox:checked').val() || null;
 
-            // Function để gửi AJAX request với category và brand đã chọn
+            var minPrice = parseFloat($("#minPrice").val()) || null;
+            var maxPrice = parseFloat($("#maxPrice").val()) || null;
+
+            var selectedSortOption = $("#sortProduct").val();
+
+            // Function để gửi AJAX request với category và brand, min và max
             function sendAjaxRequest() {
                 $.ajax({
                     url: "{{ route('listByCategoryBrand') }}",
@@ -443,13 +504,20 @@
                     data: {
                         category_id: selectedCategory,
                         brand_id: selectedBrand,
+                        min_price: minPrice,
+                        max_price: maxPrice,
+                        sort_option: selectedSortOption,
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
                         // Xử lý phản hồi từ máy chủ (cập nhật danh sách sản phẩm, vv.)
-                        console.log(response);
+                        //console.log(response.sort_option);
+                        $('#countProduct').text(response.count + ' Items found');
                         $("#products-pagination").html(response.html);
+                        globalTotalPage = Math.ceil(response.count / itemsPerPage);
                         initializePagination();
+
+
                     },
                     error: function(error) {
                         console.error(error);
@@ -471,7 +539,7 @@
             });
 
             // Xử lý sự kiện khi checkbox brand thay đổi trạng thái
-            $(".brand-checkbox").change(function() {allCategoriesLabel
+            $(".brand-checkbox").change(function() {
                 var newBrand = $(this).prop("checked") ? $(this).val() : null;
 
                 // Kiểm tra xem đã chọn brand khác hoặc bỏ chọn brand hiện tại
@@ -479,6 +547,30 @@
                     selectedBrand = newBrand;
                     // Hủy chọn tất cả các checkbox brand khác
                     $(".brand-checkbox").not(this).prop("checked", false);
+                    sendAjaxRequest();
+                }
+            });
+
+            $("#minPrice, #maxPrice").change(function() {
+                // Lấy giá trị của min và max
+                minPrice = parseFloat($("#minPrice").val()) || null;
+                maxPrice = parseFloat($("#maxPrice").val()) || null;
+
+                // Kiểm tra xem max > min
+                if (maxPrice > minPrice) {
+                    // Gửi AJAX request với min và max
+                    sendAjaxRequest();
+                }
+            });
+
+            // Sự kiện khi select box thay đổi lựa chọn
+            $("#sortProduct").change(function() {
+                var newSortOption = $(this).val();
+
+                // Kiểm tra xem đã thay đổi lựa chọn sắp xếp
+                if (newSortOption !== selectedSortOption) {
+                    selectedSortOption = newSortOption;
+                    // Gửi AJAX request với lựa chọn sắp xếp mới
                     sendAjaxRequest();
                 }
             });
@@ -499,7 +591,7 @@
 
             // Xử lý sự kiện khi nhấn vào "All Brands"
             $("#showAllBrands").click(function() {
-                
+
                 $(".hidden-brand").toggle();
                 // Cập nhật nội dung của label
                 var allBrandsLabel = $("#allBrandsLabel");

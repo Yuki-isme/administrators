@@ -51,12 +51,12 @@
                 <div class="card-body">
                     <div class="table-top">
                         <div class="search-set">
-                            <div class="search-path">
+                            {{-- <div class="search-path">
                                 <a class="btn btn-filter" id="filter_search">
                                     <img src="{{ asset('admin/assets/img/icons/filter.svg') }}" alt="img">
                                     <span><img src="{{ asset('admin/assets/img/icons/closes.svg') }}" alt="img"></span>
                                 </a>
-                            </div>
+                            </div> --}}
                             <div class="search-input">
                                 <a class="btn btn-searchset"><img
                                         src="{{ asset('admin/assets/img/icons/search-white.svg') }}" alt="img"></a>

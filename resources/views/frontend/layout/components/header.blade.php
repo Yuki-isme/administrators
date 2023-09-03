@@ -254,7 +254,7 @@
         <div class="bg-primary mb-4">
             <div class="container py-4">
                 <h3 class="text-white mt-2">
-                    {{ request()->routeIs('list') ? 'All Product' : (request()->routeIs('listByCategory') ? $category->name : (request()->routeIs('listByBrand') ? $brand->name : 'Product')) }}
+                    List Product
                 </h3>
                 <!-- Breadcrumb -->
                 <nav class="d-flex mb-2">

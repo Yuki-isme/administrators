@@ -53,4 +53,9 @@ class HomeService
     {
         return $this->brandRepository->getAllBrands();
     }
+
+    public function getCategoriesIndex()
+    {
+        return $this->categoryRepository->getCategoriesIndex();
+    }
 }

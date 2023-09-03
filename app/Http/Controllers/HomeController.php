@@ -22,8 +22,9 @@ class HomeController extends Controller
         $newProducts = $this->homeService->getNewProducts($limit);
         $categories = $this->homeService->getCategory();
         $brands = $this->homeService->getBrand();
+        $categoriesIndex = $this->homeService->getCategoriesIndex();
 
-        return view('frontend.home.index', ['newProducts' => $newProducts, 'categories' => $categories, 'brands' => $brands]);
+        return view('frontend.home.index', ['newProducts' => $newProducts, 'categories' => $categories, 'brands' => $brands, 'categoriesIndex' => $categoriesIndex]);
     }
 
     public function productDetail($id)
@@ -61,7 +62,6 @@ class HomeController extends Controller
 
     public function listByCategoryBrand(Request $request)
     {
-
         $products = Product::query();
 
         if ($request->brand_id) {
@@ -75,11 +75,37 @@ class HomeController extends Controller
             $products->whereIn('category_id', $categoryIds);
         }
 
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
+
+        // Kiểm tra nếu cả hai giá trị min và max đều tồn tại
+        if ($minPrice !== null && $maxPrice !== null) {
+            $products->whereRaw('IF(sale_price > 0, sale_price, price) BETWEEN ? AND ?', [$minPrice, $maxPrice]);
+        } elseif ($minPrice !== null) {
+            // Kiểm tra nếu chỉ có giá trị min tồn tại
+            $products->whereRaw('IF(sale_price > 0, sale_price, price) >= ?', [$minPrice]);
+        } elseif ($maxPrice !== null) {
+            // Kiểm tra nếu chỉ có giá trị max tồn tại
+            $products->whereRaw('IF(sale_price > 0, sale_price, price) <= ?', [$maxPrice]);
+        }
+
+        if ($request->sort_option === 'latest') {
+            // Sắp xếp theo ID từ cao đến thấp (Latest)
+            $products->orderBy('id', 'desc');
+        } elseif ($request->sort_option === 'oldest') {
+            // Sắp xếp theo ID từ thấp đến cao (Oldest)
+            $products->orderBy('id', 'asc');
+        } elseif ($request->sort_option == 'price_asc') {
+            $products->orderByRaw('IF(sale_price > 0, sale_price, price) ASC');
+        } elseif ($request->sort_option == 'price_desc') {
+            $products->orderByRaw('IF(sale_price > 0, sale_price, price) DESC');
+        }
+
         $newProducts = $products->get();
 
         $html = view('frontend.product.products', ['newProducts' => $newProducts])->render();
 
-        return response()->json(['html' => $html]);
+        return response()->json(['html' => $html, 'count' => count($newProducts)]);
     }
 
     public function listByCategory($id)
@@ -91,7 +117,7 @@ class HomeController extends Controller
 
         $categories = $this->homeService->getCategories();
         $brands = $this->homeService->getBrands();
-        
+
         return view('frontend.product.list', ['products' => $products, 'brands' => $brands, 'categories' => $categories, 'category_check' => $id]);
     }
 
@@ -101,7 +127,7 @@ class HomeController extends Controller
 
         $categories = $this->homeService->getCategories();
         $brands = $this->homeService->getBrands();
-        
+
         return view('frontend.product.list', ['products' => $products, 'brands' => $brands, 'categories' => $categories, 'brand_check' => $id]);
     }
 

@@ -50,12 +50,12 @@
                 <div class="card-body">
                     <div class="table-top">
                         <div class="search-set">
-                            <div class="search-path">
+                            {{-- <div class="search-path">
                                 <a class="btn btn-filter" id="filter_search">
                                     <img src="{{ asset('admin/assets/img/icons/filter.svg') }}" alt="img">
                                     <span><img src="{{ asset('admin/assets/img/icons/closes.svg') }}" alt="img"></span>
                                 </a>
-                            </div>
+                            </div> --}}
                             <div class="search-input">
                                 <a class="btn btn-searchset"><img
                                         src="{{ asset('admin/assets/img/icons/search-white.svg') }}" alt="img"></a>
@@ -114,11 +114,11 @@
                                         </label>
                                     </th>
                                     <th>Product name</th>
+                                    <th>SKU</th>
                                     <th>Category</th>
                                     <th>Brand</th>
-                                    <th>Slug</th>
-                                    <th>SKU</th>
                                     <th>Price</th>
+                                    <th>Sale Price</th>
                                     <th>Stock</th>
                                     <th>Status</th>
                                     <th>Create At</th>
@@ -135,17 +135,17 @@
                                             </label>
                                         </td>
                                         <td class="productimgname">
-                                            <a href="javascript:void(0);" class="product-img">
+                                            <a href="{{ route('products.show', ['id' => $product->id]) }}" class="product-img">
                                                 <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
                                                     alt="product">
                                             </a>
-                                            <a href="javascript:void(0);">{{ $product->name }}</a>
+                                            <a href="{{ route('products.show', ['id' => $product->id]) }}">{{ $product->name }}</a>
                                         </td>
+                                        <td>{{ $product->sku }}</td>
                                         <td>{{ $product->category->name }}</td>
                                         <td>{{ $product->brand->name }}</td>
-                                        <td>{{ $product->slug }}</td>
-                                        <td>{{ $product->sku }}</td>
                                         <td>{{ $product->price }}</td>
+                                        <td>{{ $product->sale_price }}</td>
                                         <td>{{ $product->stock }}</td>
                                         <td>
                                             <a href="{{ route('products.update', ['id' => $product->id]) }}"

@@ -25,8 +25,11 @@ return new class extends Migration
             $table->string('note');
             $table->string('total');
             $table->string('status');
+            $table->string('note_order')->nullable();
+            $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade');
             $table->timestamps();
         });
     }
