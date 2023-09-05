@@ -253,234 +253,383 @@
                                 <option value="latest">Latest</option> <!-- Thêm lựa chọn Latest -->
                                 <option value="oldest">Oldest</option>
                             </select>
+                            <div class="btn-group shadow-0 border">
+                                <a href="#" class="btn btn-light btn-list-view" id="list-view" title="List view">
+                                    <i class="fa fa-bars fa-lg"></i>
+                                </a>
+                                <a href="#" class="btn btn-light btn-grid-view active" id="grid-view"
+                                    title="Grid view">
+                                    <i class="fa fa-th fa-lg"></i>
+                                </a>
+                            </div>
                         </div>
                     </header>
                     <div id="products-pagination">
                         <div id="products-container">
-                            @foreach ($products as $product)
-                                <div class="row justify-content-center mb-3 product">
-                                    <div class="col-md-12">
-                                        <div class="card shadow-0 border rounded-3">
-                                            <div class="card-body" style="height: 150px">
-                                                <div class="row g-0">
-                                                    <div class="col-xl-3 col-md-4 d-flex justify-content-center">
-                                                        <div
-                                                            class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                                                            <img src="{{ asset('storage/' . $product->thumbnail->url) }}" style="height: 50%;"
-                                                                class="w-100" />
-                                                            <a
-                                                                href="{{ route('productDetail', ['id' => $product->id]) }}">
-                                                                <div class="hover-overlay">
-                                                                    <div class="mask"
-                                                                        style="background-color: rgba(253, 253, 253, 0.15);">
+                            <div id="product-grid">
+                                <div class="row">
+                                    @foreach ($products as $product)
+                                        <div class="col-lg-4 col-md-6 col-sm-6 d-flex product product-grid">
+                                            <div class="card w-100 my-2 shadow-2-strong">
+                                                <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
+                                                    class="card-img-top" />
+                                                <div class="card-body d-flex flex-column">
+                                                    <div class="d-flex flex-row">
+                                                        <h5 class="mb-1 me-1">
+                                                            {{ number_format($product->cart_price, 0, ',', '.') }}
+                                                            VND</h5>
+                                                        <span class="text-danger"><s>{{ number_format($product->price, 0, ',', '.') }}
+                                                                VND</s></span>
+                                                    </div>
+                                                    <p class="card-text">{{ $product->name }}
+                                                    </p>
+                                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to
+                                                            cart</a>
+                                                        <a href="#!"
+                                                            class="btn btn-light border icon-hover px-2 pt-2"><i
+                                                                class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div id="product-list">
+                                @foreach ($products as $product)
+                                    <div class="row justify-content-center mb-3 product product product-list">
+                                        <div class="col-md-12">
+                                            <div class="card shadow-0 border rounded-3">
+                                                <div class="card-body" style="height: 150px">
+                                                    <div class="row g-0">
+                                                        <div class="col-xl-3 col-md-4 d-flex justify-content-center">
+                                                            <div
+                                                                class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
+                                                                <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
+                                                                    style="height: 50%;" class="w-100" />
+                                                                <a
+                                                                    href="{{ route('productDetail', ['id' => $product->id]) }}">
+                                                                    <div class="hover-overlay">
+                                                                        <div class="mask"
+                                                                            style="background-color: rgba(253, 253, 253, 0.15);">
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </a>
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-xl-5 col-md-4 col-sm-6">
-                                                        <h5><a href="{{ route('productDetail', ['id' => $product->id]) }}"
-                                                                style="color: inherit">{{ $product->name }}</a></h5>
-                                                        <div class="d-flex flex-row">
-                                                            <span class="text-muted" style="font-size: 14px">SKU:
-                                                                {{ $product->sku }}</span>
+                                                        <div class="col-xl-5 col-md-4 col-sm-6">
+                                                            <h5><a href="{{ route('productDetail', ['id' => $product->id]) }}"
+                                                                    style="color: inherit">{{ $product->name }}</a></h5>
+                                                            <div class="d-flex flex-row">
+                                                                <span class="text-muted" style="font-size: 14px">SKU:
+                                                                    {{ $product->sku }}</span>
 
-                                                        </div>
+                                                            </div>
 
-                                                        <p class="text mb-4 mb-md-0">
-                                                            {!! $product->description !!}
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-xl-4 col-md-4 col-sm-6">
-                                                        <div class="d-flex flex-row align-items-center mb-1">
-                                                            <h4 class="mb-1 me-2">
-                                                                {{ number_format($product->cart_price, 0, ',', '.') }} VND
-                                                            </h4>
-                                                            @if ($product->cart_price < $product->price)
-                                                                <span class="text-danger"><s>{{ number_format($product->price, 0, ',', '.') }}
-                                                                        VND</s></span>
-                                                            @endif
+                                                            <p class="text mb-4 mb-md-0">
+                                                                {!! $product->description !!}
+                                                            </p>
                                                         </div>
-                                                        <h6 class="text-success">Free shipping</h6>
-                                                        <div class="mt-3">
-                                                            <button class="btn btn-primary shadow-0" type="button">Add to
-                                                                cart</button>
-                                                            <a href="#!"
-                                                                class="btn btn-light border px-2 pt-2 icon-hover"><i
-                                                                    class="fas fa-heart fa-lg px-1"></i></a>
+                                                        <div class="col-xl-4 col-md-4 col-sm-6">
+                                                            <div class="d-flex flex-row align-items-center mb-1">
+                                                                <h4 class="mb-1 me-2">
+                                                                    {{ number_format($product->cart_price, 0, ',', '.') }}
+                                                                    VND
+                                                                </h4>
+                                                                @if ($product->cart_price < $product->price)
+                                                                    <span class="text-danger"><s>{{ number_format($product->price, 0, ',', '.') }}
+                                                                            VND</s></span>
+                                                                @endif
+                                                            </div>
+                                                            <h6 class="text-success">Free shipping</h6>
+                                                            <div class="mt-3">
+                                                                <button class="btn btn-primary shadow-0"
+                                                                    type="button">Add to
+                                                                    cart</button>
+                                                                <a href="#!"
+                                                                    class="btn btn-light border px-2 pt-2 icon-hover"><i
+                                                                        class="fas fa-heart fa-lg px-1"></i></a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
+                    </div>
+                    <hr />
 
-                        <hr />
-
-                        <div id="paginations">
-                            <!-- Pagination -->
+                    <div id="paginations">
+                        <!-- Pagination -->
+                        <div id="pagination-list" style="display: none;">
                             <nav id="pagination" aria-label="Page navigation example"
                                 class="d-flex justify-content-center mt-3">
                                 <ul class="pagination">
 
                                 </ul>
                             </nav>
-                            <!-- Pagination -->
                         </div>
+
+                        <div id="pagination-grid" style="display: none;">
+                            <nav id="pagination" aria-label="Page navigation example"
+                                class="d-flex justify-content-center mt-3">
+                                <ul class="pagination">
+
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- Pagination -->
                     </div>
                 </div>
             </div>
-        </div>
     </section>
 @endsection
 
 @push('custom-script')
     <script>
-        const itemsPerPage = 5;
-        var globalTotalPage = Math.ceil({{$count}}/itemsPerPage);
+        const itemsPerPageList = 5;
+        const itemsPerPageGrid = 9;
+        let currentPageList = 1;
+        let currentPageGrid = 1;
+        let totalItems = {{ $count }};
+        let totalPagesList = Math.ceil(totalItems / itemsPerPageList);
+        let totalPagesGrid = Math.ceil(totalItems / itemsPerPageGrid);
+        const maxVisiblePages = 7;
 
-        function initializePagination() {
-            
-            let currentPage = 1; // Trang hiện tại mặc định
-            const totalPages = globalTotalPage;
-            const maxVisiblePages = 7; // Số trang tối đa hiển thị
-
-            // Hiển thị ban đầu chỉ 1 sản phẩm đầu tiên
-            $('.product').hide();
-            $('.product:lt('+ itemsPerPage +')').show();
-
-            // Tạo danh sách các trang
-            function generatePageNumbers(currentPage) {
-                const pages = [];
-                for (let i = 1; i <= totalPages; i++) {
-                    pages.push(i);
-                }
-
-                if (totalPages <= maxVisiblePages) {
-                    return pages; // Nếu tổng số trang ít hơn hoặc bằng maxVisiblePages, hiển thị tất cả.
-                } else if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
-                    return pages.slice(0, maxVisiblePages); // Ở đầu danh sách, hiển thị 7 trang đầu.
-                } else if (currentPage >= totalPages - Math.floor(maxVisiblePages / 2)) {
-                    return pages.slice(totalPages - maxVisiblePages); // Ở cuối danh sách, hiển thị 7 trang cuối.
-                } else {
-                    return pages.slice(currentPage - Math.floor(maxVisiblePages / 2) - 1, currentPage + Math.floor(
-                        maxVisiblePages / 2)); // Hiển thị 7 trang xung quanh trang hiện tại.
-                }
+        function generatePageNumbers(currentPage, totalPages) {
+            const pages = [];
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
             }
 
-            function updatePagination(currentPage) {
-                const pages = generatePageNumbers(currentPage);
-                const paginationList = $('#pagination .pagination');
-                const prevButton = $('#pagination .page-link.prev-page-link');
-                const nextButton = $('#pagination .page-link.next-page-link');
-                const firstButton = $('#pagination .page-link.first-page-link');
-                const lastButton = $('#pagination .page-link.last-page-link');
+            if (totalPages <= maxVisiblePages) {
+                return pages;
+            } else if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
+                return pages.slice(0, maxVisiblePages);
+            } else if (currentPage >= totalPages - Math.floor(maxVisiblePages / 2)) {
+                return pages.slice(totalPages - maxVisiblePages);
+            } else {
+                return pages.slice(currentPage - Math.floor(maxVisiblePages / 2) - 1, currentPage + Math.floor(
+                    maxVisiblePages / 2));
+            }
+        }
 
-                paginationList.empty();
+        function updateListPagination(currentPageList) {
+            const startIndex = (currentPageList - 1) * itemsPerPageList;
+            const endIndex = startIndex + itemsPerPageList;
 
-                // Nút "First"
-                if (currentPage > 1) {
-                    paginationList.append(`
-                <li class="page-item">
+            $('.product').addClass('d-none');
+            $('.product.product-list').slice(startIndex, endIndex).removeClass('d-none');
+        }
+
+        function updateGridPagination(currentPageGrid) {
+            const startIndex = (currentPageGrid - 1) * itemsPerPageGrid;
+            const endIndex = startIndex + itemsPerPageGrid;
+
+            $('.product').addClass('d-none');
+            $('.product.product-grid').slice(startIndex, endIndex).removeClass('d-none');
+        }
+
+        function updateListPageNumbers() {
+            const pages = generatePageNumbers(currentPageList, totalPagesList);
+            const paginationList = $('#pagination-list .pagination');
+
+            paginationList.empty();
+
+            // Nút "First" danh sách
+            paginationList.append(`
+                <li class="page-item ${currentPageList === 1 ? 'disabled' : ''}">
                     <a class="page-link first-page-link" href="#" aria-label="First" data-page="1">
                         <span aria-hidden="true">&laquo;&laquo;</span>
                     </a>
                 </li>
             `);
-                } else {
-                    paginationList.append(`
-                <li class="page-item disabled">
-                    <span class="page-link">&laquo;&laquo;</span>
-                </li>
-            `);
-                }
 
-                // Nút "Previous"
-                if (currentPage > 1) {
-                    paginationList.append(`
-                <li class="page-item">
-                    <a class="page-link prev-page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            `);
-                } else {
-                    paginationList.append(`
-                <li class="page-item disabled">
-                    <span class="page-link">&laquo;</span>
-                </li>
-            `);
-                }
+            // Nút "Previous" danh sách
+            if (currentPageList > 1) {
+                paginationList.append(`
+                    <li class="page-item">
+                        <a class="page-link prev-page-link" href="#" aria-label="Previous" data-page="${currentPageList - 1}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                `);
+            } else {
+                paginationList.append(`
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                `);
+            }
 
-                pages.forEach((page) => {
-                    const activeClass = currentPage === page ? 'active' : '';
-                    paginationList.append(`
-                <li class="page-item ${activeClass}">
-                    <a class="page-link" href="#" data-page="${page}">${page}</a>
-                </li>
-            `);
-                });
+            pages.forEach((page) => {
+                const activeClass = currentPageList === page ? 'active' : '';
+                paginationList.append(`
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" data-page="${page}">${page}</a>
+                    </li>
+                `);
+            });
 
-                // Nút "Next"
-                if (currentPage < totalPages) {
-                    paginationList.append(`
-                <li class="page-item">
-                    <a class="page-link next-page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            `);
-                } else {
-                    paginationList.append(`
-                <li class="page-item disabled">
-                    <span class="page-link">&raquo;</span>
-                </li>
-            `);
-                }
+            // Nút "Next" danh sách
+            if (currentPageList < totalPagesList) {
+                paginationList.append(`
+                    <li class="page-item">
+                        <a class="page-link next-page-link" href="#" aria-label="Next" data-page="${currentPageList + 1}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                `);
+            } else {
+                paginationList.append(`
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                `);
+            }
 
-                // Nút "Last"
-                if (currentPage < totalPages) {
-                    paginationList.append(`
-                <li class="page-item">
-                    <a class="page-link last-page-link" href="#" aria-label="Last" data-page="${totalPages}">
+            // Nút "Last" danh sách
+            paginationList.append(`
+                <li class="page-item ${currentPageList === totalPagesList ? 'disabled' : ''}">
+                    <a class="page-link last-page-link" href="#" aria-label="Last" data-page="${totalPagesList}">
                         <span aria-hidden="true">&raquo;&raquo;</span>
                     </a>
                 </li>
             `);
-                } else {
-                    paginationList.append(`
-                <li class="page-item disabled">
-                    <span class="page-link">&raquo;&raquo;</span>
-                </li>
-            `);
-                }
-
-                // Sự kiện khi bấm vào số trang
-                $('#pagination .page-link').on('click', function(e) {
-                    e.preventDefault();
-                    const page = $(this).data('page');
-                    const start = (page - 1) * itemsPerPage;
-                    const end = start + itemsPerPage;
-
-                    // Ẩn tất cả sản phẩm và hiển thị các sản phẩm thuộc trang đã chọn
-                    $('.product').hide();
-                    $('.product').slice(start, end).show();
-
-                    // Cập nhật trang hiện tại và thanh phân trang
-                    currentPage = page;
-                    updatePagination(currentPage);
-                });
-            }
-
-            // Mặc định hiển thị trang đầu tiên
-            updatePagination(1);
         }
 
-        // Gọi hàm để khởi tạo lại phân trang sau khi cập nhật danh sách sản phẩm
-        initializePagination();
+        function updateGridPageNumbers() {
+            const pages = generatePageNumbers(currentPageGrid, totalPagesGrid);
+            const paginationGrid = $('#pagination-grid .pagination');
+
+            paginationGrid.empty();
+
+            // Nút "First" lưới
+            paginationGrid.append(`
+                <li class="page-item ${currentPageGrid === 1 ? 'disabled' : ''}">
+                    <a class="page-link first-page-link" href="#" aria-label="First" data-page="1">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+            `);
+
+            // Nút "Previous" lưới
+            if (currentPageGrid > 1) {
+                paginationGrid.append(`
+                    <li class="page-item">
+                        <a class="page-link prev-page-link" href="#" aria-label="Previous" data-page="${currentPageGrid - 1}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                `);
+            } else {
+                paginationGrid.append(`
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                `);
+            }
+
+            pages.forEach((page) => {
+                const activeClass = currentPageGrid === page ? 'active' : '';
+                paginationGrid.append(`
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" data-page="${page}">${page}</a>
+                    </li>
+                `);
+            });
+
+            // Nút "Next" lưới
+            if (currentPageGrid < totalPagesGrid) {
+                paginationGrid.append(`
+                    <li class="page-item">
+                        <a class="page-link next-page-link" href="#" aria-label="Next" data-page="${currentPageGrid + 1}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                `);
+            } else {
+                paginationGrid.append(`
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                `);
+            }
+
+            // Nút "Last" lưới
+            paginationGrid.append(`
+                <li class="page-item ${currentPageGrid === totalPagesGrid ? 'disabled' : ''}">
+                    <a class="page-link last-page-link" href="#" aria-label="Last" data-page="${totalPagesGrid}">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            `);
+        }
+
+        // Sự kiện khi bấm vào số trang danh sách
+        $(document).on('click', '#pagination-list .page-link', function(e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            currentPageList = page;
+            updateListPagination(currentPageList);
+            updateListPageNumbers();
+        });
+
+        // Sự kiện khi bấm vào số trang lưới
+        $(document).on('click', '#pagination-grid .page-link', function(e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            currentPageGrid = page;
+            updateGridPagination(currentPageGrid);
+            updateGridPageNumbers();
+        });
+
+        // Sự kiện khi chuyển đổi giữa danh sách và lưới
+        $('#list-view').on('click', function(e) {
+            e.preventDefault();
+            isGridView = false;
+            currentPageList = 1;
+            updateListPagination(currentPageList);
+            updateListPageNumbers();
+            $('#product-list').show();
+            $('#product-grid').hide();
+            $('#pagination-list').show();
+            $('#pagination-grid').hide();
+
+            // Remove "active" class from Grid view button
+            $('#grid-view').removeClass('active');
+            $(this).addClass('active'); // Add "active" class to List view button
+        });
+
+        $('#grid-view').on('click', function(e) {
+            e.preventDefault();
+            isGridView = true;
+            currentPageGrid = 1;
+            updateGridPagination(currentPageGrid);
+            updateGridPageNumbers();
+            $('#product-list').hide();
+            $('#product-grid').show();
+            $('#pagination-list').hide();
+            $('#pagination-grid').show();
+
+            // Remove "active" class from List view button
+            $('#list-view').removeClass('active');
+            $(this).addClass('active'); // Add "active" class to Grid view button
+        });
+
+        // Mặc định hiển thị danh sách ban đầu
+        updateGridPagination(currentPageGrid);
+        updateGridPageNumbers();
+        $('#product-list').hide();
+        $('#product-grid').show();
+        $('#pagination-list').hide();
+        $('#pagination-grid').show();
+
 
         $(document).ready(function() {
             // Ẩn danh sách category và brand ban đầu
@@ -514,10 +663,19 @@
                         //console.log(response.sort_option);
                         $('#countProduct').text(response.count + ' Items found');
                         $("#products-pagination").html(response.html);
-                        globalTotalPage = Math.ceil(response.count / itemsPerPage);
-                        initializePagination();
 
+                        // Update totalItems with the new count
+                        totalItems = response.count;
 
+                        // Recalculate total pages based on the new totalItems
+                        totalPagesList = Math.ceil(totalItems / itemsPerPageList);
+                        totalPagesGrid = Math.ceil(totalItems / itemsPerPageGrid);
+
+                        // Call pagination functions to reinitialize pagination
+                        updateListPagination(currentPageList);
+                        updateListPageNumbers();
+                        updateGridPagination(currentPageGrid);
+                        updateGridPageNumbers();
                     },
                     error: function(error) {
                         console.error(error);
@@ -556,11 +714,7 @@
                 minPrice = parseFloat($("#minPrice").val()) || null;
                 maxPrice = parseFloat($("#maxPrice").val()) || null;
 
-                // Kiểm tra xem max > min
-                if (maxPrice > minPrice) {
-                    // Gửi AJAX request với min và max
-                    sendAjaxRequest();
-                }
+                sendAjaxRequest();
             });
 
             // Sự kiện khi select box thay đổi lựa chọn
