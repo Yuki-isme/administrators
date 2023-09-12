@@ -7,6 +7,9 @@ use App\Services\ProductService;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Product\ProductRequest;
 
+use App\Models\Product;
+use App\Models\Order;
+
 class ProductController extends Controller
 {
     private $productService;
@@ -15,6 +18,8 @@ class ProductController extends Controller
     {
         $this->productService = $productService;
     }
+
+
 
     public function index()
     {
@@ -57,7 +62,7 @@ class ProductController extends Controller
 
     public function update(Request $request, string $id)
     {
-        if($request->ajax()){
+        if ($request->ajax()) {
             return $this->productService->update($request, $id);
         }
 
@@ -82,4 +87,46 @@ class ProductController extends Controller
         return response()->json(['error' => 'Image upload failed'], 400);
     }
 
+    public function getProducts(Request $request)
+    {
+        $products = $this->productService->getProducts($request);
+
+        return response()->json($products);
+    }
+
+    public function getProductInfo(Request $request)
+    {
+
+        $order = Order::with('items.product')->find($request->order_id);
+        $selected_ids = $request->selected_ids ?? [];
+        $items_id = [];
+        $product_ids = $request->product_ids ?? [];
+        $amounts = $request->amounts ?? [];
+        $remove_ids= [];
+
+        //lấy ra những product_id của item nằm trong selected_ids
+        if ($order) {
+            foreach ($order->items as $item) {
+                if (in_array($item->product_id, $selected_ids)) {
+                    $items_id[] = $item->product_id;
+                }
+            }
+        }
+
+        //lấy những sản phẩm còn lại có id không nằm trong $items_id
+        $products_selected_id = [];
+        foreach ($selected_ids as $id) {
+            if (!in_array($id, $items_id)) {
+                $products_selected_id[] = $id;
+            }
+        }
+
+        $products_selected = Product::with('thumbnail')->whereIn('id', $products_selected_id)->where('stock', '!=', '0')->get();
+
+        $remove_ids = array_diff(array_diff($selected_ids, $items_id), $products_selected->pluck('id')->toArray());
+
+        $table_update = view('admin.order.table-update', ['order' => $order, 'items_id' => $items_id, 'products_selected' => $products_selected, 'product_ids' => $product_ids, 'amounts' => $amounts])->render();
+
+        return response()->json(['table_update' => $table_update, 'remove_ids' => $remove_ids]);
+    }
 }

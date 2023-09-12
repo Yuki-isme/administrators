@@ -12,7 +12,7 @@
                             alt="img"><span>
                             Product</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.index') ? 'show active' : '' }}">Product List</a></li>
+                        <li><a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.index') || request()->routeIs('products.show') ? 'show active' : '' }}">Product List</a></li>
                         <li><a href="{{ route('products.create') }}" class="{{ request()->routeIs('products.create') ? 'show active' : '' }}">Add Product</a></li>
                         @if (request()->routeIs('products.edit'))
                             <li><a href="" class="show active">Edit Product</a></li>
@@ -24,9 +24,9 @@
                             alt="img"><span>
                             Category</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.index') ? 'show active' : '' }}">Category List</a></li>
+                        <li><a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.index') || request()->routeIs('categories.show') ? 'show active' : '' }}">Category List</a></li>
                         <li><a href="{{ route('categories.create') }}" class="{{ request()->routeIs('categories.create') ? 'show active' : '' }}">Add Category</a></li>
-                        <li><a href="{{ route('categories.sub_index') }}" class="{{ request()->routeIs('categories.sub_index') ? 'show active' : '' }}">Sub Category List</a></li>
+                        <li><a href="{{ route('categories.sub_index') }}" class="{{ request()->routeIs('categories.sub_index') || request()->routeIs('categories.sub_show') ? 'show active' : '' }}">Sub Category List</a></li>
                         <li><a href="{{ route('categories.sub_create') }}" class="{{ request()->routeIs('categories.sub_create') ? 'show active' : '' }}">Add Sub Category</a></li>
                         @if (request()->routeIs('categories.edit'))
                             <li><a href="" class="show active">Edit Category</a></li>
@@ -40,7 +40,7 @@
                             alt="img"><span>
                             Brand</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('brands.index') }}" class="{{ request()->routeIs('brands.index') ? 'show active' : '' }}">Brand List</a></li>
+                        <li><a href="{{ route('brands.index') }}" class="{{ request()->routeIs('brands.index') || request()->routeIs('brands.show') ? 'show active' : '' }}">Brand List</a></li>
                         <li><a href="{{ route('brands.create') }}" class="{{ request()->routeIs('brands.create') ? 'show active' : '' }}">Add Brand</a></li>
                         @if (request()->routeIs('brands.edit'))
                             <li><a href="" class="show active">Edit Brand</a></li>
@@ -73,10 +73,10 @@
                             alt="img"><span>
                             Order</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="purchaselist.html">Order List</a></li>
-                        <li><a href="addpurchase.html">Order Success</a></li>
-                        <li><a href="addpurchase.html">Order Processing</a></li>
-                        <li><a href="importpurchase.html">Order Cancel</a></li>
+                        <li><a href="{{ route('orders.index')}}" class="{{ request()->routeIs('orders.index') || request()->routeIs('orders.show') || request()->routeIs('orders.create') || request()->routeIs('orders.edit')? 'show active' : '' }}">Order List</a></li>
+                        <li><a href="{{ route('orders.completed')}}" class="{{ request()->routeIs('orders.completed') ? 'show active' : '' }}">Order Completed</a></li>
+                        <li><a href="{{ route('orders.processing')}}" class="{{ request()->routeIs('orders.processing') ? 'show active' : '' }}">Order Processing</a></li>
+                        <li><a href="{{ route('orders.canceled')}}" class="{{ request()->routeIs('orders.canceled') ? 'show active' : '' }}">Order Canceled</a></li>
                     </ul>
                 </li>
                 {{-- <li class="submenu">
@@ -119,7 +119,7 @@
                         <li><a href="createpurchasereturn.html">Add Purchase Return </a></li>
                     </ul>
                 </li> --}}
-                <li class="submenu">
+                {{-- <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('admin/assets/img/icons/places.svg') }}"
                             alt="img"><span>
                             Places</span> <span class="menu-arrow"></span></a>
@@ -129,7 +129,7 @@
                         <li><a href="newstate.html">New State </a></li>
                         <li><a href="statelist.html">State list</a></li>
                     </ul>
-                </li>
+                </li> --}}
                 {{-- <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('admin/assets/img/icons/product.svg') }}"
                             alt="img"><span>
@@ -175,20 +175,20 @@
                         <li><a href="{{ route('permissions.index') }}" class="{{ request()->routeIs('permissions.index') ? 'show active' : '' }}">Permissions List</a></li>
                     </ul>
                 </li>
-                <li class="submenu">
+                {{-- <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('admin/assets/img/icons/settings.svg') }}"
                             alt="img"><span>
                             Settings</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        {{-- <li><a href="generalsettings.html">General Settings</a></li>
+                        <li><a href="generalsettings.html">General Settings</a></li>
                         <li><a href="emailsettings.html">Email Settings</a></li>
                         <li><a href="paymentsettings.html">Payment Settings</a></li>
                         <li><a href="currencysettings.html">Currency Settings</a></li>
                         <li><a href="grouppermissions.html">Group Permissions</a></li>
-                        <li><a href="taxrates.html">Tax Rates</a></li> --}}
+                        <li><a href="taxrates.html">Tax Rates</a></li>
                     </ul>
                 </li>
-            </ul>
+            </ul> --}}
         </div>
     </div>
 </div>

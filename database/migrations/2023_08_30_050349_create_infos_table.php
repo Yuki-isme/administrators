@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('name');
+            $table->string('email');
             $table->string('phone_number');
             $table->string('province_code', 20);
             $table->string('district_code', 20);

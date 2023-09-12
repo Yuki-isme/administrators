@@ -18,7 +18,7 @@ class AdminPolicy
      */
     public function viewAny(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('index_admin');
+        return $this->admin->hasPermission('viewAny_admin') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -26,7 +26,7 @@ class AdminPolicy
      */
     public function view(?Admin $admin, Admin $a): bool
     {
-        return $this->admin->hasPermission('detail_admin');
+        return $this->admin->hasPermission('detail_admin') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -34,7 +34,7 @@ class AdminPolicy
      */
     public function create(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('create_admin');
+        return $this->admin->hasPermission('create_admin') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -42,7 +42,7 @@ class AdminPolicy
      */
     public function update(?Admin $admin, Admin $a): bool
     {
-        return $this->admin->hasPermission('update_admin');
+        return $this->admin->hasPermission('update_admin') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -50,7 +50,7 @@ class AdminPolicy
      */
     public function delete(?Admin $admin, Admin $a): bool
     {
-        return $this->admin->hasPermission('delate_admin');
+        return $this->admin->hasPermission('delate_admin') || $this->admin->hasRole('Master');
     }
 
     /**

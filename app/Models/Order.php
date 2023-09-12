@@ -14,14 +14,17 @@ class Order extends Model
         'phone_number',
         'email',
         'payment_method',
+        'payment_status',
         'province_code',
         'district_code',
         'ward_code',
         'street',
         'house',
         'note',
-        'status',
+        'note_order',
         'total',
+        'discount',
+        'status_id',
         'user_id',
     ];
 
@@ -43,5 +46,10 @@ class Order extends Model
     public function ward()
     {
         return $this->belongsTo(Ward::class, 'ward_code', 'code');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 }

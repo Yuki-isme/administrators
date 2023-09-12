@@ -116,3 +116,21 @@
     margin: 0;
     padding: 0;
 }
+
+.alert {
+    max-width: 100%;
+    margin: 0 auto;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.close-alert {
+    border: none;
+    background-color: transparent;
+    color: inherit;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 50%;
+    right: 1000;
+    transform: translateY(-50%);
+}

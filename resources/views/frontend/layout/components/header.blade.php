@@ -20,6 +20,11 @@
                                 <i class="fas fa-user-alt m-1 me-md-2"></i>
                                 <p class="d-none d-md-block mb-0">{{ Auth::guard('web')->user()->name }}</p>
                             </a>
+                            <a href="{{ route('logout') }}"
+                                class="me-1 border rounded py-1 px-3 d-flex align-items-center">
+                                <i class="fas fa-arrow-right me-md-2"></i>
+                                <p class="d-none d-md-block mb-0">Logout</p>
+                            </a>
                         @else
                             <a href="{{ route('login') }}"
                                 class="me-1 border rounded py-1 px-3 d-flex align-items-center"> <i
@@ -27,13 +32,14 @@
                                 <p class="d-none d-md-block mb-0">Sign in</p>
                             </a>
                         @endif
-                        <a href="{{ route('index') }}" class="me-1 border rounded py-1 px-3 d-flex align-items-center">
+                        <a href="{{ route('wishlist') }}"
+                            class="me-1 border rounded py-1 px-3 d-flex align-items-center">
                             <i class="fas fa-heart m-1 me-md-2"></i>
                             <p class="d-none d-md-block mb-0">Wishlist</p>
                         </a>
                         <a href="{{ route('cart') }}" class="border rounded py-1 px-3 d-flex align-items-center"> <i
                                 class="fas fa-shopping-cart m-1 me-md-2"></i>
-                            <p class="d-none d-md-block mb-0">My cart
+                            <p class="d-none d-md-block mb-0" id="cart-amount">My cart
                                 ({{ cart()->getContent() ? count(cart()->getContent()) : 0 }})</p>
                         </a>
                     </div>
@@ -174,7 +180,8 @@
     @elseif(request()->routeIs('cart') ||
             request()->routeIs('order') ||
             request()->routeIs('payment') ||
-            request()->routeIs('success'))
+            request()->routeIs('success') ||
+            request()->routeIs('failed'))
         <!-- Heading -->
         <div class="bg-primary">
             <div class="container py-4">
@@ -185,7 +192,7 @@
                         <span class="text-white-50 mx-2"> > </span>
                         <a href="{{ route('cart') }}"
                             class="text-white{{ request()->routeIs('cart') ? '' : '-50' }}">{!! request()->routeIs('cart') ? '<u>Shopping cart</u>' : 'Shopping cart' !!}</a>
-                        @if (request()->routeIs('order') || request()->routeIs('success'))
+                        @if (request()->routeIs('order') || request()->routeIs('success') || request()->routeIs('failed'))
                             <span class="text-white-50 mx-2"> > </span>
                             <a href="{{ route('order') }}"
                                 class="text-white{{ request()->routeIs('order') ? '' : '-50' }}">{!! request()->routeIs('order') ? '<u>Order info</u>' : 'Order info' !!}</a>
@@ -193,6 +200,10 @@
                                 <span class="text-white-50 mx-2"> > </span>
                                 <a
                                     class="text-white{{ request()->routeIs('success') ? '' : '-50' }}">{!! request()->routeIs('success') ? '<u>Success</u>' : 'Success' !!}</a>
+                            @elseif(request()->routeIs('failed'))
+                                <span class="text-white-50 mx-2"> > </span>
+                                <a
+                                    class="text-white{{ request()->routeIs('failed') ? '' : '-50' }}">{!! request()->routeIs('failed') ? '<u>Failed</u>' : 'Failed' !!}</a>
                             @endif
                         @endif
                     </h6>
@@ -221,6 +232,9 @@
                             <a class="nav-link" id="home" href="{{ route('index') }}">Home</a>
                         </li>
                         <li class="nav-item">
+                            <div class="nav-link">|</div>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#profile-section">Profile</a>
                         </li>
                         <li class="nav-item">
@@ -238,9 +252,6 @@
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#cancelled-orders-section">Cancelled
                                 Orders</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="logout" href="{{ route('index') }}">Logout</a>
                         </li>
                     </ul>
                     <!-- Left links -->
@@ -262,6 +273,23 @@
                         <a href="{{ route('index') }}" class="text-white-50">Home</a>
                         <span class="text-white-50 mx-2"> > </span>
                         <a href="" class="text-white"><u>Library</u></a>
+                    </h6>
+                </nav>
+                <!-- Breadcrumb -->
+            </div>
+        </div>
+        <!-- Heading -->
+    @elseif(request()->routeIs('wishlist'))
+        <!-- Heading -->
+        <div class="bg-primary">
+            <div class="container py-4">
+                <!-- Breadcrumb -->
+                <nav class="d-flex">
+                    <h6 class="mb-0">
+                        <a href="{{ route('index') }}" class="text-white-50">Home</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="{{ route('wishlist') }}"
+                            class="text-white{{ request()->routeIs('wishlist') ? '' : '-50' }}">{!! request()->routeIs('wishlist') ? '<u>Wishlist</u>' : 'Wishlist' !!}</a>
                     </h6>
                 </nav>
                 <!-- Breadcrumb -->

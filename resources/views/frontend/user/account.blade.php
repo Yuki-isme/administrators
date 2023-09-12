@@ -13,22 +13,31 @@
                                     <form>
                                         <!-- Profile form fields -->
                                         <div class="form-outline mb-4">
-                                            <input type="text" id="name" class="form-control" value="{{ Auth::guard('web')->user()->name }}"/>
+                                            <input type="text" id="name" class="form-control" name="name"
+                                                value="{{ $user->name }}" />
                                             <label class="form-label" for="name">Name</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input type="email" id="email" class="form-control" value="{{ Auth::guard('web')->user()->email }}" readonly/>
+                                            <input type="email" id="email" class="form-control" name="email"
+                                                value="{{ $user->email }}" />
                                             <label class="form-label" for="email">Email</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input type="password" id="password" class="form-control" />
+                                            <input type="text" id="phone" class="form-control" name="phone"
+                                                value="{{ $user->phone }}" />
+                                            <label class="form-label" for="phone">Email</label>
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <input type="password" id="password" class="form-control" name="password" />
                                             <label class="form-label" for="password">Password</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
-                                            <input type="password" id="confirm-password" class="form-control" />
+                                            <input type="password" id="confirm-password" class="form-control"
+                                                name="confirm" />
                                             <label class="form-label" for="confirm-password">Confirm Password</label>
                                         </div>
 
@@ -43,114 +52,51 @@
                 <div id="all-orders-section" class="tab-pane fade">
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
-                            <div class="card border mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">Code Orders: 1</h5>
-                                    <form>
+                            @foreach ($orders as $order)
+                                <div class="card border mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Code Orders: {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}
+                                        </h5>
                                         <!-- All Orders form fields for Order 1 -->
-                                        <div class="form-outline mb-4">
-                                            <input type="text" id="name1" class="form-control" />
-                                            <label class="form-label" for="name1">Name</label>
+                                        <div class="form-outline mb-3">
+                                            <p style="color:black">Name: {{ $order->name }}</p>
+                                            <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                            <p style="color:black">Address:
+                                                {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
+                                            </p>
+                                            <p style="color:black">Note: {{ $order->note }}</p>
+                                            <p style="color:black">Payment method: {{ $order->payment_method }}</p>
+                                            <p style="color:black">Status: {{ $order->payment_status }}</p>
                                         </div>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="tel" id="phone1" class="form-control" />
-                                            <label class="form-label" for="phone1">Phone Number</label>
-                                        </div>
-
-                                        <div class="form-outline mb-4">
-                                            <textarea id="address1" class="form-control"></textarea>
-                                            <label class="form-label" for="address1">Address</label>
-                                        </div>
-
                                         <h6 class="card-subtitle mb-3">Order Details</h6>
-
                                         <div class="row mb-3">
-                                            <div class="col-4">Name</div>
-                                            <div class="col-4">Price</div>
-                                            <div class="col-4">Quantity</div>
+                                            <div class="col-3">Name</div>
+                                            <div class="col-3" style="text-align: right;">Price</div>
+                                            <div class="col-3" style="text-align: right;">Amount</div>
+                                            <div class="col-3" style="text-align: right;">Total</div>
                                         </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-4">Product 1</div>
-                                            <div class="col-4">$10</div>
-                                            <div class="col-4">2</div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-4">Product 2</div>
-                                            <div class="col-4">$20</div>
-                                            <div class="col-4">1</div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-4">Product 3</div>
-                                            <div class="col-4">$15</div>
-                                            <div class="col-4">3</div>
-                                        </div>
+                                        @foreach ($order->items as $item)
+                                            <div class="row mb-3">
+                                                <div class="col-3">{{ $item->product_name }}</div>
+                                                <div class="col-3" style="text-align: right;">
+                                                    {{ number_format($item->price, 0, ',', '.') }} đ</div>
+                                                <div class="col-3" style="text-align: right;">{{ $item->amount }}
+                                                </div>
+                                                <div class="col-3" style="text-align: right;">
+                                                    {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
+                                                </div>
+                                            </div>
+                                        @endforeach
 
                                         <div class="text-end mb-4">
-                                            <strong>Total: $95</strong>
+                                            <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
                                         </div>
-
-                                        <button type="button" class="btn btn-danger">Cancel</button>
-                                    </form>
+                                        @if ($order->status_id < 3)
+                                            <button type="button" class="btn btn-danger">Cancel</button>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card border mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">Code Orders: 2</h5>
-                                    <form>
-                                        <!-- All Orders form fields for Order 2 -->
-                                        <div class="form-outline mb-4">
-                                            <input type="text" id="name2" class="form-control" />
-                                            <label class="form-label" for="name2">Name</label>
-                                        </div>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="tel" id="phone2" class="form-control" />
-                                            <label class="form-label" for="phone2">Phone Number</label>
-                                        </div>
-
-                                        <div class="form-outline mb-4">
-                                            <textarea id="address2" class="form-control"></textarea>
-                                            <label class="form-label" for="address2">Address</label>
-                                        </div>
-
-                                        <h6 class="card-subtitle mb-3">Order Details</h6>
-
-                                        <div class="row mb-3">
-                                            <div class="col-4">Name</div>
-                                            <div class="col-4">Price</div>
-                                            <div class="col-4">Quantity</div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-4">Product 1</div>
-                                            <div class="col-4">$10</div>
-                                            <div class="col-4">2</div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-4">Product 2</div>
-                                            <div class="col-4">$20</div>
-                                            <div class="col-4">1</div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-4">Product 3</div>
-                                            <div class="col-4">$15</div>
-                                            <div class="col-4">3</div>
-                                        </div>
-
-                                        <div class="text-end mb-4">
-                                            <strong>Total: $95</strong>
-                                        </div>
-
-                                        <button type="button" class="btn btn-danger">Cancel</button>
-                                    </form>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -158,15 +104,51 @@
                 <div id="shipping-orders-section" class="tab-pane fade">
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Shipping Orders</h5>
-                                    <form>
-                                        <!-- Shipping Orders form fields -->
-                                        Shipping Orders
-                                    </form>
-                                </div>
-                            </div>
+                            @foreach ($orders as $order)
+                                @if ($order->status_id < 5)
+                                    <div class="card border mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Code Orders:
+                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}</h5>
+                                            <!-- All Orders form fields for Order 1 -->
+                                            <div class="form-outline mb-3">
+                                                <p style="color:black">Name: {{ $order->name }}</p>
+                                                <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                                <p style="color:black">Address:
+                                                    {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
+                                                </p>
+                                                <p style="color:black">Note: {{ $order->note }}</p>
+                                                <p style="color:black">Payment method: {{ $order->payment_method }}</p>
+                                                <p style="color:black">Status: {{ $order->payment_status }}</p>
+                                            </div>
+                                            <h6 class="card-subtitle mb-3">Order Details</h6>
+                                            <div class="row mb-3">
+                                                <div class="col-3">Name</div>
+                                                <div class="col-3" style="text-align: right;">Price</div>
+                                                <div class="col-3" style="text-align: right;">Amount</div>
+                                                <div class="col-3" style="text-align: right;">Total</div>
+                                            </div>
+                                            @foreach ($order->items as $item)
+                                                <div class="row mb-3">
+                                                    <div class="col-3">{{ $item->product_name }}</div>
+                                                    <div class="col-3" style="text-align: right;">
+                                                        {{ number_format($item->price, 0, ',', '.') }} đ</div>
+                                                    <div class="col-3" style="text-align: right;">{{ $item->amount }}
+                                                    </div>
+                                                    <div class="col-3" style="text-align: right;">
+                                                        {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                            <div class="text-end mb-4">
+                                                <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -174,15 +156,51 @@
                 <div id="completed-orders-section" class="tab-pane fade">
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Completed Orders</h5>
-                                    <form>
-                                        <!-- Completed Orders form fields -->
-                                        Completed Orders
-                                    </form>
-                                </div>
-                            </div>
+                            @foreach ($orders as $order)
+                                @if ($order->status_id > 4 && $order->status_id < 7)
+                                    <div class="card border mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Code Orders:
+                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}</h5>
+                                            <!-- All Orders form fields for Order 1 -->
+                                            <div class="form-outline mb-3">
+                                                <p style="color:black">Name: {{ $order->name }}</p>
+                                                <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                                <p style="color:black">Address:
+                                                    {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
+                                                </p>
+                                                <p style="color:black">Note: {{ $order->note }}</p>
+                                                <p style="color:black">Payment method: {{ $order->payment_method }}</p>
+                                                <p style="color:black">Status: {{ $order->payment_status }}</p>
+                                            </div>
+                                            <h6 class="card-subtitle mb-3">Order Details</h6>
+                                            <div class="row mb-3">
+                                                <div class="col-3">Name</div>
+                                                <div class="col-3" style="text-align: right;">Price</div>
+                                                <div class="col-3" style="text-align: right;">Amount</div>
+                                                <div class="col-3" style="text-align: right;">Total</div>
+                                            </div>
+                                            @foreach ($order->items as $item)
+                                                <div class="row mb-3">
+                                                    <div class="col-3">{{ $item->product_name }}</div>
+                                                    <div class="col-3" style="text-align: right;">
+                                                        {{ number_format($item->price, 0, ',', '.') }} đ</div>
+                                                    <div class="col-3" style="text-align: right;">{{ $item->amount }}
+                                                    </div>
+                                                    <div class="col-3" style="text-align: right;">
+                                                        {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                            <div class="text-end mb-4">
+                                                <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -190,15 +208,51 @@
                 <div id="cancelled-orders-section" class="tab-pane fade">
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Cancelled Orders</h5>
-                                    <form>
-                                        <!-- Cancelled Orders form fields -->
-                                        Cancelled Orders
-                                    </form>
-                                </div>
-                            </div>
+                            @foreach ($orders as $order)
+                                @if ($order->status_id > 6)
+                                    <div class="card border mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Code Orders:
+                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}</h5>
+                                            <!-- All Orders form fields for Order 1 -->
+                                            <div class="form-outline mb-3">
+                                                <p style="color:black">Name: {{ $order->name }}</p>
+                                                <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                                <p style="color:black">Address:
+                                                    {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
+                                                </p>
+                                                <p style="color:black">Note: {{ $order->note }}</p>
+                                                <p style="color:black">Payment method: {{ $order->payment_method }}</p>
+                                                <p style="color:black">Status: {{ $order->payment_status }}</p>
+                                            </div>
+                                            <h6 class="card-subtitle mb-3">Order Details</h6>
+                                            <div class="row mb-3">
+                                                <div class="col-3">Name</div>
+                                                <div class="col-3" style="text-align: right;">Price</div>
+                                                <div class="col-3" style="text-align: right;">Amount</div>
+                                                <div class="col-3" style="text-align: right;">Total</div>
+                                            </div>
+                                            @foreach ($order->items as $item)
+                                                <div class="row mb-3">
+                                                    <div class="col-3">{{ $item->product_name }}</div>
+                                                    <div class="col-3" style="text-align: right;">
+                                                        {{ number_format($item->price, 0, ',', '.') }} đ</div>
+                                                    <div class="col-3" style="text-align: right;">{{ $item->amount }}
+                                                    </div>
+                                                    <div class="col-3" style="text-align: right;">
+                                                        {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                            <div class="text-end mb-4">
+                                                <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -215,7 +269,7 @@
 
                 // Kiểm tra nếu liên kết được nhấp là "Logout"
                 if ($(this).attr("id") === "logout" || $(this).attr("id") === "home") {
-                    window.location.href =$(this).attr("href") ;
+                    window.location.href = $(this).attr("href");
                 } else {
                     var targetSection = $(this).attr("href");
 

@@ -15,7 +15,7 @@ class PaymentController extends Controller
     {
         $vnp_Url = config('payment.vnpay.url');
         $vnp_HashSecret = config('payment.vnpay.merchant_secret');
-        $vnp_TxnRef = $request->oder_id; //Mã giao dịch thanh toán tham chiếu của merchant
+        $vnp_TxnRef = $request->order_id; //Mã giao dịch thanh toán tham chiếu của merchant
         $vnp_Amount = $request->total; // Số tiền thanh toán
         $vnp_Locale = config('payment.vnpay.locale'); //Ngôn ngữ chuyển hướng thanh toán
         $vnp_BankCode = config('payment.vnpay.bankcode'); //Mã phương thức thanh toán
@@ -32,7 +32,7 @@ class PaymentController extends Controller
             "vnp_Locale" => $vnp_Locale,
             "vnp_OrderInfo" => "Thanh toan GD:" . $vnp_TxnRef,
             "vnp_OrderType" => "other",
-            "vnp_ReturnUrl" => route('vnPayReturn', ['oder_id' => $request->oder_id]),
+            "vnp_ReturnUrl" => route('vnPayReturn', ['order_id' => $request->order_id]),
             "vnp_TxnRef" => $vnp_TxnRef,
             "vnp_ExpireDate" => Carbon::now()->addMinutes(30)->format('YmdHis')
         );
@@ -66,14 +66,15 @@ class PaymentController extends Controller
 
     public function vnPayReturn(Request $request)
     {
-        if ($request->vnp_TransationStatus == '00') {
-            $order = Order::with('items', 'province', 'district', 'ward')->find($request->oder_id);
+        if ($request->vnp_TransactionStatus == '00') {
+
+            $order = Order::with('items', 'province', 'district', 'ward')->find($request->order_id);
 
             try {
                 DB::beginTransaction();
                 $order->update([
-                    'payment_method' => 'Pay via VNPAY',
-                    'status' => 'Place order success',
+                    'payment_method' => 'Thanh toán qua VN Pay',
+                    'payment_status' => 'Đã thanh toán',
                 ]);
                 DB::commit();
             } catch (\Exception $e) {
@@ -83,8 +84,8 @@ class PaymentController extends Controller
             Mail::to($order->email)
                 ->queue(new OrderSuccessMail($order));
 
-            return view('frontend.checkout.success');
+            return redirect()->route('success');
         }
-        return view('frontend.checkout.failed');
+        return redirect()->route('failed');
     }
 }

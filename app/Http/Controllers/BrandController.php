@@ -19,7 +19,7 @@ class BrandController extends Controller
 
     public function index()
     {
-        //$this->authorize('viewAny', Brand::class);
+        $this->authorize('viewAny', Brand::class);
         $brands = $this->brandService->getAllBrands();
         return view('admin.brand.index', ['brands' => $brands]);
     }

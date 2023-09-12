@@ -18,7 +18,7 @@ class PermissionPolicy
      */
     public function viewAny(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('index_permission');
+        return $this->admin->hasPermission('viewAny_permission') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -26,7 +26,7 @@ class PermissionPolicy
      */
     public function view(?Admin $admin, Permission $permission): bool
     {
-        return $this->admin->hasPermission('detail_permission');
+        return $this->admin->hasPermission('detail_permission') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -34,7 +34,7 @@ class PermissionPolicy
      */
     public function create(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('create_permission');
+        return $this->admin->hasPermission('create_permission') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -42,7 +42,7 @@ class PermissionPolicy
      */
     public function update(?Admin $admin, Permission $permission): bool
     {
-        return $this->admin->hasPermission('update_permission');
+        return $this->admin->hasPermission('update_permission') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -50,7 +50,7 @@ class PermissionPolicy
      */
     public function delete(?Admin $admin, Permission $permission): bool
     {
-        return $this->admin->hasPermission('delete_permission');
+        return $this->admin->hasPermission('delete_permission') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -58,7 +58,7 @@ class PermissionPolicy
      */
     public function restore(?Admin $admin, Permission $permission): bool
     {
-        //
+        return 0;
     }
 
     /**
@@ -66,6 +66,6 @@ class PermissionPolicy
      */
     public function forceDelete(?Admin $admin, Permission $permission): bool
     {
-        //
+        return 0;
     }
 }

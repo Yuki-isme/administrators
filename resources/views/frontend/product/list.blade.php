@@ -284,7 +284,7 @@
                                                     <p class="card-text">{{ $product->name }}
                                                     </p>
                                                     <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                                        <a href="#!" class="btn btn-primary shadow-0 me-1">Add to
+                                                        <a href="{{ route('addToCart', ['id' => $product->id]) }}" class="btn btn-primary shadow-0 me-1 addToCartButton">Add to
                                                             cart</a>
                                                         <a href="#!"
                                                             class="btn btn-light border icon-hover px-2 pt-2"><i
@@ -392,6 +392,27 @@
 
 @push('custom-script')
     <script>
+        $(document).ready(function() {
+            $(document).on('click', '.addToCartButton', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if(response.success){
+                            $('#cart-amount').text('My cart' + ' (' + response.count +')');
+                        }else{
+                            console.log(response.message);
+                        }
+                    }
+                });
+            });
+        });
+
         const itemsPerPageList = 5;
         const itemsPerPageGrid = 9;
         let currentPageList = 1;

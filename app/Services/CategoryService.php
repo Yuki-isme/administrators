@@ -233,7 +233,7 @@ class CategoryService
         return response()->json($leafCategories);
     }
 
-    public function getParentByChildren_id( $request)
+    public function getParentByChildren_id($request)
     {
         $category = Category::find($request->childId);
         $parentCategory = null;

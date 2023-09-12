@@ -19,7 +19,7 @@ class BrandPolicy
      */
     public function viewAny(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('index_brand');
+        return $this->admin->hasPermission('viewAny_brand') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -36,7 +36,7 @@ class BrandPolicy
      */
     public function create(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('create_brand');
+        return $this->admin->hasPermission('create_brand') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -44,7 +44,7 @@ class BrandPolicy
      */
     public function update(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('update_brand');
+        return $this->admin->hasPermission('update_brand') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -52,7 +52,7 @@ class BrandPolicy
      */
     public function delete(?Admin $admin, Brand $brand): bool
     {
-        return $this->admin->hasPermission('delete_brand');
+        return $this->admin->hasPermission('delete_brand') || $this->admin->hasRole('Master');
     }
 
     /**

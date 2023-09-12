@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -65,6 +66,9 @@ Route::group(['prefix' => 'brands', 'as' => 'brands.'], function () {
 
 Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
 
+    Route::get('/getProducts', [ProductController::class, 'getProducts'])->name('getProducts');
+    Route::get('/getProductInfo', [ProductController::class, 'getProductInfo'])->name('getProductInfo');
+
     Route::get('/', [ProductController::class, 'index'])->name('index');
 
     Route::get('/create', [ProductController::class, 'create'])->name('create');
@@ -76,6 +80,25 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
     Route::put('/{id}', [ProductController::class, 'update'])->name('update');
 
     Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+
+});
+
+Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+
+    Route::get('/', [OrderController::class, 'index'])->name('index');
+    Route::get('/completed', [OrderController::class, 'completed'])->name('completed');
+    Route::get('/processing', [OrderController::class, 'processing'])->name('processing');
+    Route::get('/canceled', [OrderController::class, 'canceled'])->name('canceled');
+
+    Route::put('/status', [OrderController::class, 'status'])->name('status');
+
+    Route::get('/create', [OrderController::class, 'create'])->name('create');
+    Route::post('/', [OrderController::class, 'store'])->name('store');
+
+    Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+
+    Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [OrderController::class, 'update'])->name('update');
 });
 
 Route::group(['prefix' => 'tags', 'as' => 'tags.'], function () {
@@ -137,3 +160,5 @@ Route::group(['prefix' => 'admins', 'as' => 'admins.'], function () {
 Route::get('/dashboard', function () {
     return view('admin.layout.layout');
 })->name('admin.dashboard');
+
+

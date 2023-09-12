@@ -18,7 +18,7 @@ class RolePolicy
      */
     public function viewAny(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('index_role');
+        return $this->admin->hasPermission('viewAny_role') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -26,7 +26,7 @@ class RolePolicy
      */
     public function view(?Admin $admin, Role $role): bool
     {
-        return $this->admin->hasPermission('detail_role');
+        return $this->admin->hasPermission('detail_role') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -34,7 +34,7 @@ class RolePolicy
      */
     public function create(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('create_role');
+        return $this->admin->hasPermission('create_role') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -42,7 +42,7 @@ class RolePolicy
      */
     public function update(?Admin $admin, Role $role): bool
     {
-        return $this->admin->hasPermission('update_role');
+        return $this->admin->hasPermission('update_role') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -50,7 +50,7 @@ class RolePolicy
      */
     public function delete(?Admin $admin, Role $role): bool
     {
-        return $this->admin->hasPermission('delete_role');
+        return $this->admin->hasPermission('delete_role') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -58,7 +58,7 @@ class RolePolicy
      */
     public function restore(?Admin $admin, Role $role): bool
     {
-        //
+        return 0;
     }
 
     /**
@@ -66,6 +66,6 @@ class RolePolicy
      */
     public function forceDelete(?Admin $admin, Role $role): bool
     {
-        //
+        return 0;
     }
 }

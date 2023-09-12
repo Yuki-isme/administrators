@@ -12,14 +12,14 @@
                 Trendy Products, Factory Prices, Excellent Service
             </p>
             <a href="{{ route('list') }}">
-              <button type="button" class="btn btn-outline-light">
-                  Learn more
-              </button>
+                <button type="button" class="btn btn-outline-light">
+                    Learn more
+                </button>
             </a>
             <a href="{{ route('list') }}">
-              <button type="button" class="btn btn-light shadow-0 text-primary pt-2 border border-white">
-                <span class="pt-1">Purchase now</span>
-            </button>
+                <button type="button" class="btn btn-light shadow-0 text-primary pt-2 border border-white">
+                    <span class="pt-1">Purchase now</span>
+                </button>
             </a>
         </div>
     </div>
@@ -34,16 +34,18 @@
                         <div class="col-lg-6 col-md-12">
                             <div class="row">
                     @endif
-                              <div class="col-3">
-                                  <a href="{{ route('listByCategory', ['id' => $category->id]) }}" class="text-center d-flex flex-column justify-content-center">
-                                      <button type="button" class="btn btn-outline-secondary mx-auto p-3 mb-2"
-                                          data-mdb-ripple-color="dark">
-                                          {{-- <i class="fas fa-couch fa-xl fa-fw"></i> --}}
-                                          <img src="{{ asset('storage/' . $category->thumbnail->url) }}" width="100%" height="30px">
-                                      </button>
-                                      <div class="text-dark">{{ $category->name }}</div>
-                                  </a>
-                              </div>
+                    <div class="col-3">
+                        <a href="{{ route('listByCategory', ['id' => $category->id]) }}"
+                            class="text-center d-flex flex-column justify-content-center">
+                            <button type="button" class="btn btn-outline-secondary mx-auto p-3 mb-2"
+                                data-mdb-ripple-color="dark">
+                                {{-- <i class="fas fa-couch fa-xl fa-fw"></i> --}}
+                                <img src="{{ asset('storage/' . $category->thumbnail->url) }}" width="30px"
+                                    height="30px">
+                            </button>
+                            <div class="text-dark">{{ $category->name }}</div>
+                        </a>
+                    </div>
                     @if (($index + 1) % 4 == 0 || $index == count($categoriesIndex) - 1)
                             </div>
                         </div>
@@ -68,22 +70,23 @@
                             <a href="{{ route('productDetail', ['id' => $newProduct->id]) }}" class="text-product">
                                 <img src="{{ asset('storage/' . $newProduct->thumbnail->url) }}" class="card-img-top"
                                     style="aspect-ratio: 1 / 1" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">{{ $newProduct->name }}</h5>
-                                    <p class="card-text">{{ $newProduct->cart_price }} VND</p>
-                                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
                             </a>
-                            <a href="{{ route('addToCart', ['id' => $newProduct->id]) }}"
-                                class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                            <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
-                                    class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                            <div class="card-body d-flex flex-column">
+                                <a href="{{ route('productDetail', ['id' => $newProduct->id]) }}" class="text-product">
+                                    <h5 class="card-title">{{ $newProduct->name }}</h5>
+                                </a>
+                                <p class="card-text">{{ number_format($newProduct->cart_price, 0, ',', '.') }} VND</p>
+                                <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                                    <a href="{{ route('addToCart', ['id' => $newProduct->id]) }}"
+                                        class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
+                                    <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
+                                            class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                @endforeach
             </div>
-        </div>
-        @endforeach
-
-        </div>
         </div>
     </section>
     <!-- Products -->
@@ -272,3 +275,28 @@
     </section>
     <!-- Blog -->
 @endsection
+
+@push('custom-script')
+    <script>
+        $(document).ready(function() {
+            $('.addToCartButton').on('click', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if(response.success){
+                            $('#cart-amount').text('My cart' + ' (' + response.count +')');
+                        }else{
+                            console.log(response.message);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

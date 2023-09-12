@@ -3,10 +3,10 @@
     <p style="color:black">Code order: {{ str_pad($order->id, 10, '0', STR_PAD_LEFT)}}</p>
     <p style="color:black">Name: {{ $order->name}}</p>
     <p style="color:black">Phone: {{ $order->phone_number}}</p>
-    <p style="color:black">Payment method: {{ $order->payment_method}}</p>
     <p style="color:black">Address: {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name}}</p>
     <p style="color:black">Note: {{ $order->note}}</p>
-    <p style="color:black">Status: {{ $order->status}}</p>
+    <p style="color:black">Payment method: {{ $order->payment_method}}</p>
+    <p style="color:black">Status: {{ $order->payment_status}}</p>
     <h3 style="color:black">All Products</h3>
     <div style="color:black">
         <table border="1" style="border-collapse: collapse;">

@@ -56,4 +56,9 @@ class ProductRepository extends BaseRepository
     {
         return $this->model->with('thumbnail')->get();
     }
+
+    public function getProduct($id)
+    {
+        return $this->model->with('thumbnail')->find($id);
+    }
 }

@@ -18,6 +18,7 @@ class UserAuthController extends Controller
         $credentials = $request->only('username', 'password');
         //dd($credentials);
         if (Auth::guard('web')->attempt($credentials)) {
+            cart()->moveCartToDatabase();
             return redirect()->route('index');
         }
 

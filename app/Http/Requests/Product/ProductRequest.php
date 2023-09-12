@@ -25,7 +25,16 @@ class ProductRequest extends FormRequest
             'name' => 'required|min:3|max:25',
             'category_id' => ['required', 'integer', 'not_in:0'],
             'brand_id' => ['required', 'integer', 'not_in:0'],
-            'sku' => 'required',
+            'sku' => ['required', 'regex:/^[^\s]+$/',],
+            'stock' => 'required|numeric|min:0', // Stock phải là số nguyên không âm
+            'price' => 'required|numeric|min:0', // Price phải là số không âm
+            'sale_price' => ['required', 'numeric', 'min:0',
+                function ($attribute, $value, $fail) {
+                    if ($value >= $this->input('price')) {
+                        $fail('Sale price phải nhỏ hơn giá gốc.');
+                    }
+                },
+            ],
             'description' => 'required',
             'content' => 'required',
             'thumbnail' => 'required|image',
@@ -45,6 +54,7 @@ class ProductRequest extends FormRequest
             'brand_id.not_in' => 'Bạn phải chọn thương hiệu!',
             'brand_id.required' => 'Bạn phải chọn thương hiệu!',
             'sku.required' => 'Bạn phải nhập tên của sản phẩm!',
+            'sku.regex:/^[^\s]+$/' => 'Không được có khoảng trắng ở sku!',
             'thumbnail.required' => 'Bạn phải tải lên ảnh!',
             'thumbnail.image' => 'Bạn phải tải định dạng ảnh!',
             'catalog.required' => 'Bạn phải tải lên ảnh!',

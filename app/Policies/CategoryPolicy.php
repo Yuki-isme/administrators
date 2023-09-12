@@ -18,7 +18,7 @@ class CategoryPolicy
      */
     public function viewAny(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('index_category');
+        return $this->admin->hasPermission('viewAny_category') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -26,7 +26,7 @@ class CategoryPolicy
      */
     public function view(?Admin $admin, Category $category): bool
     {
-        return $this->admin->hasPermission('detail_category');
+        return 0;
     }
 
     /**
@@ -34,7 +34,7 @@ class CategoryPolicy
      */
     public function create(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('create_category');
+        return $this->admin->hasPermission('create_category') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -42,7 +42,7 @@ class CategoryPolicy
      */
     public function update(?Admin $admin, Category $category): bool
     {
-        return $this->admin->hasPermission('update_category');
+        return $this->admin->hasPermission('update_category') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -50,7 +50,7 @@ class CategoryPolicy
      */
     public function delete(?Admin $admin, Category $category): bool
     {
-        return $this->admin->hasPermission('delete_category');
+        return $this->admin->hasPermission('delete_category') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -58,7 +58,7 @@ class CategoryPolicy
      */
     public function restore(?Admin $admin, Category $category): bool
     {
-        //
+        return 0;
     }
 
     /**
@@ -66,6 +66,6 @@ class CategoryPolicy
      */
     public function forceDelete(?Admin $admin, Category $category): bool
     {
-        //
+        return 0;
     }
 }

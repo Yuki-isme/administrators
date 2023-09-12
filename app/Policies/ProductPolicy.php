@@ -18,7 +18,7 @@ class ProductPolicy
      */
     public function viewAny(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('index_product');
+        return $this->admin->hasPermission('viewAny_product') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -26,7 +26,7 @@ class ProductPolicy
      */
     public function view(?Admin $admin, Product $product): bool
     {
-        return $this->admin->hasPermission('detail_product');
+        return $this->admin->hasPermission('detail_product') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -34,7 +34,7 @@ class ProductPolicy
      */
     public function create(?Admin $admin): bool
     {
-        return $this->admin->hasPermission('create_roduct');
+        return $this->admin->hasPermission('create_roduct') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -42,7 +42,7 @@ class ProductPolicy
      */
     public function update(?Admin $admin, Product $product): bool
     {
-        return $this->admin->hasPermission('update_product');
+        return $this->admin->hasPermission('update_product') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -50,7 +50,7 @@ class ProductPolicy
      */
     public function delete(?Admin $admin, Product $product): bool
     {
-        return $this->admin->hasPermission('delete_product');
+        return $this->admin->hasPermission('delete_product') || $this->admin->hasRole('Master');
     }
 
     /**
@@ -58,7 +58,7 @@ class ProductPolicy
      */
     public function restore(?Admin $admin, Product $product): bool
     {
-        //
+        return 0;
     }
 
     /**
@@ -66,6 +66,6 @@ class ProductPolicy
      */
     public function forceDelete(?Admin $admin, Product $product): bool
     {
-        //
+        return 0;
     }
 }

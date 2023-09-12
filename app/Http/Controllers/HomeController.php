@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -133,6 +135,14 @@ class HomeController extends Controller
 
     public function myAccount()
     {
-        return view('frontend.user.account');
+        $user = Auth::guard('web')->user();
+        $orders = Order::with('items', 'province', 'district', 'ward', 'status')->where('user_id', $user->id)->get();
+
+        return view('frontend.user.account', ['user' => $user, 'orders' => $orders]);
+    }
+
+    public function wishlist()
+    {
+        return view('frontend.user.wishlist');
     }
 }

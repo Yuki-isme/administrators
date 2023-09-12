@@ -6,12 +6,12 @@
         <div class="container">
             <div class="row">
                 <!-- cart -->
-                <div class="col-lg-9">
+                <div class="col-lg-12">
                     <div class="card border shadow-0">
                         <div class="m-4">
-                            <h4 class="card-title mb-4">Your shopping cart</h4>
+                            <h4 class="card-title mb-4">Your wishlist</h4>
                             <div id="cart-update">
-                                @if (cart()->getContent() && count(cart()->getContent()) > 0)
+                                @if (session()->has('cart'))
                                     @foreach (cart()->getContent() as $id => $item)
                                         <div class="row gy-3 mb-4">
                                             <div class="col-lg-5">
@@ -29,23 +29,16 @@
                                             <div
                                                 class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
                                                 <div class="">
-                                                    <select style="width: 100px"
-                                                        class="form-select me-4 update-amount-select"
-                                                        data-product-id="{{ $id }}" value={{ $item['amount'] }}>
+                                                    <select style="width: 100px" class="form-select me-4"
+                                                        value={{ $item['amount'] }}>
                                                         @for ($i = 1; $i <= $item['stock']; $i++)
                                                             <option {{ $i == $item['amount'] ? 'Selected' : '' }}>
                                                                 {{ $i }}</option>
                                                         @endfor
                                                     </select>
                                                 </div>
-                                                <div class="">
-                                                    <span
-                                                        class="h6">{{ number_format($item['price'] * $item['amount'], 0, ',', '.') }}
-                                                        VND</span>
-                                                    <br />
-                                                    <small class="text-muted text-nowrap">
-                                                        {{ number_format($item['price'], 0, ',', '.') }} VND / per item
-                                                    </small>
+                                                <div style="display: flex; justify-content: center;">
+                                                    <div class="h6">{{ number_format($item['price'] * $item['amount'], 0, ',', '.') }} VND</div>
                                                 </div>
                                             </div>
                                             <div
@@ -55,7 +48,7 @@
                                                         class="btn btn-light border px-2 icon-hover-primary"><i
                                                             class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
                                                     <a href="{{ route('deleteItem', ['id' => $id]) }}"
-                                                        class="btn btn-light border text-danger icon-hover-danger deleteItem">Remove</a>
+                                                        class="btn btn-outline-primary">ADD TO CART</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -68,75 +61,10 @@
                                 </div> --}}
 
                         </div>
-                        <div class="border-top pt-4 mx-4 mb-4">
-                            <p>
-                                <i class="fas fa-truck text-muted fa-lg"></i> Free Delivery
-                                within 1-2 weeks
-                            </p>
-                            <p class="text-muted">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                                do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                                laboris nisi ut aliquip
-                            </p>
-                        </div>
+
                     </div>
                 </div>
                 <!-- cart -->
-                <!-- summary -->
-                <div class="col-lg-3">
-                    {{-- <div class="card mb-3 border shadow-0">
-                        <div class="card-body">
-                            <form>
-                                <div class="form-group">
-                                    <label class="form-label">Have coupon?</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control border" name=""
-                                            placeholder="Coupon code" />
-                                        <button class="btn btn-light border">Apply</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div> --}}
-                    <div class="card shadow-0 border">
-                        <div class="card-body">
-                            <div id="total-update">
-                                <div class="d-flex justify-content-between">
-                                    <p class="mb-2">Total price:</p>
-                                    <p class="mb-2">{{ number_format($total + $discount, 0, ',', '.') }} đ</p>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <p class="mb-2">Discount:</p>
-                                    <p class="mb-2 text-danger">{{ number_format($discount, 0, ',', '.') }} đ</p>
-                                </div>
-                                {{-- <div class="d-flex justify-content-between">
-                                    <p class="mb-2">TAX:</p>
-                                    <p class="mb-2">{{ $tax ?? 0 }} đ</p>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <p class="mb-2">Shipping Cost:</p>
-                                    <p class="mb-2">{{ $ship ?? 0 }} ₫</p>
-                                </div> --}}
-                                <hr />
-                                <div class="d-flex justify-content-between">
-                                    <p class="mb-2">Total price:</p>
-                                    <p class="mb-2 fw-bold text-success">{{ number_format($total, 0, ',', '.') }} VND</p>
-                                    {{-- + $ship + $tax - $discount --}}
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <a href="{{ route('order') }}" class="btn btn-success w-100 shadow-0 mb-2">
-                                    Make Purchase
-                                </a>
-                                <a href="{{ route('list') }}" class="btn btn-light w-100 border mt-2">
-                                    Back to shop
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- summary -->
             </div>
         </div>
     </section>
@@ -243,46 +171,6 @@
 
 @push('custom-script')
     <script>
-        $(document).ready(function() {
-            $(document).on('click', '.deleteItem', function(e) {
-                e.preventDefault();
 
-                $.ajax({
-                    url: $(this).attr('href'),
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function(response) {
-                        console.log(response.count);
-                        $('#cart-amount').text('My cart' + ' (' + response.count + ')');
-                        $('#cart-update').html(response.cart);
-                        $('#total-update').html(response.total);
-                    }
-                });
-            });
-        });
-
-        $(document).ready(function() {
-            $(document).on('change', '.update-amount-select', function(e) {
-                e.preventDefault();
-
-                const productId = $(this).data('product-id');
-                const amount = $(this).val();
-
-                $.ajax({
-                    url: `{{ route('updateAmount', ['id' => ':id']) }}`.replace(':id', productId),
-                    type: 'PUT',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        amount: amount,
-                    },
-                    success: function(response) {
-                        $('#cart-update').html(response.cart);
-                        $('#total-update').html(response.total);
-                    }
-                });
-            });
-        });
     </script>
 @endpush

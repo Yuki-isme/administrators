@@ -19,35 +19,48 @@
                             </div>
                         </div>
                     @endif
-
+                    @if ($errors->any())
+                        <div class="alert alert-danger" id="alert" style="position: relative;">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="close-alert" id="close-alert"
+                                style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
                     <!-- Checkout -->
                     <div class="card shadow-0 border">
                         <div class="p-4">
                             <h5 class="card-title mb-3">Order Info</h5>
-                            <form action="{{ route("checkout") }}" method="POST">
+                            <form action="{{ route('checkout') }}" method="POST">
                                 @csrf
                                 <div class="row">
+
                                     <div class="col-12 mb-3">
                                         <p class="mb-0">Name</p>
                                         <div class="form-outline">
-                                            <input type="text" id="typeText" placeholder="Type here"
-                                                class="form-control" name="name" value="{{ $user->name ?? '' }}" required/>
+                                            <input type="text" class="form-control" placeholder="Your name"
+                                                name="name" id="name" required />
                                         </div>
                                     </div>
 
                                     <div class="col-6 mb-3">
                                         <p class="mb-0">Phone</p>
                                         <div class="form-outline">
-                                            <input type="tel" id="typePhone" name="phone_number"
-                                                value="{{ $user->phone ?? '' }}" class="form-control" required/>
+                                            <input type="tel" class="form-control" placeholder="Your phone"
+                                                name="phone_number" id="phone_number" required />
                                         </div>
                                     </div>
 
                                     <div class="col-6 mb-3">
                                         <p class="mb-0">Email</p>
                                         <div class="form-outline">
-                                            <input type="email" id="typeEmail" placeholder="example@gmail.com"
-                                                class="form-control" name="email" value="{{ $user->email ?? '' }}" required/>
+                                            <input type="email" class="form-control" placeholder="example@gmail.com"
+                                                name="email" id="email" required />
                                         </div>
                                     </div>
                                 </div>
@@ -90,21 +103,39 @@
                                 <h5 class="card-title mb-3">Address</h5>
 
                                 <div class="row">
-
+                                    @if (Auth::guard('web')->check())
+                                        <div class="col-12 mb-3">
+                                            <p class="mb-0">Address list</p>
+                                            <select class="form-select select2" name="info_id" id="address_list">
+                                                <option value="0">New Address</option>
+                                                @foreach ($user->info as $info)
+                                                    <option value="{{ $info->id }}" data-name="{{ $info->name }}"
+                                                        data-phone_number="{{ $info->phone_number }}"
+                                                        data-email="{{ $info->email }}" data-house="{{ $info->house }}"
+                                                        data-street="{{ $info->street }}"
+                                                        data-ward_code="{{ $info->ward_code }}"
+                                                        data-district_code="{{ $info->district_code }}"
+                                                        data-province_code="{{ $info->province_code }}"
+                                                        data-note="{{ $info->note }}">
+                                                        {{ $info->name . ', ' . $info->phone_number . ', ' . $info->email . ', ' . $info->house . ', ' . $info->street . ', ' . $info->ward->name . ', ' . $info->district->name . ', ' . $info->province->name . ', ' . $info->note }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
                                     <div class="col-sm-4 mb-3">
                                         <p class="mb-0">Province / City</p>
                                         <select id="province_id" name="province_code" class="form-select select2" required>
                                             @foreach ($provinces as $province)
-                                                <option value="{{ $province->code }}"
-                                                    {{ isset($user->info->province_code) && $user->info->province_code == $province->code ? 'selected' : '' }}>
-                                                    {{ $province->name }}</option>
+                                                <option value="{{ $province->code }}">{{ $province->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
 
                                     <div class="col-sm-4 mb-3">
                                         <p class="mb-0">District / Town</p>
-                                        <select id="district_id" name="district_code" class="form-select select2" required>
+                                        <select id="district_id" name="district_code" class="form-select select2"
+                                            required>
 
                                         </select>
                                     </div>
@@ -118,29 +149,29 @@
                                     <div class="col-sm-4 mb-3">
                                         <p class="mb-0">House</p>
                                         <div class="form-outline">
-                                            <input type="text" id="typeText" placeholder="Type here" name="house"
-                                                class="form-control" value="{{ $user->info->house ?? '' }}" required/>
+                                            <input type="text" class="form-control" placeholder="Type here"
+                                                name="house" id="house" required />
                                         </div>
                                     </div>
                                     <div class="col-sm-4 col-6 mb-3">
                                         <p class="mb-0">Street Name</p>
                                         <div class="form-outline">
-                                            <input type="text" id="typeText" class="form-control" placeholder="Type here" name="street"
-                                                value="{{ $user->info->street ?? '' }}" required/>
+                                            <input type="text" class="form-control" placeholder="Type here"
+                                                name="street" id="street" required />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" value="1"
-                                        id="flexCheckDefault1" name="save"/>
+                                        id="flexCheckDefault1" name="save" />
                                     <label class="form-check-label" for="flexCheckDefault1">Save this address</label>
                                 </div>
 
                                 <div class="mb-3">
                                     <p class="mb-0">Message to seller</p>
                                     <div class="form-outline">
-                                        <textarea class="form-control" id="textAreaExample1" placeholder="Type here" rows="2" name="note" required>{{ $user->info->note ?? '' }}</textarea>
+                                        <textarea class="form-control" placeholder="Type here" rows="2" name="note" id="note" required></textarea>
                                     </div>
                                 </div>
 
@@ -158,31 +189,31 @@
                         <h6 class="mb-3">Summary</h6>
                         <div class="d-flex justify-content-between">
                             <p class="mb-2">Total price:</p>
-                            <p class="mb-2">{{ $total }} đ</p>
+                            <p class="mb-2">{{ number_format($total + $discount, 0, ',', '.') }} đ</p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <p class="mb-2">Discount:</p>
-                            <p class="mb-2">{{ $discount ?? 0 }} đ</p>
+                            <p class="mb-2 text-danger">- {{ number_format($discount, 0, ',', '.') }} đ</p>
                         </div>
-                        <div class="d-flex justify-content-between">
+                        {{-- <div class="d-flex justify-content-between">
                             <p class="mb-2">Tax:</p>
                             <p class="mb-2">{{ $tax ?? 0 }} đ</p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <p class="mb-2">Shipping cost:</p>
                             <p class="mb-2">{{ $ship ?? 0 }} ₫</p>
-                        </div>
+                        </div> --}}
                         <hr />
                         <div class="d-flex justify-content-between">
-                            <p class="mb-2">Total price:</p>
-                            <p class="mb-2 fw-bold text-danger">{{ $total }} VND</p>
+                            <p class="mb-2">Total amount payable:</p>
+                            <p class="mb-2 fw-bold text-success">{{ number_format($total, 0, ',', '.') }} VND</p>
                             {{-- + $ship + $tax - $discount --}}
                         </div>
 
-                        <div class="input-group mt-3 mb-4">
+                        {{-- <div class="input-group mt-3 mb-4">
                             <input type="text" class="form-control border" name="" placeholder="Promo code" />
                             <button class="btn btn-light text-primary border">Apply</button>
-                        </div>
+                        </div> --}}
 
                         <hr />
                         <h6 class="text-dark my-4">Items in cart</h6>
@@ -196,13 +227,14 @@
                                             {{ $item['amount'] }}
                                         </span>
                                         <img src="{{ asset('storage/' . $item['img']) }}"
-                                            style="height: 96px; width: 96x;" class="img-sm rounded border" />
+                                            style="height: 96px; width: 96px;" class="img-sm rounded border" />
                                     </div>
-                                    <div class="">
+                                    <div class="me-3">
                                         <a href="#" class="nav-link">
                                             {{ $item['name'] }}
                                         </a>
-                                        <div class="price text-muted">Total: {{ $item['amount'] * $item['price'] }} VND
+                                        <div class="price text-muted">
+                                            Total:{{ number_format($item['amount'] * $item['price'], 0, ',', '.') }} VND
                                         </div>
                                     </div>
                                 </div>
@@ -229,13 +261,109 @@
 @push('custom-script')
     <script>
         $(document).ready(function() {
+            $('#close-alert').on('click', function() {
+                $('#alert').hide();
+            });
+        });
+
+        $(document).ready(function() {
             $('select.select2').select2();
 
-            // Lấy mã quận/huyện từ bảng info (nếu có).
-            var userDistrictCode = '{{ isset($user->info->district_code) ? $user->info->district_code : '' }}';
-            var userDistrict = '{{ isset($user->info->district_code) ? $user->info->district->name : '' }}';
+            async function loadDistricts(provinceCode) {
+                $('#district_id').empty(); // Xóa tất cả các option hiện tại
 
-            // Thiết lập Select2 cho quận/huyện
+                try {
+                    const data = await $.ajax({
+                        url: '{{ route('getDistricts') }}',
+                        data: {
+                            province_code: provinceCode,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        dataType: 'json'
+                    });
+
+                    // Thêm các option mới vào select district
+                    data.forEach(function(item) {
+                        $('#district_id').append('<option value="' + item.code + '">' + item.name +
+                            '</option>');
+                    });
+                } catch (error) {
+                    console.error('Lỗi khi tải danh sách district:', error);
+                }
+            }
+
+            async function loadWards(districtCode) {
+                $('#ward_id').empty(); // Xóa tất cả các option hiện tại
+
+                try {
+                    const data = await $.ajax({
+                        url: '{{ route('getWards') }}',
+                        data: {
+                            district_code: districtCode,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        dataType: 'json'
+                    });
+
+                    // Thêm các option mới vào select ward
+                    data.forEach(function(item) {
+                        $('#ward_id').append('<option value="' + item.code + '">' + item.name +
+                            '</option>');
+                    });
+                } catch (error) {
+                    console.error('Lỗi khi tải danh sách ward:', error);
+                }
+            }
+
+            $('#address_list').on('change', async function() { // Đặt sự kiện là async
+                var selectedOption = $(this).find(':selected');
+
+                if (selectedOption.val() !== '0') {
+                    // Lấy các giá trị từ option được chọn
+                    var name = selectedOption.data('name');
+                    var phone_number = selectedOption.data('phone_number');
+                    var email = selectedOption.data('email');
+                    var province_code = selectedOption.data('province_code');
+                    var district_code = selectedOption.data('district_code');
+                    var ward_code = selectedOption.data('ward_code');
+                    var house = selectedOption.data('house');
+                    var street = selectedOption.data('street');
+                    var note = selectedOption.data('note');
+
+                    console.log(name, phone_number, email, province_code, district_code, ward_code,
+                        house,
+                        street, note);
+
+                    // Cập nhật các trường thông tin với giá trị từ option được chọn
+                    $('#name').val(name);
+                    $('#phone_number').val(phone_number);
+                    $('#email').val(email);
+                    $('#province_id').val(province_code).trigger('change');
+
+                    // Sử dụng await để chờ cho các hàm loadDistricts và loadWards hoàn thành
+                    await loadDistricts(province_code);
+                    $('#district_id').val(district_code).trigger('change');
+
+                    await loadWards(district_code);
+                    $('#ward_id').val(ward_code).trigger('change');
+
+                    $('#house').val(house);
+                    $('#street').val(street);
+                    $('#note').val(note);
+                } else {
+                    // Nếu chọn "New Address", xóa dữ liệu trong các trường thông tin
+                    $('#name').val('');
+                    $('#phone_number').val('');
+                    $('#email').val('');
+                    $('#province_id').val('').trigger('change');
+                    $('#district_id').val('').trigger('change');
+                    $('#ward_id').val('').trigger('change');
+                    $('#house').val('');
+                    $('#street').val('');
+                    $('#note').val('');
+                }
+            });
+
             $('#district_id').select2({
                 ajax: {
                     url: '{{ route('getDistricts') }}',
@@ -262,16 +390,6 @@
                 }
             });
 
-            // Thiết lập giá trị mặc định cho quận/huyện nếu có dữ liệu từ info.
-            if (userDistrictCode) {
-                $('#district_id').append('<option value="' + userDistrictCode + '">' + userDistrict + '</option>');
-            }
-
-            // Lấy mã xã/phường từ bảng info (nếu có).
-            var userWardCode = '{{ isset($user->info->ward_code) ? $user->info->ward_code : '' }}';
-            var userWard = '{{ isset($user->info->ward_code) ? $user->info->ward->name : '' }}';
-
-            // Thiết lập Select2 cho xã/phường
             $('#ward_id').select2({
                 ajax: {
                     url: '{{ route('getWards') }}',
@@ -297,11 +415,14 @@
                     }
                 }
             });
-
-            // Thiết lập giá trị mặc định cho xã/phường nếu có dữ liệu từ info.
-            if (userWardCode) {
-                $('#ward_id').append('<option value="' + userWardCode + '">' + userWard + '</option>');
-            }
         });
+
+        // // Lấy mã quận/huyện từ bảng info (nếu có).
+        // var userDistrictCode = '{{ isset($user->info->district_code) ? $user->info->district_code : '' }}';
+        // var userDistrict = '{{ isset($user->info->district_code) ? $user->info->district->name : '' }}';
+        // // Thiết lập giá trị mặc định cho quận/huyện nếu có dữ liệu từ info.
+        // if (userDistrictCode) {
+        //     $('#district_id').append('<option value="' + userDistrictCode + '">' + userDistrict + '</option>');
+        // }
     </script>
 @endpush
