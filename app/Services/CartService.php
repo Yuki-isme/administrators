@@ -5,17 +5,21 @@ namespace App\Services;
 use App\Exceptions\CommonException;
 use App\Repositories\ProductRepository;
 use App\Repositories\CartRepository;
+use App\Repositories\ItemRepository;
+use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 
 class CartService
 {
     private $productRepository;
     private $cartRepository;
+    private $itemRepository;
 
-    public function __construct(ProductRepository $productRepository, CartRepository $cartRepository)
+    public function __construct(ProductRepository $productRepository, CartRepository $cartRepository, ItemRepository $itemRepository)
     {
         $this->productRepository = $productRepository;
         $this->cartRepository = $cartRepository;
+        $this->itemRepository = $itemRepository;
     }
 
     public function add($id, $request)
@@ -27,11 +31,11 @@ class CartService
             throw new CommonException('Product not found!');
         }
 
-        if($request->amount && $request->amout > $product->stock){
+        if ($request->amount && $request->amount > $product->stock) {
             return 'amount';
         }
 
-        if($product->stock == 0){
+        if ($product->stock == 0) {
             return 'stock';
         }
 
@@ -148,11 +152,17 @@ class CartService
             foreach ($cartItems as $cartItem) {
                 $product = $cartItem->product;
 
+                if($cartItem->amount > $product->stock){
+                    $cartItem->update([
+                        'amount' => $product->stock,
+                    ]);
+                }
+
                 $cart[$cartItem->product_id] = [
                     'product_id' => $cartItem->product_id,
                     'name' => $cartItem->name,
-                    'price' => $cartItem->price,
-                    'discount' => $cartItem->discount,
+                    'price' => $product->cart_price,
+                    'discount' => $product->price - $product->cart_price,
                     'amount' => $cartItem->amount,
                     'img' => $cartItem->img,
                     'stock' => $product->stock,
@@ -165,8 +175,12 @@ class CartService
                 foreach ($sessionCart as $productId => $item) {
                     $product = $this->productRepository->getProduct($productId);
 
-                    if ($product) {
-                        $item['stock'] = $product->stock;
+                    $item['price'] = $product->cart_price;
+                    $item['discount'] = $product->price - $product->cart_price;
+                    $item['stock'] = $product->stock;
+
+                    if($item['amount'] > $product->stock){
+                        $item['amount'] = $product->stock;
                     }
                 }
             }
@@ -226,6 +240,20 @@ class CartService
         return $discount;
     }
 
+    public function updateStock()
+    {
+        foreach(cart()->getContent() as $id => $item)
+        {
+            $product = $this->productRepository->getById($id);
+
+            $product->update([
+                'stock' => $product->stock - $item['amount']
+            ]);
+        }
+
+        cart()->destroy();
+    }
+
     public function moveCartToDatabase()
     {
         if (Auth::guard('web')->check()) {
@@ -251,6 +279,7 @@ class CartService
                                 'user_id' => $user->id,
                                 'product_id' => $productId,
                                 'amount' => $item['amount'],
+                                'discount' => $product->price -$product->cart_price,
                                 'name' => $product->name,
                                 'price' => $product->cart_price,
                                 'img' => $product->thumbnail->url,
@@ -289,5 +318,17 @@ class CartService
         }
 
         return $products;
+    }
+
+    public function countInOrder($id)
+    {
+        $totalAmount = $this->itemRepository->query()->join('orders', 'items.order_id', '=', 'orders.id')
+            ->where('items.product_id', $id)
+            ->where('orders.status_id', '>', 2)
+            ->where('orders.status_id', '<', 7)
+            ->sum('items.amount');
+
+        return $totalAmount;
+
     }
 }

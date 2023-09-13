@@ -66,26 +66,26 @@ class PaymentController extends Controller
 
     public function vnPayReturn(Request $request)
     {
-        if ($request->vnp_TransactionStatus == '00') {
-
+        try {
+            DB::beginTransaction();
             $order = Order::with('items', 'province', 'district', 'ward')->find($request->order_id);
-
-            try {
-                DB::beginTransaction();
+            $order->update([
+                'payment_method' => 'Thanh toán qua VN Pay',
+            ]);
+            if ($request->vnp_TransactionStatus == '00') {
                 $order->update([
-                    'payment_method' => 'Thanh toán qua VN Pay',
                     'payment_status' => 'Đã thanh toán',
+                    'status_id' => 2,
                 ]);
                 DB::commit();
-            } catch (\Exception $e) {
-                DB::rollback();
+                Mail::to($order->email)
+                    ->queue(new OrderSuccessMail($order));
+                return redirect()->route('success');
             }
-
-            Mail::to($order->email)
-                ->queue(new OrderSuccessMail($order));
-
-            return redirect()->route('success');
+            DB::commit();
+            return redirect()->route('failed');
+        } catch (\Exception $e) {
+            DB::rollback();
         }
-        return redirect()->route('failed');
     }
 }

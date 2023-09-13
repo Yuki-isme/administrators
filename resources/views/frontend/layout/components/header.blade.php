@@ -48,14 +48,21 @@
 
                 <!-- Right elements -->
                 <div class="col-lg-5 col-md-12 col-12">
-                    <div class="input-group float-center">
+                    <div class="input-group float-center col-lg-12 search-product-form">
                         <div class="form-outline">
-                            <input type="search" id="form1" class="form-control" />
-                            <label class="form-label" for="form1">Search</label>
+                            <input type="search" id="search-product" name="search_products" class="form-control" />
+                            <label class="form-label" for="search-product">Search</label>
                         </div>
-                        <button type="button" class="btn btn-primary shadow-0">
+                        <button type="button" class="btn btn-primary shadow-0" id="button-search">
                             <i class="fas fa-search"></i>
                         </button>
+                        <div id="search-results">
+                            <div class="search-results">
+                                <ul>
+
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Right elements -->
@@ -63,6 +70,10 @@
         </div>
     </div>
     <!-- Jumbotron -->
+    <form action="{{ route('searchProducts') }}" method="POST" id="search-form">
+        @csrf
+        <input type="hidden" name="q">
+    </form>
 
     @if (request()->routeIs('index'))
         <!-- Navbar -->
@@ -164,8 +175,8 @@
                     <h6 class="mb-0">
                         <a href="{{ route('index') }}" class="text-white-50">Home</a>
                         <span class="text-white-50 mx-2"> > </span>
-                        <a href="{{ route('library') }}"
-                            class="text-white{{ request()->routeIs('library') ? '' : '-50' }}">{!! request()->routeIs('cart') ? '<u>Library</u>' : 'Library' !!}</a>
+                        <a href="{{ route('list') }}"
+                            class="text-white{{ request()->routeIs('list') ? '' : '-50' }}">{!! request()->routeIs('cart') ? '<u>Library</u>' : 'Library' !!}</a>
                         @if (request()->routeIs('productDetail'))
                             <span class="text-white-50 mx-2"> > </span>
                             <a href="{{ route('productDetail', ['id', $productDetail->id]) }}"
@@ -260,7 +271,7 @@
             <!-- Container wrapper -->
         </nav>
         <!-- Navbar -->
-    @elseif(request()->routeIs('listByCategory') || request()->routeIs('listByBrand') || request()->routeIs('list'))
+    @elseif(request()->routeIs('listByCategory') || request()->routeIs('listByBrand') || request()->routeIs('list') || request()->routeIs('searchProducts'))
         <!-- Heading -->
         <div class="bg-primary mb-4">
             <div class="container py-4">

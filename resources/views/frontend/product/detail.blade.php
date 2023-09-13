@@ -5,29 +5,23 @@
     <section class="py-5">
         <div class="container">
             <div class="row gx-5">
-                <aside class="col-lg-6" style="height: 600px;">
-                    <div class="border rounded-4 mb-3 d-flex justify-content-center main-img" style="height: 400px;">
-                        <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="img-feature"
-                            src="{{ asset('storage/' . $productDetail->thumbnail->url) }}" />
-                    </div>
-                    <div class="d-flex justify-content-center mb-3">
-                        <div class="list-image">
-                            <span>
-                                <img width="60" height="60"
-                                    src="{{ asset('storage/' . $productDetail->thumbnail->url) }}"
-                                    class="thumbnail selected" />
-                            </span>
-                            @foreach ($productDetail->media as $media)
-                                <span>
-                                    <img width="60" height="60" src="{{ asset('storage/' . $media->url) }}"
-                                        class="thumbnail" />
-                                </span>
-                            @endforeach
-                        </div>
-                    </div>
-                </aside>
 
-                <main class="col-lg-6">
+                <div class="col-lg-6" style="height: 600px;">
+                    <div class="slider-for resize-images" style="width: 100%; height: 75%;">
+                        <img src="{{ asset('storage/' . $productDetail->thumbnail->url) }}" />
+                        @foreach ($productDetail->media as $media)
+                            <img src="{{ asset('storage/' . $media->url) }}" />
+                        @endforeach
+                    </div>
+
+                    <div class="slider-nav">
+                        <img src="{{ asset('storage/' . $productDetail->thumbnail->url) }}" />
+                        @foreach ($productDetail->media as $media)
+                            <img src="{{ asset('storage/' . $media->url) }}" />
+                        @endforeach
+                    </div>
+                </div>
+                <div class="col-lg-6">
                     <div class="ps-lg-3">
                         <h4 class="title text-dark">
                             {{ $productDetail->name }} <div class="text-muted" style="font-size: 13px">SKU:
@@ -45,7 +39,8 @@
                                 </span>
                             </div> --}}
 
-                            <div class="text-muted"> <i class="fas fa-shopping-basket fa-sm mx-1"> </i>154 orders</div>
+                            <div class="text-muted"> <i class="fas fa-shopping-basket fa-sm mx-1">
+                                </i>{{ cart()->countInOrder($productDetail->id) }} orders</div>
                             <span class="text-success ms-2">In stock</span>
                         </div>
 
@@ -91,7 +86,7 @@
                             </div> --}}
                             <!-- col.// -->
                             <div class="col-md-4 col-6 mb-3">
-                                <label class="mb-2 d-block">Quantity</label>
+                                <label class="mb-2 d-block">Quantity: {{ $productDetail->stock }}</label>
                                 <div class="input-group mb-3" style="width: 170px;">
                                     <button class="btn btn-white border border-secondary px-3" type="button"
                                         id="button-addon1" data-mdb-ripple-color="dark">
@@ -99,22 +94,32 @@
                                     </button>
                                     <input type="text" class="form-control text-center border border-secondary"
                                         aria-label="Example text with button addon" aria-describedby="button-addon1"
-                                        max="{{ $productDetail->stock }}" min="1" id="quantityInput" value="1"
-                                        inputmode="numeric" pattern="[0-9]*" />
+                                        max="{{ $productDetail->stock }}" min="1" id="quantityInput"
+                                        value="{{ $productDetail->stock > 0 ? 1 : 0 }}" inputmode="numeric"
+                                        pattern="[0-9]*" />
                                     <button class="btn btn-white border border-secondary px-3" type="button"
                                         id="button-addon2" data-mdb-ripple-color="dark">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
+
                             </div>
                         </div>
-                        <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
-                        <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i>
+                        <a href="{{ route('buyNow', ['id' => $productDetail->id]) }}" class="btn btn-warning shadow-0"
+                            id="buyNowLink"> Buy now </a>
+                        <a href="{{ route('addToCart', ['id' => $productDetail->id]) }}" class="btn btn-primary shadow-0"
+                            id="addToCartButton"> <i class="me-1 fa fa-shopping-basket"></i>
                             Add to cart </a>
-                        <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i
-                                class="me-1 fa fa-heart fa-lg"></i> Save </a>
+                        <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                            data-product-id="{{ $productDetail->id }}"
+                            data-current-action="{{ $wishlists ? (in_array($productDetail->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
+                            <i
+                                class="fas fa-heart fa-lg
+                                {{ $wishlists ? (in_array($productDetail->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}
+                                px-1 icon-wishlist"></i>
+                            Save </a>
                     </div>
-                </main>
+                </div>
             </div>
         </div>
     </section>
@@ -224,57 +229,33 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Similar items</h5>
-                                <div class="d-flex mb-3">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/8.webp"
-                                            style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1">
-                                            Rucksack Backpack Large <br />
-                                            Line Mounts
-                                        </a>
-                                        <strong class="text-dark"> $38.90</strong>
-                                    </div>
+                                <div class="similar-scroll">
+                                    @foreach ($similarProducts as $similarProduct)
+                                        <div class="d-flex similar-product">
+                                            <a href="{{ route('productDetail', ['id' => $similarProduct->id]) }}" class="me-3">
+                                                <img src="{{ asset('storage/' . $similarProduct->thumbnail->url) }}" style="min-width: 96px; height: 96px;"
+                                                    class="img-md img-thumbnail" />
+                                            </a>
+                                            <div class="product-details">
+                                                <div class="name-price">
+                                                    <a href="{{ route('productDetail', ['id' => $similarProduct->id]) }}" class="nav-link mb-1">{{ $similarProduct->name }}</a>
+                                                    <span class="text-success">{{ $similarProduct->cart_price }}</span>
+                                                </div>
+                                                <div class="buttons">
+                                                    <a href="{{ route('addToCart', ['id' => $similarProduct->id]) }}" class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
+                                                    <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                                                        data-product-id="{{ $similarProduct->id }}"
+                                                        data-current-action="{{ $wishlists ? (in_array($similarProduct->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
+                                                        <i class="fas fa-heart fa-lg
+                                                            {{ $wishlists ? (in_array($similarProduct->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}
+                                                            px-1 icon-wishlist"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
 
-                                <div class="d-flex mb-3">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/9.webp"
-                                            style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1">
-                                            Summer New Men's Denim <br />
-                                            Jeans Shorts
-                                        </a>
-                                        <strong class="text-dark"> $29.50</strong>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex mb-3">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/10.webp"
-                                            style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1"> T-shirts with multiple colors, for men
-                                            and lady </a>
-                                        <strong class="text-dark"> $120.00</strong>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/11.webp"
-                                            style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1"> Blazer Suit Dress Jacket for Men, Blue
-                                            color </a>
-                                        <strong class="text-dark"> $339.90</strong>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -287,17 +268,163 @@
 @push('custom-script')
     <script>
         $(document).ready(function() {
-            var imgFeature = $('.img-feature');
-            var listImg = $('.list-image img');
+            $("#buyNowLink").on("click", function(e) {
+                e.preventDefault();
+                var url = $(this).attr("href");
+                // Tạo một biểu mẫu (form) ẩn
+                var form = document.createElement("form");
+                form.setAttribute("method", "POST");
+                form.setAttribute("action",url); // Sử dụng biến productId ở đây
 
-            listImg.on('click', function(e) {
-                // Loại bỏ lớp CSS 'selected' cho tất cả các ảnh
-                listImg.removeClass('selected');
+                // Tạo một input để gửi token CSRF nếu cần
+                var csrfTokenInput = document.createElement("input");
+                csrfTokenInput.setAttribute("type", "hidden");
+                csrfTokenInput.setAttribute("name", "_token");
+                csrfTokenInput.setAttribute("value", "{{ csrf_token() }}");
 
-                // Thêm lớp CSS 'selected' cho ảnh được chọn
-                $(this).addClass('selected');
+                // Thêm input và form vào DOM
+                document.body.appendChild(form);
+                form.appendChild(csrfTokenInput);
 
-                imgFeature.attr('src', $(this).attr('src'));
+                // Gửi biểu mẫu
+                form.submit();
+            });
+        });
+
+        $(document).ready(function() {
+            $('#addToCartButton').on('click', function(e) {
+                e.preventDefault();
+
+                // Lấy giá trị số lượng từ input
+                var quantity = $('#quantityInput').val();
+
+                // Lấy href của nút "Add to cart"
+                var addToCartUrl = $(this).attr('href');
+
+                $.ajax({
+                    url: addToCartUrl,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        amount: quantity, // Gửi giá trị số lượng
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#cart-amount').text('My cart' + ' (' + response.count + ')');
+                            alertify.success(response.message, {
+                                'cssClass': 'ajs-success'
+                            });
+                        } else {
+                            alertify.error(response.message, {
+                                'cssClass': 'ajs-error'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $('.addToCartButton').on('click', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#cart-amount').text('My cart' + ' (' + response.count + ')');
+                            alertify.success(response.message, {
+                                'cssClass': 'ajs-success'
+                            });
+                        } else {
+                            alertify.error(response.message, {
+                                'cssClass': 'ajs-error'
+                            });
+
+                        }
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $('.wishlistButton').on('click', function(e) {
+                e.preventDefault();
+                var isUserLoggedIn = {{ Auth::guard('web')->check() ? 'true' : 'false' }};
+                // Kiểm tra xem người dùng đã đăng nhập chưa
+                if (!isUserLoggedIn) {
+                    // Nếu chưa đăng nhập, chuyển hướng sang trang đăng nhập
+                    window.location.href = '{{ route('wishlist') }}';
+                    return;
+                }
+
+                var productId = $(this).data('product-id');
+                var currentAction = $(this).data('current-action');
+                var iconElement = $(this).find('i');
+
+                var url = currentAction === 'add' ? '{{ route('addWishlist', ['id' => ':productId']) }}' :
+                    '{{ route('removeWishlist', ['id' => ':productId']) }}';
+                url = url.replace(':productId', productId);
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alertify.success(response.message, {
+                                'cssClass': 'ajs-success'
+                            });
+
+                            // Thay đổi href và class của nút
+                            if (currentAction === 'add') {
+                                $(this).attr('href',
+                                    '{{ route('removeWishlist', ['id' => ':productId']) }}'
+                                    .replace(':productId', productId));
+                                $(this).data('current-action', 'remove');
+                            } else {
+                                $(this).attr('href',
+                                    '{{ route('addWishlist', ['id' => ':productId']) }}'
+                                    .replace(':productId', productId));
+                                $(this).data('current-action', 'add');
+                            }
+
+                            // Thay đổi màu văn bản
+                            iconElement.toggleClass('text-primary text-secondary');
+                        } else {
+                            alertify.error(response.message, {
+                                'cssClass': 'ajs-error'
+                            });
+                        }
+                    }.bind(this) // Chắc chắn rằng "this" trỏ đúng đối tượng
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            // Khởi tạo Slider chính
+            $('.slider-for').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: false,
+                fade: true,
+                asNavFor: '.slider-nav'
+            });
+
+            // Khởi tạo Slider điều hướng
+            $('.slider-nav').slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                asNavFor: '.slider-for',
+                dots: false,
+                centerMode: true,
+                focusOnSelect: true,
             });
         });
 
@@ -307,22 +434,24 @@
 
             // Xử lý sự kiện khi người dùng thay đổi giá trị input
             quantityInput.on("input", function() {
-                let currentValue = parseInt(quantityInput.val());
+                let currentValue = quantityInput.val().replace(/[^0-9]/g,
+                    ""); // Loại bỏ tất cả các ký tự không phải số
 
                 // Kiểm tra nếu giá trị nhập vào lớn hơn giới hạn (stock)
                 if (currentValue > maxStock) {
                     // Thiết lập giá trị nhập vào bằng giới hạn
-                    quantityInput.val(maxStock);
+                    currentValue = maxStock;
                 } else if (currentValue < 1) {
                     // Kiểm tra nếu giá trị nhập vào nhỏ hơn 1
                     // Thiết lập giá trị nhập vào bằng 1
-                    quantityInput.val(1);
+                    currentValue = 1;
                 }
+
+                quantityInput.val(currentValue); // Cập nhật lại giá trị của input
             });
 
             // Xử lý sự kiện khi nhấn nút tăng (+)
             $("#button-addon2").on("click", function() {
-                // Lấy giá trị hiện tại của input
                 let currentValue = parseInt(quantityInput.val());
 
                 // Kiểm tra nếu giá trị hiện tại nhỏ hơn giá trị tối đa (max)
@@ -335,7 +464,6 @@
 
             // Xử lý sự kiện khi nhấn nút giảm (-)
             $("#button-addon1").on("click", function() {
-                // Lấy giá trị hiện tại của input
                 let currentValue = parseInt(quantityInput.val());
 
                 // Kiểm tra nếu giá trị hiện tại lớn hơn 1

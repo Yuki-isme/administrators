@@ -20,7 +20,7 @@
 
     <ul class="nav user-menu">
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <div class="top-nav-search">
                 <a href="javascript:void(0);" class="responsive-search">
                     <i class="fa fa-search"></i>
@@ -48,14 +48,14 @@
                     <img src="{{ asset('admin/assets/img/flags/us.png') }}" alt="" height="16"> English
                 </a>
             </div>
-        </li>
+        </li> --}}
 
 
         <li class="nav-item dropdown">
-            <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+            {{-- <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                 <img src="{{ asset('admin/assets/img/icons/notification-bing.svg') }}" alt="img"> <span
                     class="badge rounded-pill">4</span>
-            </a>
+            </a> --}}
             <div class="dropdown-menu notifications">
                 <div class="topnav-dropdown-header">
                     <span class="notification-title">Notifications</span>

@@ -11,6 +11,9 @@ class Info extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
+        'email',
+        'phone_number',
         'province_code',
         'district_code',
         'ward_code',

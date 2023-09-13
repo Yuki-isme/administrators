@@ -28,6 +28,13 @@ class CheckoutController extends Controller
         $this->addressService = $addressService;
     }
 
+    public function buyNow($id, Request $request)
+    {
+        cart()->add($id, $request);
+
+        return Redirect::route('cart');
+    }
+
     public function order()
     {
         $user = $this->checkoutService->getInforUser();
@@ -69,7 +76,7 @@ class CheckoutController extends Controller
                 'total' => cart()->getTotal(),
                 'discount' => cart()->getDiscount(),
                 'user_id' => Auth::guard('web')->check() ?  Auth::guard('web')->user()->id : null,
-                'status_id' => $request->payment_method == '2' ? 2 : 1,
+                'status_id' => 1,
             ]);
 
             $cart = cart()->getContent();
@@ -86,38 +93,38 @@ class CheckoutController extends Controller
             }
 
             if ($request->save && Auth::guard('web')->check()) {
-                Info::updateOfCreate([
-                    'id' => $request->info_id,
-                ],
-                [
-                    'user_id' => Auth::guard('web')->user()->id,
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'phone_number' => $request->phone_number,
-                    'province_code' => $request->province_code,
-                    'district_code' => $request->district_code,
-                    'ward_code' => $request->ward_code,
-                    'street' => $request->street,
-                    'house' => $request->house,
-                    'note' => $request->note,
-                ]);
+                Info::updateOrCreate(
+                    ['id' => $request->info_id],
+                    [
+                        'user_id' => Auth::guard('web')->user()->id,
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'phone_number' => $request->phone_number,
+                        'province_code' => $request->province_code,
+                        'district_code' => $request->district_code,
+                        'ward_code' => $request->ward_code,
+                        'street' => $request->street,
+                        'house' => $request->house,
+                        'note' => $request->note,
+                    ]
+                );
             }
 
             DB::commit();
-
+            cart()->updateStock();
             if ($request->payment_method == '2') {
-                return Redirect::route('vnPay', ['order_id' => $order->id, 'total' => cart()->getTotal()]);
+                return Redirect::route('vnPay', ['order_id' => $order->id, 'total' => $order->total]);
             }
 
             $order = Order::with('items', 'province', 'district', 'ward')->find($order->id);
             Mail::to($order->email)
                 ->queue(new OrderSuccessMail($order));
 
-            return view('frontend.checkout.success');
+            return redirect()->route('success');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect()->back()->withErrors(['common' => 'Something went wrong, try again later!']);
+            return redirect()->back()->withErrors(['common' => $e->getMessage()]);
         }
     }
 

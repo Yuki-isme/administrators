@@ -368,27 +368,27 @@ class ProductService
     {
         $query = $this->productRepository->query();
 
-            if ($request->q) {
-                $query->where('name', 'like', "%$request->q%");
-            }
+        if ($request->q) {
+            $query->where('name', 'like', "%$request->q%");
+        }
 
-            $products = $query->paginate(10, '*', 'page', $request->page);
+        $products = $query->paginate(10, '*', 'page', $request->page);
 
-            $data = [
-                'lastPage' => $products->lastPage(),
-                'data' => $products->map(function ($product) {
-                    return [
-                        'id' => $product->id,
-                        'text' => $product->name,
-                        'image' => asset('storage/' . $product->thumbnail->url),
-                        'name' => $product->name,
-                        'price' => $product->cart_price,
-                        'discount' => $product->price - $product->cart_price,
-                        'stock' => $product->stock,
-                    ];
-                }),
-            ];
+        $data = [
+            'lastPage' => $products->lastPage(),
+            'data' => $products->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'text' => $product->name,
+                    'image' => asset('storage/' . $product->thumbnail->url),
+                    'name' => $product->name,
+                    'price' => $product->cart_price,
+                    'discount' => $product->price - $product->cart_price,
+                    'stock' => $product->stock,
+                ];
+            }),
+        ];
 
-            return $data;
+        return $data;
     }
 }

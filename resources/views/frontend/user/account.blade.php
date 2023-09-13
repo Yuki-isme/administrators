@@ -27,7 +27,7 @@
                                         <div class="form-outline mb-4">
                                             <input type="text" id="phone" class="form-control" name="phone"
                                                 value="{{ $user->phone }}" />
-                                            <label class="form-label" for="phone">Email</label>
+                                            <label class="form-label" for="phone">Phone</label>
                                         </div>
 
                                         <div class="form-outline mb-4">
@@ -61,39 +61,79 @@
                                         <div class="form-outline mb-3">
                                             <p style="color:black">Name: {{ $order->name }}</p>
                                             <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                            <p style="color:black">Email: {{ $order->email }}</p>
                                             <p style="color:black">Address:
                                                 {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
                                             </p>
                                             <p style="color:black">Note: {{ $order->note }}</p>
                                             <p style="color:black">Payment method: {{ $order->payment_method }}</p>
-                                            <p style="color:black">Status: {{ $order->payment_status }}</p>
+                                            <p style="color:black">Payment status: {{ $order->payment_status }}</p>
+                                            <p style="color:black">Status: {{ $order->status->name }}</p>
                                         </div>
-                                        <h6 class="card-subtitle mb-3">Order Details</h6>
-                                        <div class="row mb-3">
-                                            <div class="col-3">Name</div>
-                                            <div class="col-3" style="text-align: right;">Price</div>
-                                            <div class="col-3" style="text-align: right;">Amount</div>
-                                            <div class="col-3" style="text-align: right;">Total</div>
+                                        <hr>
+                                        <h6 class="card-subtitle mb-3">Products List</h6>
+                                        <table width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th style="text-align: right;">Price</th>
+                                                    <th style="text-align: right;">Discount</th>
+                                                    <th style="text-align: right;">Amount</th>
+                                                    <th style="text-align: right;">Total Price</th>
+                                                    <th style="text-align: right;">Total Discount</th>
+                                                    <th style="text-align: right;">Last Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($order->items as $item)
+                                                    <tr>
+                                                        <td>{{ $item->product_name }}</td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($item->price + $item->discount, 0, ',', '.') }}
+                                                            đ
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($item->discount, 0, ',', '.') }} đ
+                                                        </td>
+                                                        <td style="text-align: right;">{{ $item->amount }}
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format(($item->price + $item->discount) * $item->amount, 0, ',', '.') }}
+                                                            đ
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($item->discount * $item->amount, 0, ',', '.') }}
+                                                            đ
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($item->price * $item->amount, 0, ',', '.') }}
+                                                            đ
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                <tr>
+                                                    <td colspan="6"></td>
+                                                    <td style="text-align: right;">
+                                                        {{ number_format($order->total, 0, ',', '.') }} VND</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <br>
+                                        <div style="float: right">
+                                            @if ($order->payment_method == 'Thanh toán qua VN Pay' && $order->payment_status == 'Chưa thanh toán')
+                                                <button type="button" class="btn btn-primary">Repayment</button>
+                                            @endif
+                                            @if ($order->status_id == 8 || $order->status_id == 5 || $order->status_id == 6)
+                                                <button type="button" class="btn btn-success">Re-order</button>
+                                            @endif
+                                            @if ($order->status_id < 3)
+                                                <button type="button" class="btn btn-danger">Cancel</button>
+                                            @endif
+                                            @if ($order->status_id == 7)
+                                                <button type="button" class="btn btn-warning">No order
+                                                    cancellation</button>
+                                            @endif
                                         </div>
-                                        @foreach ($order->items as $item)
-                                            <div class="row mb-3">
-                                                <div class="col-3">{{ $item->product_name }}</div>
-                                                <div class="col-3" style="text-align: right;">
-                                                    {{ number_format($item->price, 0, ',', '.') }} đ</div>
-                                                <div class="col-3" style="text-align: right;">{{ $item->amount }}
-                                                </div>
-                                                <div class="col-3" style="text-align: right;">
-                                                    {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
-                                                </div>
-                                            </div>
-                                        @endforeach
-
-                                        <div class="text-end mb-4">
-                                            <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
-                                        </div>
-                                        @if ($order->status_id < 3)
-                                            <button type="button" class="btn btn-danger">Cancel</button>
-                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -105,49 +145,92 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
                             @foreach ($orders as $order)
-                                @if ($order->status_id < 5)
+                                @if ($order->status_id < 6 && $order->status_id > 2)
                                     <div class="card border mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title">Code Orders:
-                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}</h5>
+                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}
+                                            </h5>
                                             <!-- All Orders form fields for Order 1 -->
                                             <div class="form-outline mb-3">
                                                 <p style="color:black">Name: {{ $order->name }}</p>
                                                 <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                                <p style="color:black">Email: {{ $order->email }}</p>
                                                 <p style="color:black">Address:
                                                     {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
                                                 </p>
                                                 <p style="color:black">Note: {{ $order->note }}</p>
                                                 <p style="color:black">Payment method: {{ $order->payment_method }}</p>
-                                                <p style="color:black">Status: {{ $order->payment_status }}</p>
+                                                <p style="color:black">Payment status: {{ $order->payment_status }}</p>
+                                                <p style="color:black">Status: {{ $order->status->name }}</p>
                                             </div>
-                                            <h6 class="card-subtitle mb-3">Order Details</h6>
-                                            <div class="row mb-3">
-                                                <div class="col-3">Name</div>
-                                                <div class="col-3" style="text-align: right;">Price</div>
-                                                <div class="col-3" style="text-align: right;">Amount</div>
-                                                <div class="col-3" style="text-align: right;">Total</div>
-                                            </div>
-                                            @foreach ($order->items as $item)
-                                                <div class="row mb-3">
-                                                    <div class="col-3">{{ $item->product_name }}</div>
-                                                    <div class="col-3" style="text-align: right;">
-                                                        {{ number_format($item->price, 0, ',', '.') }} đ</div>
-                                                    <div class="col-3" style="text-align: right;">{{ $item->amount }}
-                                                    </div>
-                                                    <div class="col-3" style="text-align: right;">
-                                                        {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
-                                                    </div>
-                                                </div>
-                                            @endforeach
-
-                                            <div class="text-end mb-4">
-                                                <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
+                                            <hr>
+                                            <h6 class="card-subtitle mb-3">Products List</h6>
+                                            <table width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th style="text-align: right;">Price</th>
+                                                        <th style="text-align: right;">Discount</th>
+                                                        <th style="text-align: right;">Amount</th>
+                                                        <th style="text-align: right;">Total Price</th>
+                                                        <th style="text-align: right;">Total Discount</th>
+                                                        <th style="text-align: right;">Last Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($order->items as $item)
+                                                        <tr>
+                                                            <td>{{ $item->product_name }}</td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->price + $item->discount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->discount, 0, ',', '.') }} đ
+                                                            </td>
+                                                            <td style="text-align: right;">{{ $item->amount }}
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format(($item->price + $item->discount) * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->discount * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->price * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    <tr>
+                                                        <td colspan="6"></td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($order->total, 0, ',', '.') }} VND</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <br>
+                                            <div style="float: right">
+                                                @if ($order->payment_method == 'Thanh toán qua VN Pay' && $order->payment_status == 'Chưa thanh toán')
+                                                    <button type="button" class="btn btn-primary">Repayment</button>
+                                                @endif
+                                                @if ($order->status_id == 8 || $order->status_id == 5 || $order->status_id == 6)
+                                                    <button type="button" class="btn btn-success">Re-order</button>
+                                                @endif
+                                                @if ($order->status_id < 3)
+                                                    <button type="button" class="btn btn-danger">Cancel</button>
+                                                @endif
+                                                @if ($order->status_id == 7)
+                                                    <button type="button" class="btn btn-warning">No order
+                                                        cancellation</button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 @endif
-
                             @endforeach
                         </div>
                     </div>
@@ -157,49 +240,92 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-12">
                             @foreach ($orders as $order)
-                                @if ($order->status_id > 4 && $order->status_id < 7)
+                                @if ($order->status_id == 6)
                                     <div class="card border mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title">Code Orders:
-                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}</h5>
+                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}
+                                            </h5>
                                             <!-- All Orders form fields for Order 1 -->
                                             <div class="form-outline mb-3">
                                                 <p style="color:black">Name: {{ $order->name }}</p>
                                                 <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                                <p style="color:black">Email: {{ $order->email }}</p>
                                                 <p style="color:black">Address:
                                                     {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
                                                 </p>
                                                 <p style="color:black">Note: {{ $order->note }}</p>
                                                 <p style="color:black">Payment method: {{ $order->payment_method }}</p>
-                                                <p style="color:black">Status: {{ $order->payment_status }}</p>
+                                                <p style="color:black">Payment status: {{ $order->payment_status }}</p>
+                                                <p style="color:black">Status: {{ $order->status->name }}</p>
                                             </div>
-                                            <h6 class="card-subtitle mb-3">Order Details</h6>
-                                            <div class="row mb-3">
-                                                <div class="col-3">Name</div>
-                                                <div class="col-3" style="text-align: right;">Price</div>
-                                                <div class="col-3" style="text-align: right;">Amount</div>
-                                                <div class="col-3" style="text-align: right;">Total</div>
-                                            </div>
-                                            @foreach ($order->items as $item)
-                                                <div class="row mb-3">
-                                                    <div class="col-3">{{ $item->product_name }}</div>
-                                                    <div class="col-3" style="text-align: right;">
-                                                        {{ number_format($item->price, 0, ',', '.') }} đ</div>
-                                                    <div class="col-3" style="text-align: right;">{{ $item->amount }}
-                                                    </div>
-                                                    <div class="col-3" style="text-align: right;">
-                                                        {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
-                                                    </div>
-                                                </div>
-                                            @endforeach
-
-                                            <div class="text-end mb-4">
-                                                <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
+                                            <hr>
+                                            <h6 class="card-subtitle mb-3">Products List</h6>
+                                            <table width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th style="text-align: right;">Price</th>
+                                                        <th style="text-align: right;">Discount</th>
+                                                        <th style="text-align: right;">Amount</th>
+                                                        <th style="text-align: right;">Total Price</th>
+                                                        <th style="text-align: right;">Total Discount</th>
+                                                        <th style="text-align: right;">Last Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($order->items as $item)
+                                                        <tr>
+                                                            <td>{{ $item->product_name }}</td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->price + $item->discount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->discount, 0, ',', '.') }} đ
+                                                            </td>
+                                                            <td style="text-align: right;">{{ $item->amount }}
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format(($item->price + $item->discount) * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->discount * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->price * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    <tr>
+                                                        <td colspan="6"></td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($order->total, 0, ',', '.') }} VND</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <br>
+                                            <div style="float: right">
+                                                @if ($order->payment_method == 'Thanh toán qua VN Pay' && $order->payment_status == 'Chưa thanh toán')
+                                                    <button type="button" class="btn btn-primary">Repayment</button>
+                                                @endif
+                                                @if ($order->status_id == 8 || $order->status_id == 5 || $order->status_id == 6)
+                                                    <button type="button" class="btn btn-success">Re-order</button>
+                                                @endif
+                                                @if ($order->status_id < 3)
+                                                    <button type="button" class="btn btn-danger">Cancel</button>
+                                                @endif
+                                                @if ($order->status_id == 7)
+                                                    <button type="button" class="btn btn-warning">No order
+                                                        cancellation</button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 @endif
-
                             @endforeach
                         </div>
                     </div>
@@ -213,45 +339,88 @@
                                     <div class="card border mb-3">
                                         <div class="card-body">
                                             <h5 class="card-title">Code Orders:
-                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}</h5>
+                                                {{ str_pad($order->id, 10, '0', STR_PAD_LEFT) }}
+                                            </h5>
                                             <!-- All Orders form fields for Order 1 -->
                                             <div class="form-outline mb-3">
                                                 <p style="color:black">Name: {{ $order->name }}</p>
                                                 <p style="color:black">Phone: {{ $order->phone_number }}</p>
+                                                <p style="color:black">Email: {{ $order->email }}</p>
                                                 <p style="color:black">Address:
                                                     {{ $order->house . ', ' . $order->street . ', ' . $order->ward->name . ', ' . $order->district->name . ', ' . $order->province->name }}
                                                 </p>
                                                 <p style="color:black">Note: {{ $order->note }}</p>
                                                 <p style="color:black">Payment method: {{ $order->payment_method }}</p>
-                                                <p style="color:black">Status: {{ $order->payment_status }}</p>
+                                                <p style="color:black">Payment status: {{ $order->payment_status }}</p>
+                                                <p style="color:black">Status: {{ $order->status->name }}</p>
                                             </div>
-                                            <h6 class="card-subtitle mb-3">Order Details</h6>
-                                            <div class="row mb-3">
-                                                <div class="col-3">Name</div>
-                                                <div class="col-3" style="text-align: right;">Price</div>
-                                                <div class="col-3" style="text-align: right;">Amount</div>
-                                                <div class="col-3" style="text-align: right;">Total</div>
-                                            </div>
-                                            @foreach ($order->items as $item)
-                                                <div class="row mb-3">
-                                                    <div class="col-3">{{ $item->product_name }}</div>
-                                                    <div class="col-3" style="text-align: right;">
-                                                        {{ number_format($item->price, 0, ',', '.') }} đ</div>
-                                                    <div class="col-3" style="text-align: right;">{{ $item->amount }}
-                                                    </div>
-                                                    <div class="col-3" style="text-align: right;">
-                                                        {{ number_format($item->price * $item->amount, 0, ',', '.') }} đ
-                                                    </div>
-                                                </div>
-                                            @endforeach
-
-                                            <div class="text-end mb-4">
-                                                <strong>Total: {{ number_format($order->total, 0, ',', '.') }} VND</strong>
+                                            <hr>
+                                            <h6 class="card-subtitle mb-3">Products List</h6>
+                                            <table width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th style="text-align: right;">Price</th>
+                                                        <th style="text-align: right;">Discount</th>
+                                                        <th style="text-align: right;">Amount</th>
+                                                        <th style="text-align: right;">Total Price</th>
+                                                        <th style="text-align: right;">Total Discount</th>
+                                                        <th style="text-align: right;">Last Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($order->items as $item)
+                                                        <tr>
+                                                            <td>{{ $item->product_name }}</td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->price + $item->discount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->discount, 0, ',', '.') }} đ
+                                                            </td>
+                                                            <td style="text-align: right;">{{ $item->amount }}
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format(($item->price + $item->discount) * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->discount * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                {{ number_format($item->price * $item->amount, 0, ',', '.') }}
+                                                                đ
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    <tr>
+                                                        <td colspan="6"></td>
+                                                        <td style="text-align: right;">
+                                                            {{ number_format($order->total, 0, ',', '.') }} VND</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <br>
+                                            <div style="float: right">
+                                                @if ($order->payment_method == 'Thanh toán qua VN Pay' && $order->payment_status == 'Chưa thanh toán')
+                                                    <button type="button" class="btn btn-primary">Repayment</button>
+                                                @endif
+                                                @if ($order->status_id == 8 || $order->status_id == 5 || $order->status_id == 6)
+                                                    <button type="button" class="btn btn-success">Re-order</button>
+                                                @endif
+                                                @if ($order->status_id < 3)
+                                                    <button type="button" class="btn btn-danger">Cancel</button>
+                                                @endif
+                                                @if ($order->status_id == 7)
+                                                    <button type="button" class="btn btn-warning">No order
+                                                        cancellation</button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 @endif
-
                             @endforeach
                         </div>
                     </div>

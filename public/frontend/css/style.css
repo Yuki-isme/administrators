@@ -21,45 +21,6 @@
     /* Màu đen và !important để ghi đè lên giá trị màu khác */
 }
 
-/* CSS */
-
-.main-img {
-    max-height: 600px;
-    /* Đặt chiều cao tối đa cho div */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    /* Ẩn phần nào của ảnh vượt quá khung của div */
-}
-
-.img-feature {
-    max-width: 100%;
-    /* Đảm bảo ảnh không vượt quá chiều rộng của div */
-    height: 100%;
-    /* Đảm bảo ảnh chiếm hết chiều cao của div */
-    object-fit: contain;
-    /* Đảm bảo ảnh thu nhỏ để vừa khung mà không làm mất đi phần nào của nó */
-}
-
-.thumbnail {
-    border: 2px solid transparent;
-    /* Viền mặc định là trong suốt */
-}
-
-/* Lớp CSS cho ảnh được chọn */
-.thumbnail.selected {
-    border-color: black;
-    /* Đổi màu viền thành đen khi ảnh được chọn */
-}
-
-.no-spin::-webkit-inner-spin-button,
-.no-spin::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-}
-
 .custom-nav-list {
     position: relative;
 }
@@ -82,7 +43,7 @@
     position: absolute;
     top: 0;
     left: 100%;
-    transition: all .3s;
+    transition: all 0.3s;
 }
 
 .custom-nav-list li:hover > ul {
@@ -133,4 +94,214 @@
     top: 50%;
     right: 1000;
     transform: translateY(-50%);
+}
+
+.search-product-form {
+    position: relative; /* Để có thể đặt search-results dưới nó */
+    /* ... (định dạng khác cho search-product-form) */
+}
+
+#search-results {
+    display: none;
+}
+
+.search-results {
+    text-align: left;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    top: 110%; /* Hiển thị phía dưới search-product-form */
+    left: 0%;
+    background-color: white;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.search-results ul {
+    padding: 0; /* Loại bỏ khoảng cách bên trong ul */
+    margin: 0; /* Loại bỏ khoảng cách xung quanh ul */
+    list-style-type: none; /* Loại bỏ đánh dấu mặc định */
+
+    /* Đảm bảo rằng các li chiếm hết ul */
+    display: flex; /* Sử dụng flexbox cho ul */
+    flex-direction: column; /* Hiển thị các li theo chiều dọc */
+
+    border: 1px solid #bdbdbd; /* Độ dày và màu sắc của khung */
+    max-height: 300px; /* Đặt chiều cao tối đa cho ul */
+    overflow-y: auto; /* Bật thanh cuộn khi cần thiết */
+
+    /* Loại bỏ thanh cuộn mặc định */
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+/* Định dạng thanh cuộn trên các trình duyệt */
+.search-results ul::-webkit-scrollbar {
+    width: 5px; /* Độ rộng của thanh cuộn */
+}
+
+.search-results ul::-webkit-scrollbar-thumb {
+    background-color: #bdbdbd; /* Màu nền của thanh cuộn */
+    border-radius: 10px; /* Bo tròn góc của thanh cuộn */
+}
+
+.search-results ul::-webkit-scrollbar-thumb:hover {
+    background-color: #999; /* Màu nền khi di chuột vào thanh cuộn */
+}
+
+.search-results li {
+    /* Ví dụ: Khoảng cách giữa các phần tử li */
+    display: flex; /* Hiển thị các phần tử li theo chiều ngang */
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+}
+
+.search-results .product-item {
+    display: flex;
+    align-items: center;
+}
+
+.search-results .product-item img {
+    width: 60px;
+    height: 60px;
+}
+
+.search-results .product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px; /* Khoảng cách giữa hình ảnh và thông tin sản phẩm */
+}
+
+.search-results .product-name {
+    white-space: nowrap; /* Ngăn chặn văn bản bị tràn dòng */
+}
+
+.search-results .product-price {
+    margin-top: 5px; /* Khoảng cách từ giá tiền đến tên sản phẩm */
+}
+
+.search-results .product-link {
+    padding: 10px;
+    display: block;
+    width: 100%; /* Để a lấp đầy toàn bộ chiều rộng của li */
+    height: 100%; /* Để a lấp đầy toàn bộ chiều cao của li */
+    text-decoration: none; /* Loại bỏ gạch chân mặc định cho liên kết */
+    color: inherit; /* Kế thừa màu sắc từ phần tử cha (li) */
+}
+
+.search-results ul li:hover {
+    background-color: #e1e1e1; /* Màu nền khi hover */
+}
+
+/* Đổi màu nền cho thông báo thành công */
+.alertify-notifier .ajs-message.ajs-success {
+    background-color: #4caf50;
+    color: #fff;
+    border-radius: 0.5rem; /* Bo tròn góc 2.5rem */
+    text-align: left;
+    width: 200px;
+    right: 200px !important;
+}
+
+/* Đổi màu nền cho thông báo lỗi */
+.alertify-notifier .ajs-message.ajs-error {
+    background-color: #f44336;
+    color: #fff;
+    border-radius: 0.5rem; /* Bo tròn góc 2.5rem */
+    text-align: left;
+    width: 200px;
+    right: 200px !important;
+}
+
+/* Đổi màu nền cho thông báo cảnh báo */
+.alertify-notifier .ajs-message.ajs-warning {
+    background-color: #ffc107;
+    color: #fff;
+    border-radius: 0.5rem; /* Bo tròn góc 2.5rem */
+    text-align: left;
+    width: 200px;
+    right: 200px !important;
+}
+
+.similar-scroll {
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.similar-product {
+    margin-bottom: 10px;
+}
+
+.img-md {
+    max-width: 96px;
+    max-height: 96px;
+}
+
+.similar-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.similar-scroll::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+}
+
+/* Thêm CSS để căn chỉnh tên và giá cùng hàng */
+.name-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Ẩn mũi tên ở hai đầu */
+.similar-scroll::-webkit-scrollbar-button {
+    display: none;
+}
+
+.slider-for{
+    border: 1px solid #bdbdbd;
+    border-radius: 5px;
+    margin: 0;
+    padding: 0;
+}
+
+.slider-for img{
+    height:448px;
+    object-fit: contain;
+    margin: 0;
+    padding: 0;
+}
+
+.slider-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.slick-prev, .slick-next {
+    display: none !important;
+}
+
+
+.slider-nav img{
+    height:150px;
+    object-fit: contain;
+    border: 1px solid #bdbdbd;
+    margin: 2px;
 }

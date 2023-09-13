@@ -17,11 +17,16 @@
                             <p class="card-text">{{ $product->name }}
                             </p>
                             <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                <a href="#!" class="btn btn-primary shadow-0 me-1">Add to
-                                    cart</a>
-                                <a href="#!"
-                                    class="btn btn-light border icon-hover px-2 pt-2"><i
-                                        class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                                <a href="{{ route('addToCart', ['id' => $product->id]) }}"
+                                    class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
+                                <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                                    data-product-id="{{ $product->id }}"
+                                    data-current-action="{{ $wishlists ? (in_array($product->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
+                                    <i
+                                        class="fas fa-heart fa-lg
+                                        {{ $wishlists ? (in_array($product->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}
+                                        px-1 icon-wishlist"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -78,12 +83,16 @@
                                     </div>
                                     <h6 class="text-success">Free shipping</h6>
                                     <div class="mt-3">
-                                        <button class="btn btn-primary shadow-0"
-                                            type="button">Add to
-                                            cart</button>
-                                        <a href="#!"
-                                            class="btn btn-light border px-2 pt-2 icon-hover"><i
-                                                class="fas fa-heart fa-lg px-1"></i></a>
+                                        <a href="{{ route('addToCart', ['id' => $product->id]) }}"
+                                            class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
+                                        <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                                            data-product-id="{{ $product->id }}"
+                                            data-current-action="{{ $wishlists ? (in_array($product->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
+                                            <i
+                                                class="fas fa-heart fa-lg
+                                                {{ $wishlists ? (in_array($product->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}
+                                                px-1 icon-wishlist"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

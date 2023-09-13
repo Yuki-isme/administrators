@@ -27,7 +27,9 @@
             @endif
             <div class="card">
                 <div class="card-body">
-                    <form method="post" action="{{ route('orders.store') }}" enctype="multipart/form-data">
+                    <form method="post"
+                        action="{{ route('orders.update', $order->id) }}"
+                        enctype="multipart/form-data">
                         @csrf
                         @isset($order)
                             @method('PUT')
@@ -52,14 +54,12 @@
                                     <input type="text" name="email" value="{{ $order->email ?? '' }}" required>
                                 </div>
                             </div>
-
-
                             <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label>Payment Method</label>
                                     <select name="payment_method" class="disabled-results form-control form-small">
-                                        <option value="Thanh toán khi nhận hàng">Thanh toán khi nhận hàng</option>
-                                        <option value="Thanh toán qua VN Pay">Thanh toán qua VN Pay</option>
+                                        <option value="Thanh toán khi nhận hàng" {{ $order->payment_method == 'Thanh toán khi nhận hàng' ? 'selected' : '' }} {{ $order->payment_method == 'Thanh toán qua VN Pay' ? 'disabled' : ''}}>Thanh toán khi nhận hàng</option>
+                                        <option value="Thanh toán qua VN Pay" {{ $order->payment_method == 'Thanh toán qua VN Pay' ? 'selected' : ''}}>Thanh toán qua VN Pay</option>
                                     </select>
                                 </div>
                             </div>
@@ -67,8 +67,8 @@
                                 <div class="form-group">
                                     <label>Payment Status</label>
                                     <select name="payment_status" class="disabled-results form-control form-small">
-                                        <option value="Chưa thanh toán">Chưa thanh toán</option>
-                                        <option value="Đã thanh toán">Đã thanh toán</option>
+                                        <option value="Chưa thanh toán" {{ $order->payment_status == 'Chưa thanh toán' ? 'selected' : ''}} {{ $order->payment_status == 'Đã thanh toán' ? 'disabled' : ''}}>Chưa thanh toán</option>
+                                        <option value="Đã thanh toán" {{ $order->payment_status == 'Đã thanh toán' ? 'selected' : ''}}>Đã thanh toán</option>
                                     </select>
                                 </div>
                             </div>
@@ -144,23 +144,7 @@
                                     <textarea class="form-control" name="note_order">{{ $order->note_oder ?? '' }}</textarea>
                                 </div>
                             </div>
-
                             <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label>Add Product</label>
-                                    <select id="add_product" class="disabled-results form-control form-small"
-                                        name="products[]" multiple>
-                                        @if (isset($order->items))
-                                            @foreach ($order->items as $item)
-                                                <option value="{{ $item->product_id }}" selected>
-                                                    {{ $item->product_name }}
-                                                </option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12" id="table-update">
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -188,54 +172,39 @@
                                                         <a
                                                             href="{{ route('products.show', ['id' => $item->product_id]) }}">{{ $item->product_name }}</a>
                                                     </td>
-                                                    <td>{{ number_format($item->product->price, 0, ',', '.') }}
-                                                    </td>
-                                                    <td>{{ number_format($item->product->price - $item->product->cart_price, 0, ',', '.') }}</td>
-
+                                                    @if (isset($order))
+                                                        <td>{{ number_format($item->price + $item->discount, 0, ',', '.') }}
+                                                        </td>
+                                                        <td>{{ number_format($item->discount, 0, ',', '.') }}</td>
+                                                    @endif
                                                     <td>
-                                                        <select
-                                                            class="disabled-results form-control form-small product-amount"
-                                                            name="amounts[]" data-product-id="{{ $item->product_id }}"
-                                                            data-price="{{ $item->product->price }}"
-                                                            data-discount="{{ $item->product->price - $item->product->cart_price }}">
-                                                            @php
-                                                                $amount = $item->amount <=  $item->product->stock ? $item->amount : $item->product->stock;
-                                                            @endphp
-                                                                @for ($i = 1; $i <= $item->product->stock; $i++)
-                                                                    <option value="{{ $i }}"
-                                                                        {{ $i == $amount ? 'selected' : '' }}>
-                                                                        {{ $i }}
-                                                                    </option>
-                                                                @endfor
-                                                        </select>
+                                                        {{ $item->amount }}
                                                     </td>
-                                                    <td class="total-price">
-                                                        {{ number_format($item->product->price * $amount, 0, ',', '.') }}
+                                                    <td class="total-price-order">
+                                                        {{ number_format($item->price * $item->amount + $item->discount * $item->amount, 0, ',', '.') }}
                                                     </td>
-                                                    <td class="total-discount">
-                                                        {{ number_format(($item->product->price - $item->product->cart_price) * $amount, 0, ',', '.') }}
+                                                    <td class="total-discount-order">
+                                                        {{ number_format($item->discount * $item->amount, 0, ',', '.') }}
                                                     </td>
+
                                                     @php
-                                                        $sumTotal += ($item->product->cart_price) * $amount;
+                                                        $sumTotal += $item->price * $item->amount;
                                                     @endphp
                                                     <td class="last-total">
-                                                        {{ number_format($item->product->cart_price * $amount, 0, ',', '.') }}
+                                                        {{ number_format($item->price * $item->amount, 0, ',', '.') }}
                                                     </td>
                                                     <td>
                                                         <a
                                                             class="me-3"href="{{ route('products.show', ['id' => $item->product_id]) }}">
                                                             <img
                                                                 src="{{ asset('admin/assets/img/icons/eye.svg') }}"alt="img"></a>
-                                                        <a href="#" class="delete-product"
-                                                            data-product-id="{{ $item->product_id }}"><img
-                                                                src="{{ asset('admin/assets/img/icons/delete.svg') }}"alt="img"></a>
                                                     </td>
                                                 </tr>
                                             @endforeach
                                         @endif
                                         <tr>
                                             <td colspan="6" style="font-weight: bold;">Sum</td>
-                                            <td id="sum-total">{{ number_format($sumTotal ?? 0, 0, ',', '.') }}</td>
+                                            <td id="sum-total">{{ number_format($sumTotal, 0, ',', '.') }}</td>
                                             <td></td>
                                         </tr>
                                     </tbody>
@@ -268,6 +237,7 @@
         $(document).ready(function() {
             $('select.select2').select2();
 
+            // Lấy mã quận/huyện từ bảng info (nếu có).
             var userDistrictCode = '{{ $order->district_code ?? '' }}';
             var userDistrict = '{{ $order->district->name ?? '' }}';
 
@@ -298,10 +268,12 @@
                 }
             });
 
+            // Thiết lập giá trị mặc định cho quận/huyện nếu có dữ liệu từ info.
             if (userDistrictCode) {
                 $('#district_id').append('<option value="' + userDistrictCode + '">' + userDistrict + '</option>');
             }
 
+            // Lấy mã xã/phường từ bảng info (nếu có).
             var userWardCode = '{{ $order->ward_code ?? '' }}';
             var userWard = '{{ $order->ward->name ?? '' }}';
 
@@ -332,160 +304,10 @@
                 }
             });
 
+            // Thiết lập giá trị mặc định cho xã/phường nếu có dữ liệu từ info.
             if (userWardCode) {
                 $('#ward_id').append('<option value="' + userWardCode + '">' + userWard + '</option>');
             }
-        });
-
-        $(document).ready(function() {
-            $('#add_product').select2({
-                ajax: {
-                    url: '{{ route('orders.getProducts') }}',
-                    data: function(params) {
-                        var query = {
-                            q: params.term,
-                            page: params.page || 1,
-                            _token: '{{ csrf_token() }}'
-                        };
-                        return query;
-                    },
-                    dataType: 'json',
-                    processResults: function(data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.data.map(function(product) {
-                                return {
-                                    id: product.id,
-                                    text: product.name,
-                                    image: product.image,
-                                    name: product.name,
-                                    price: product.price,
-                                    discount: product.discount,
-                                    stock: product.stock
-                                };
-                            }),
-                            pagination: {
-                                more: params.page < data.lastPage
-                            }
-                        };
-                    }
-                },
-                templateResult: function(product) {
-                    if (!product.image) return product.text;
-                    return $(
-                        '<div class="productimgname"><img src="' +
-                        product.image +
-                        '" class="img-thumbnail" alt="Image" style="with:25px;height:25px" /> ' +
-                        product.name +
-                        ' Price: ' +
-                        (product.price + product.discount) +
-                        ' Discount: ' +
-                        product.discount +
-                        ' Stock: ' +
-                        product.stock +
-                        '</div>'
-                    );
-                },
-                escapeMarkup: function(markup) {
-                    return markup;
-                }
-            });
-
-            function sendAjaxRequest() {
-                shouldSendAjaxRequest = false;
-                $.ajax({
-                    url: '{{ route('orders.getProductInfo') }}',
-                    type: 'GET',
-                    data: {
-                        order_id: {{ $order->id ?? 0 }},
-                        selected_ids: selectedIds, // Sử dụng selectedIds
-                        amounts: amounts,
-                        product_ids: productIds
-                    },
-                    success: function(response) {
-                        $("#table-update").html(response.table_update);
-
-                        $.each(response.remove_ids, function(index, value) {
-                            $('#add_product option[value="' + value + '"]').prop('selected',
-                                false);
-                        });
-
-                        $('#add_product').trigger('change');
-
-                        $("#table-update select").select2();
-
-                        $(document).find('select.product-amount').on('change',
-                            handleProductAmountChange);
-                        shouldSendAjaxRequest = true;
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        shouldSendAjaxRequest = true;
-                    }
-                });
-            }
-
-            function addThousandsSeparator(number) {
-                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            }
-
-            function getTotalLastTotalValue() {
-                var total = 0;
-                $(".last-total").each(function() {
-                    var value = $(this).text().replace(/\D/g, '');
-                    total += parseInt(value);
-                });
-                return total;
-            }
-
-            function handleProductAmountChange() {
-                var selectedOption = $(this).find('option:selected');
-                var price = parseInt($(this).data('price'));
-                var discount = parseInt($(this).data('discount'));
-                var amount = parseInt(selectedOption.val());
-
-                var total = price * amount;
-                var totalDiscount = discount * amount;
-
-                var lastTotal = total - totalDiscount;
-
-
-                $(this).closest('tr').find('.total-price').text(addThousandsSeparator(total));
-                $(this).closest('tr').find('.total-discount').text(addThousandsSeparator(totalDiscount));
-                $(this).closest('tr').find('.last-total').text(addThousandsSeparator(lastTotal));
-
-                var sumTotal = getTotalLastTotalValue();
-                $("#sum-total").text(addThousandsSeparator(sumTotal));
-            }
-
-            $(document).on('change', 'select.product-amount', handleProductAmountChange);
-
-            $(document).on('click', 'a.delete-product', function(e) {
-                e.preventDefault();
-                var productIdToDelete = $(this).data('product-id');
-                $('#add_product option[value="' + productIdToDelete + '"]').remove();
-                $('#add_product').trigger('change');
-                $(this).closest('tr').remove();
-            });
-
-            var amounts = [];
-            var productIds = [];
-            var selectedIds = [];
-            var shouldSendAjaxRequest = true;
-
-            $('#add_product').on('change', function() {
-                if (shouldSendAjaxRequest) {
-                    selectedIds = $(this).val();
-                    amounts = [];
-                    productIds = [];
-                    $('select.product-amount').each(function() {
-                        var productId = $(this).data('product-id');
-                        var amount = $(this).val();
-                        amounts.push(amount);
-                        productIds.push(productId);
-                    });
-                    sendAjaxRequest();
-                }
-            });
         });
     </script>
 @endpush

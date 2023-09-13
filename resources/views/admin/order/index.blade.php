@@ -168,6 +168,32 @@
                                                         alt="img">
                                                 </a>
                                             @endif
+
+                                            @if ($order->status_id == 7)
+                                                <a
+                                                    href="#"onclick="event.preventDefault(); cancelorder('{{ route('orders.cancel', ['id' => $order->id]) }}')">
+                                                    <img src="{{ asset('admin/assets/img/icons/allow.svg') }}"
+                                                        alt="img" style="width: 24px; height: 24px">
+                                                </a>
+                                                <a
+                                                    href="#"onclick="event.preventDefault(); notcancel('{{ route('orders.notCancel', ['id' => $order->id]) }}')">
+                                                    <img src="{{ asset('admin/assets/img/icons/not-allow.svg') }}"
+                                                        alt="img" style="width: 24px; height: 24px">
+                                                </a>
+                                            @elseif($order->status_id < 3)
+                                                <a
+                                                    href="#"onclick="event.preventDefault(); cancelorder('{{ route('orders.cancel', ['id' => $order->id]) }}')">
+                                                    <img src="{{ asset('admin/assets/img/icons/delete.svg') }}"
+                                                        alt="img" style="width: 24px; height: 24px">
+                                                </a>
+                                            @endif
+                                            @if ($order->status_id == 8 || $order->status_id == 6)
+                                                <a
+                                                    href="#"onclick="event.preventDefault(); initialization('{{ route('orders.initialization', ['id' => $order->id]) }}')">
+                                                    <img src="{{ asset('admin/assets/img/icons/return1.svg') }}"
+                                                        alt="img" style="width: 24px; height: 24px">
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -178,6 +204,14 @@
             </div>
         </div>
     </div>
+    <form action="" method="post" id="cancel-form">
+        @csrf
+        @method('put')
+    </form>
+    <form action="" method="post" id="not-cancel-form">
+        @csrf
+        @method('put')
+    </form>
 @endsection
 
 @push('custom-script')
@@ -204,10 +238,6 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            // Xử lý kết quả trả về nếu cần
-                            console.log(response.message);
-
-                            // Cập nhật HTML của select từ view được render
                             selectElement.html(response.html);
                         } else {
                             console.error('Update status failed.');
@@ -219,5 +249,58 @@
                 });
             });
         });
+
+        function cancelorder(url) {
+            Swal.fire({
+                title: 'Hủy đơn hàng này ?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Set the correct action for the delete form using jQuery
+                    $('#cancel-form').attr('action', url);
+                    $('#cancel-form').submit();
+                }
+            });
+        }
+
+        function notcancel(url) {
+            Swal.fire({
+                title: 'Không cho phép hủy?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, not cancel!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Set the correct action for the delete form using jQuery
+                    $('#not-cancel-form').attr('action', url);
+                    $('#not-cancel-form').submit();
+                }
+            });
+        }
+
+        function initialization(url) {
+            Swal.fire({
+                title: 'khởi tạo đơn hàng ?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, restore it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Set the correct action for the delete form using jQuery
+                    window.location.href = url;
+                }
+            });
+        }
     </script>
 @endpush

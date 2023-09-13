@@ -284,11 +284,16 @@
                                                     <p class="card-text">{{ $product->name }}
                                                     </p>
                                                     <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                                        <a href="{{ route('addToCart', ['id' => $product->id]) }}" class="btn btn-primary shadow-0 me-1 addToCartButton">Add to
-                                                            cart</a>
-                                                        <a href="#!"
-                                                            class="btn btn-light border icon-hover px-2 pt-2"><i
-                                                                class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                                                        <a href="{{ route('addToCart', ['id' => $product->id]) }}"
+                                                            class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
+                                                        <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                                                            data-product-id="{{ $product->id }}"
+                                                            data-current-action="{{ $wishlists ? (in_array($product->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
+                                                            <i
+                                                                class="fas fa-heart fa-lg
+                                                                {{ $wishlists ? (in_array($product->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}
+                                                                px-1 icon-wishlist"></i>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -345,12 +350,16 @@
                                                             </div>
                                                             <h6 class="text-success">Free shipping</h6>
                                                             <div class="mt-3">
-                                                                <button class="btn btn-primary shadow-0"
-                                                                    type="button">Add to
-                                                                    cart</button>
-                                                                <a href="#!"
-                                                                    class="btn btn-light border px-2 pt-2 icon-hover"><i
-                                                                        class="fas fa-heart fa-lg px-1"></i></a>
+                                                                <a href="{{ route('addToCart', ['id' => $product->id]) }}"
+                                                                    class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
+                                                                <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                                                                    data-product-id="{{ $product->id }}"
+                                                                    data-current-action="{{ $wishlists ? (in_array($product->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
+                                                                    <i
+                                                                        class="fas fa-heart fa-lg
+                                                                        {{ $wishlists ? (in_array($product->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}
+                                                                        px-1 icon-wishlist"></i>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -393,7 +402,7 @@
 @push('custom-script')
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.addToCartButton', function(e) {
+            $(document).on('click', '.addToCartButton',function(e) {
                 e.preventDefault();
 
                 $.ajax({
@@ -403,12 +412,74 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        if(response.success){
-                            $('#cart-amount').text('My cart' + ' (' + response.count +')');
-                        }else{
-                            console.log(response.message);
+                        if (response.success) {
+                            $('#cart-amount').text('My cart' + ' (' + response.count + ')');
+                            alertify.success(response.message, {
+                                'cssClass': 'ajs-success'
+                            });
+                        } else {
+                            alertify.error(response.message, {
+                                'cssClass': 'ajs-error'
+                            });
+
                         }
                     }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $(document).on('click', '.wishlistButton', function(e) {
+                e.preventDefault();
+                var isUserLoggedIn = {{ Auth::guard('web')->check() ? 'true' : 'false' }};
+                // Kiểm tra xem người dùng đã đăng nhập chưa
+                if (!isUserLoggedIn) {
+                    // Nếu chưa đăng nhập, chuyển hướng sang trang đăng nhập
+                    window.location.href = '{{ route('wishlist') }}';
+                    return;
+                }
+
+                var productId = $(this).data('product-id');
+                var currentAction = $(this).data('current-action');
+                var iconElement = $(this).find('i');
+
+                var url = currentAction === 'add' ? '{{ route('addWishlist', ['id' => ':productId']) }}' :
+                    '{{ route('removeWishlist', ['id' => ':productId']) }}';
+                url = url.replace(':productId', productId);
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alertify.success(response.message, {
+                                'cssClass': 'ajs-success'
+                            });
+
+                            // Thay đổi href và class của nút
+                            if (currentAction === 'add') {
+                                $(this).attr('href',
+                                    '{{ route('removeWishlist', ['id' => ':productId']) }}'
+                                    .replace(':productId', productId));
+                                $(this).data('current-action', 'remove');
+                            } else {
+                                $(this).attr('href',
+                                    '{{ route('addWishlist', ['id' => ':productId']) }}'
+                                    .replace(':productId', productId));
+                                $(this).data('current-action', 'add');
+                            }
+
+                            // Thay đổi màu văn bản
+                            iconElement.toggleClass('text-primary text-secondary');
+                        } else {
+                            alertify.error(response.message, {
+                                'cssClass': 'ajs-error'
+                            });
+                        }
+                    }.bind(this) // Chắc chắn rằng "this" trỏ đúng đối tượng
                 });
             });
         });

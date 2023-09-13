@@ -74,8 +74,9 @@
                             Order</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('orders.index')}}" class="{{ request()->routeIs('orders.index') || request()->routeIs('orders.show') || request()->routeIs('orders.create') || request()->routeIs('orders.edit')? 'show active' : '' }}">Order List</a></li>
-                        <li><a href="{{ route('orders.completed')}}" class="{{ request()->routeIs('orders.completed') ? 'show active' : '' }}">Order Completed</a></li>
                         <li><a href="{{ route('orders.processing')}}" class="{{ request()->routeIs('orders.processing') ? 'show active' : '' }}">Order Processing</a></li>
+                        <li><a href="{{ route('orders.completed')}}" class="{{ request()->routeIs('orders.completed') ? 'show active' : '' }}">Order Completed</a></li>
+                        <li><a href="{{ route('orders.requestCancel')}}" class="{{ request()->routeIs('orders.requestCancel') ? 'show active' : '' }}">Order Request Cancel</a></li>
                         <li><a href="{{ route('orders.canceled')}}" class="{{ request()->routeIs('orders.canceled') ? 'show active' : '' }}">Order Canceled</a></li>
                     </ul>
                 </li>

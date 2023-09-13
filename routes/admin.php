@@ -66,9 +66,6 @@ Route::group(['prefix' => 'brands', 'as' => 'brands.'], function () {
 
 Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
 
-    Route::get('/getProducts', [ProductController::class, 'getProducts'])->name('getProducts');
-    Route::get('/getProductInfo', [ProductController::class, 'getProductInfo'])->name('getProductInfo');
-
     Route::get('/', [ProductController::class, 'index'])->name('index');
 
     Route::get('/create', [ProductController::class, 'create'])->name('create');
@@ -85,9 +82,13 @@ Route::group(['prefix' => 'products', 'as' => 'products.'], function () {
 
 Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
 
+    Route::get('/getProducts', [OrderController::class, 'getProducts'])->name('getProducts');
+    Route::get('/getProductInfo', [OrderController::class, 'getProductInfo'])->name('getProductInfo');
+
     Route::get('/', [OrderController::class, 'index'])->name('index');
     Route::get('/completed', [OrderController::class, 'completed'])->name('completed');
     Route::get('/processing', [OrderController::class, 'processing'])->name('processing');
+    Route::get('/requestCancel', [OrderController::class, 'requestCancel'])->name('requestCancel');
     Route::get('/canceled', [OrderController::class, 'canceled'])->name('canceled');
 
     Route::put('/status', [OrderController::class, 'status'])->name('status');
@@ -99,6 +100,10 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
 
     Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('edit');
     Route::put('/{id}', [OrderController::class, 'update'])->name('update');
+
+    Route::put('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+    Route::put('/{id}/notCancel', [OrderController::class, 'notCancel'])->name('notCancel');
+    Route::get('/{id}/initialization', [OrderController::class, 'initialization'])->name('initialization');
 });
 
 Route::group(['prefix' => 'tags', 'as' => 'tags.'], function () {

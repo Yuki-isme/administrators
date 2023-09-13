@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use  App\Services\CartService;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -23,16 +24,15 @@ class CartController extends Controller
         }else if($check == 'stock'){
             return response()->json(['success' => false, 'message'=> 'San pham da het hang']);
         }else{
-            return response()->json(['success' => true, 'count' => count(cart()->getContent())]);
+            return response()->json(['success' => true, 'message'=> 'Them thanh cong', 'count' => count(cart()->getContent())]);
         }
     }
 
     public function index()
     {
-        $total = $this->cartService->getTotal();
-        $discount = $this->cartService->getDiscount();
+        $wishlists = Auth::guard('web')->check() ?  Auth::guard('web')->user()->wishlists->pluck('id')->toArray() : null;
 
-        return view('frontend.checkout.cart', ['total' => $total, 'discount' => $discount]);
+        return view('frontend.checkout.cart', ['wishlists' => $wishlists]);
     }
 
     public function deleteItem($id)
