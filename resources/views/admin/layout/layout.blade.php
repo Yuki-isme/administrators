@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/plugins/icons/ionic/ionicons.css') }}">
     {{-- <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/fontawesome.min.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/all.min.css') }}">
-    {{-- <link rel="stylesheet" href="{{ asset('admin/assets/plugins/sweetalert/css/sweetalert.min.css') }}"> --}}
+
     <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
 
     @stack('custom-css')

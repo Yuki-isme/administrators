@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Mail\OrderSuccessMail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class PaymentController extends Controller
 {
@@ -83,7 +84,7 @@ class PaymentController extends Controller
                 return redirect()->route('success');
             }
             DB::commit();
-            return redirect()->route('failed');
+            return Redirect::route('failed', ['order_id' => $order->id, 'order_total' => $order->total]);
         } catch (\Exception $e) {
             DB::rollback();
         }

@@ -52,10 +52,10 @@
 
 
         <li class="nav-item dropdown">
-            {{-- <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+            <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
                 <img src="{{ asset('admin/assets/img/icons/notification-bing.svg') }}" alt="img"> <span
                     class="badge rounded-pill">4</span>
-            </a> --}}
+            </a>
             <div class="dropdown-menu notifications">
                 <div class="topnav-dropdown-header">
                     <span class="notification-title">Notifications</span>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <hr class="m-0">
-                    <a class="dropdown-item" href="profile.html"> <i class="me-2" data-feather="user"></i> My
+                    <a class="dropdown-item" href="{{ route('admins.profile') }}"> <i class="me-2" data-feather="user"></i> My
                         Profile</a>
                     <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
                             data-feather="settings"></i>Settings</a>

@@ -35,8 +35,10 @@
             <div
                 class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
                 <div class="float-md-end">
-                    <a href="#!" class="btn btn-light border px-2 icon-hover-primary"><i
-                            class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
+                    <a href="" class="btn btn-light border px-2 icon-hover-primary wishlistButton"
+                        data-product-id="{{ $id }}"
+                        data-current-action="{{ $wishlists ? (in_array($id, $wishlists) ? 'remove' : 'add') : 'add' }}"><i
+                            class="fas fa-heart fa-lg px-1 {{ $wishlists ? (in_array($id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}"></i></a>
                     <a href="{{ route('deleteItem', ['id' => $id]) }}"
                         class="btn btn-light border text-danger icon-hover-danger deleteItem">Remove</a>
                 </div>

@@ -285,7 +285,55 @@
 @push('custom-script')
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.addToCartButton',function(e) {
+            var itemsPerPage = 5; // Số hàng hiển thị trên mỗi trang
+            var currentPage = 1; // Trang hiện tại
+
+            // Xác định tổng số trang dựa trên số hàng và số hàng trên mỗi trang
+            var totalPage = Math.ceil($('table tbody tr').length / itemsPerPage);
+
+            // Hiển thị trang đầu tiên
+            showPage(currentPage);
+
+            // Xử lý khi nhấp vào nút trang trước
+            $('.page-link[aria-label="Previous"]').click(function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            // Xử lý khi nhấp vào nút trang tiếp theo
+            $('.page-link[aria-label="Next"]').click(function() {
+                if (currentPage < totalPage) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            // Xử lý khi nhấp vào một trang cụ thể
+            $('.page-link:not([aria-label="Previous"]):not([aria-label="Next"])').click(function() {
+                currentPage = parseInt($(this).text());
+                showPage(currentPage);
+            });
+
+            // Hàm để hiển thị các hàng trên trang hiện tại
+            function showPage(pageNumber) {
+                $('table tbody tr').hide();
+                var startIndex = (pageNumber - 1) * itemsPerPage;
+                var endIndex = startIndex + itemsPerPage;
+                $('table tbody tr').slice(startIndex, endIndex).show();
+                updatePagination();
+            }
+
+            // Hàm để cập nhật giao diện phân trang
+            function updatePagination() {
+                $('.page-item').removeClass('active');
+                $('.page-item:contains(' + currentPage + ')').addClass('active');
+            }
+        });
+
+        $(document).ready(function() {
+            $(document).on('click', '.addToCartButton', function(e) {
                 e.preventDefault();
 
                 $.ajax({

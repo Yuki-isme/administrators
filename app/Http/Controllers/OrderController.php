@@ -24,7 +24,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $statusDisabledMap = $this->orderService->statusDisabledMap();
+        $this->authorize('viewAny', Order::class);
         $orders = $this->orderService->orders();
         $statuses = $this->orderService->statuses();
 
@@ -33,6 +33,7 @@ class OrderController extends Controller
 
     public function completed()
     {
+        $this->authorize('viewAnyCompleted', Order::class);
         $orders = $this->orderService->completed();
         $statuses = $this->orderService->statuses();
 
@@ -41,6 +42,7 @@ class OrderController extends Controller
 
     public function processing()
     {
+        $this->authorize('viewAnyProcessing', Order::class);
         $orders = $this->orderService->processing();
         $statuses = $this->orderService->statuses();
 
@@ -49,6 +51,7 @@ class OrderController extends Controller
 
     public function requestCancel()
     {
+        $this->authorize('viewAnyRequestCancel', Order::class);
         $orders = $this->orderService->requestCancel();
         $statuses = $this->orderService->statuses();
 
@@ -57,6 +60,7 @@ class OrderController extends Controller
 
     public function canceled()
     {
+        $this->authorize('viewAnyCanceled', Order::class);
         $orders = $this->orderService->canceled();
         $statuses = $this->orderService->statuses();
 
@@ -70,6 +74,7 @@ class OrderController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Order::class);
         $statuses = $this->orderService->statuses();
         $provinces = $this->orderService->provinces();
 
@@ -90,6 +95,7 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Order::class);
         $this->orderService->store($request);
 
         return Redirect::route('orders.index');
@@ -104,7 +110,7 @@ class OrderController extends Controller
 
     public function edit($id)
     {
-
+        $this->authorize('update', Order::class);
         $order = $this->orderService->find($id);
 
         if ($order->status_id > 2) {
@@ -119,6 +125,7 @@ class OrderController extends Controller
 
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Order::class);
         $order = $this->orderService->find($id);
         if ($order->status_id > 2) {
             return Redirect::back();
@@ -131,6 +138,7 @@ class OrderController extends Controller
 
     public function cancel($id)
     {
+        $this->authorize('cancel', Order::class);
         $order = $this->orderService->find($id);
 
         if ($order->status_id < 3 || $order->status_id == 7) {
@@ -144,6 +152,7 @@ class OrderController extends Controller
 
     public function notCancel($id)
     {
+        $this->authorize('notCancel', Order::class);
         $order = $this->orderService->find($id);
 
         if ($order->status_id == 7) {
@@ -157,6 +166,7 @@ class OrderController extends Controller
 
     public function initialization($id)
     {
+        $this->authorize('initialization', Order::class);
         $order = $this->orderService->find($id);
         $statuses = $this->orderService->statuses();
         $provinces = $this->orderService->provinces();

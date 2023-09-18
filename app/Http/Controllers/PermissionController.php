@@ -46,26 +46,26 @@ class PermissionController extends Controller
         try {
             DB::beginTransaction();
 
-            if (isset($request->setofname)) {
-                $permissionName = $request->setofname;
+            if (isset($request->set_of_name)) {
+                $permissionName = $request->set_of_name;
                 $rolesToSync = $request->roles ?? [];
 
-                // Tạo hoặc cập nhật quyền "index_{setofname}"
+
                 $index = Permission::firstOrCreate(['name' => "viewAny_$permissionName"]);
                 $index->roles()->sync($rolesToSync);
 
                 $index = Permission::firstOrCreate(['name' => "view_$permissionName"]);
                 $index->roles()->sync($rolesToSync);
 
-                // Tạo hoặc cập nhật quyền "create_{setofname}"
+
                 $create = Permission::firstOrCreate(['name' => "create_$permissionName"]);
                 $create->roles()->sync($rolesToSync);
 
-                // Tạo hoặc cập nhật quyền "update_{setofname}"
+
                 $update = Permission::firstOrCreate(['name' => "update_$permissionName"]);
                 $update->roles()->sync($rolesToSync);
 
-                // Tạo hoặc cập nhật quyền "delete_{setofname}"
+
                 $delete = Permission::firstOrCreate(['name' => "delete_$permissionName"]);
                 $delete->roles()->sync($rolesToSync);
 

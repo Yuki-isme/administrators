@@ -12,7 +12,7 @@ class BrandPolicy
     private $admin;
 
     function __construct (){
-        $this->admin = Auth::guard('admin')->user();
+        $this->admin = Admin::find(Auth::guard('admin')->user()->id);
     }
     /**
      * Determine whether the admin can view any models.
@@ -25,7 +25,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can view the model.
      */
-    public function view(Admin $admin, Brand $brand): bool
+    public function view(Admin $admin): bool
     {
 
         return 0;
@@ -50,7 +50,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can delete the model.
      */
-    public function delete(?Admin $admin, Brand $brand): bool
+    public function delete(?Admin $admin): bool
     {
         return $this->admin->hasPermission('delete_brand') || $this->admin->hasRole('Master');
     }
@@ -58,7 +58,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can restore the model.
      */
-    public function restore(Admin $admin, Brand $brand): bool
+    public function restore(Admin $admin): bool
     {
         return 0;
     }
@@ -66,7 +66,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can permanently delete the model.
      */
-    public function forceDelete(Admin $admin, Brand $brand): bool
+    public function forceDelete(Admin $admin): bool
     {
         return 0;
     }

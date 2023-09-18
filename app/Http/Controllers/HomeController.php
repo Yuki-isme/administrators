@@ -181,6 +181,7 @@ class HomeController extends Controller
 
             // Lấy sản phẩm mới nhất nếu không đủ 10
             $latestProducts = Product::with('thumbnail')
+                ->where('stock', '>', 0)
                 ->orderByDesc('created_at')
                 ->take($remainingCount)
                 ->get();

@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Tag;
+use App\Models\Product;
+use Illuminate\Support\Facades\Redirect;
 
 class TagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function getTags(Request $request)
     {
         if ($request->ajax()) {
             $query = Tag::query();
@@ -37,12 +36,21 @@ class TagController extends Controller
         }
     }
 
+    public function index()
+    {
+        $tags = Tag::with('products')->get();
+
+        return view('admin.tag.index', ['tags' => $tags]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        $products = Product::get();
+
+        return view('admin.tag.form', ['products' => $products]);
     }
 
     /**
@@ -50,7 +58,11 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $tag = Tag::create(['name' => $request->name]);
+
+        $tag->products()->sync($request->products);
+
+        return Redirect::route('tags.index');
     }
 
     /**
@@ -66,7 +78,10 @@ class TagController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $tag = Tag::find($id);
+        $products = Product::get();
+
+        return view('admin.tag.form', ['tag' => $tag, 'products' => $products]);
     }
 
     /**
@@ -74,7 +89,13 @@ class TagController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $tag = Tag::find($id);
+
+        $tag->update(['name' => $request->name]);
+
+        $tag->products()->sync($request->products);
+
+        return Redirect::route('tags.index');
     }
 
     /**
@@ -82,7 +103,12 @@ class TagController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $tag = Tag::find($id);
+
+        $tag->products()->detach();
+
+        $tag->delete();
+
+        return Redirect::route('tags.index');
     }
 }
-

@@ -58,6 +58,7 @@ Route::post('/addToCart/{id}',[CartController::class, 'add'])->name('addToCart')
 Route::put('/updateAmount/{id}',[CartController::class, 'updateAmount'])->name('updateAmount');
 Route::delete('/deleteItem/{id}',[CartController::class, 'deleteItem'])->name('deleteItem');
 Route::get('/cart',[CartController::class, 'index'])->name('cart');
+Route::post('/reorder',[CartController::class, 'reorder'])->name('reorder');
 
 Route::post('/buyNow/{id}', [CheckoutController::class, 'buyNow'])->name('buyNow');
 Route::get('/order', [CheckoutController::class, 'order'])->name('order');
@@ -67,6 +68,8 @@ Route::post('/checkout', [CheckoutController::class, 'checkout'])->name('checkou
 Route::get('/payment', [CheckoutController::class, 'payment'])->name('payment');
 Route::get('/success', [CheckoutController::class, 'success'])->name('success');
 Route::get('/failed', [CheckoutController::class, 'failed'])->name('failed');
+Route::post('/repayment',[CheckoutController::class, 'repayment'])->name('repayment');
 
 Route::get('/vnPay',[PaymentController::class, 'vnPay'])->name('vnPay');
 Route::get('/vnPay_return',[PaymentController::class, 'vnPayReturn'])->name('vnPayReturn');
+

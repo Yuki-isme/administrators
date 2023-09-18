@@ -6,8 +6,9 @@ use App\Exceptions\CommonException;
 use App\Repositories\ProductRepository;
 use App\Repositories\CartRepository;
 use App\Repositories\ItemRepository;
-use App\Models\Item;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class CartService
 {
@@ -152,7 +153,7 @@ class CartService
             foreach ($cartItems as $cartItem) {
                 $product = $cartItem->product;
 
-                if($cartItem->amount > $product->stock){
+                if ($cartItem->amount > $product->stock) {
                     $cartItem->update([
                         'amount' => $product->stock,
                     ]);
@@ -179,7 +180,7 @@ class CartService
                     $item['discount'] = $product->price - $product->cart_price;
                     $item['stock'] = $product->stock;
 
-                    if($item['amount'] > $product->stock){
+                    if ($item['amount'] > $product->stock) {
                         $item['amount'] = $product->stock;
                     }
                 }
@@ -242,8 +243,7 @@ class CartService
 
     public function updateStock()
     {
-        foreach(cart()->getContent() as $id => $item)
-        {
+        foreach (cart()->getContent() as $id => $item) {
             $product = $this->productRepository->getById($id);
 
             $product->update([
@@ -279,7 +279,7 @@ class CartService
                                 'user_id' => $user->id,
                                 'product_id' => $productId,
                                 'amount' => $item['amount'],
-                                'discount' => $product->price -$product->cart_price,
+                                'discount' => $product->price - $product->cart_price,
                                 'name' => $product->name,
                                 'price' => $product->cart_price,
                                 'img' => $product->thumbnail->url,
@@ -329,6 +329,33 @@ class CartService
             ->sum('items.amount');
 
         return $totalAmount;
+    }
 
+    public function reorder($order_id)
+    {
+        $user = Auth::guard('web')->user();
+        $order = Order::with('items.product.thumbnail')->find($order_id);
+
+        foreach ($order->items as $item) {
+            $existingCartItem = $this->cartRepository->query()->where('user_id', $user->id)
+                ->where('product_id', $item->product->id)
+                ->first();
+            if ($existingCartItem) {
+                $existingCartItem->amount += $item->amount > $item->product->stock ? $item->product->stock : $item->amount;
+                $existingCartItem->save();
+            } else {
+                $this->cartRepository->create([
+                    'user_id' => $user->id,
+                    'product_id' => $item->product->id,
+                    'name' => $item->product->name,
+                    'price' => $item->product->cart_price,
+                    'discount' => $item->product->price - $item->product->cart_price,
+                    'amount' => $item->amount > $item->product->stock ? $item->product->stock : $item->amount,
+                    'img' => $item->product->thumbnail->url,
+                ]);
+            }
+        }
+
+        return Redirect::route('cart');
     }
 }

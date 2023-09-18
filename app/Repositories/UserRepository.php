@@ -33,4 +33,13 @@ class UserRepository extends BaseRepository
 
         return null;
     }
+
+    public function index()
+    {
+        return $this->model->with('info.province','info.district', 'info.ward')->get();
+    }
+
+    public function getUserInfo($id){
+        return $this->model->with('info')->find($id);
+    }
 }

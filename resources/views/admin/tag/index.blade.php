@@ -6,12 +6,14 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Brand list</h4>
-                    <h6>Manage your Brand</h6>
+                    <h4>Tag list</h4>
+                    <h6>Manage your Tag</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('brands.create') }}" class="btn btn-added">
-                        <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add Brand
+                    <a href="
+                    {{ route('tags.create')  }}
+                    " class="btn btn-added">
+                        <img src="{{ asset('admin/assets/img/icons/plus.svg') }}" class="me-1" alt="img">Add Tag
                     </a>
                 </div>
             </div>
@@ -32,10 +34,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            @elseif ($errors->has('common'))
+            @elseif ($errors->any())
                 <div class="alert alert-danger" id="alert" style="position: relative;">
                     <ul>
-                        @foreach ($errors->get('common') as $error)
+                        @foreach ($errors->get() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -84,19 +86,18 @@
                             <div class="row">
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <input type="text" placeholder="Enter Brand Name">
+                                        <input type="text" placeholder="Enter Tag Name">
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <input type="text" placeholder="Enter Brand Description">
+                                        <input type="text" placeholder="Enter Tag Description">
                                     </div>
                                 </div>
                                 <div class="col-lg-1 col-sm-6 col-12 ms-auto">
                                     <div class="form-group">
                                         <a class="btn btn-filters ms-auto"><img
-                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
-                                                alt="img"></a>
+                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}" alt="img"></a>
                                     </div>
                                 </div>
                             </div>
@@ -113,16 +114,14 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Brand name</th>
-                                    <th>Slug</th>
-                                    <th>Description</th>
-                                    <th>Active</th>
+                                    <th>Tag name</th>
+                                    <th>Products</th>
                                     <th>Create At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($brands as $brand)
+                                @foreach ($tags as $tag)
                                     <tr>
                                         <td>
                                             <label class="checkboxs">
@@ -130,36 +129,23 @@
                                                 <span class="checkmarks"></span>
                                             </label>
                                         </td>
-                                        <td class="productimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('storage/' . $brand->thumbnail->url) }}" alt="product">
-                                            </a>
-                                            <a href="javascript:void(0);">{{ $brand->name }}</a>
-                                        </td>
-                                        <td>{{ $brand->slug }}</td>
-                                        <td>{{ $brand->description }}</td>
+                                        <td>{{ $tag->name }}</td>
+                                        <td>{{ implode(', ', $tag->products->pluck('name')->toArray()) }}</td>
                                         <td>
-                                            <a href="{{ route('brands.update', ['id' => $brand->id]) }}"
-                                                data-visbility="{{ $brand->is_active }}" class="change-status">
-                                                @if ($brand->is_active)
-                                                    <i class="ion-checkmark-round" data-bs-toggle="tooltip"
-                                                        aria-label="ion-checkmark-round"
-                                                        data-bs-original-title="ion-checkmark-round"></i>
-                                                @else
-                                                    <i class="ion-close-round" data-bs-toggle="tooltip"
-                                                        aria-label="ion-close-round"
-                                                        data-bs-original-title="ion-close-round"></i>
-                                                @endif
-                                            </a>
+                                            {{-- {{ $tag->created_at->format('H:i:s d/m/Y') }} --}}
                                         </td>
-                                        <td>{{ $brand->created_at->format('H:i:s d/m/Y') }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('brands.edit', ['id' => $brand->id]) }}">
+                                            <a class="me-3"
+                                                href="
+                                                {{ route('tags.edit', ['id' => $tag->id]) }}
+                                                ">
                                                 <img src="{{ asset('admin/assets/img/icons/edit.svg') }}" alt="img">
                                             </a>
 
                                             <a
-                                                href="#"onclick="event.preventDefault(); deleteBrand('{{ route('brands.destroy', ['id' => $brand->id]) }}')">
+                                                href="#"
+                                                onclick="event.preventDefault(); deleteTag('{{ route('tags.destroy', ['id' => $tag->id]) }}')"
+                                                >
                                                 <img src="{{ asset('admin/assets/img/icons/delete.svg') }}"
                                                     alt="img">
                                             </a>
@@ -191,39 +177,7 @@
             });
         });
 
-        $(document).ready(function() {
-            $('.change-status').on('click', function(e) {
-                e.preventDefault();
-                const statusIcon = [
-                    '<i class="ion-close-round" data-bs-toggle="tooltip" aria-label="ion-close-round" data-bs-original-title="ion-close-round"></i>',
-                    '<i class="ion-checkmark-round" data-bs-toggle="tooltip" aria-label="ion-checkmark-round" data-bs-original-title="ion-checkmark-round"></i>'
-                ]
-                let url = $(this).attr('href')
-                let is_active = $(this).attr('data-visbility');
-                let _this = $(this)
-                $.ajax({
-                    type: 'PUT',
-                    url: url,
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        is_active: is_active == 1 ? '0' : 1,
-                    },
-                    dataType: 'json',
-
-                    success: function(data) {
-                        console.log(_this)
-                        _this.attr('data-visbility', data.is_active);
-                        _this.empty();
-                        _this.html(statusIcon[data.is_active]);
-                    },
-                    error: function(data) {
-                        console.log(data, 1)
-                    }
-                });
-            });
-        });
-
-        function deleteBrand(url) {
+        function deleteTag(url) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",

@@ -36,13 +36,13 @@
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Permission Name</label>
-                                    <input type="text" name="setofname" required>
+                                    <input type="text" name="set_of_name" required>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Role</label>
-                                    <select id="roles" name="roles[]" class="disabled-results form-control form-small"
+                                    <select name="roles[]" class="disabled-results form-control form-small"
                                         multiple>
                                         @foreach ($roles as $role)
                                             <option value="{{ $role->id }}" >
@@ -74,10 +74,24 @@
                             @method('PUT')
                         @endisset
                         <div class="row">
-                            <div class="col-lg-11 col-sm-11 col-12">
+                            <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Permission Name</label>
-                                    <input type="text" name="setofname" value="{{ $permission->name ?? '' }}" required>
+                                    <input type="text" name="name" value="{{ $permission->name ?? '' }}" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <select name="roles[]" class="disabled-results form-control form-small"
+                                        multiple>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->id }}" >
+                                                {{ $role->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             

@@ -424,7 +424,7 @@
             $('#tags').select2({
                 tags: true,
                 ajax: {
-                    url: '{{ route('tags.index') }}',
+                    url: '{{ route('tags.getTags') }}',
                     data: function(params) {
                         var query = {
                             q: params.term,

@@ -62,6 +62,9 @@ INSERT INTO `admins` (`id`, `name`, `username`, `email`, `password`, `created_at
 -- Đang đổ dữ liệu cho bảng `admin_role`
 --
 
+INSERT INTO `roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Master', '2023-09-08 02:55:48', '2023-09-08 02:55:48');
+
 INSERT INTO `admin_role` (`id`, `admin_id`, `role_id`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, NULL, NULL);
 
@@ -1103,8 +1106,7 @@ INSERT INTO `provinces` (`code`, `name`, `name_en`, `full_name`, `full_name_en`,
 -- Đang đổ dữ liệu cho bảng `roles`
 --
 
-INSERT INTO `roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Master', '2023-09-08 02:55:48', '2023-09-08 02:55:48');
+
 
 --
 -- Đang đổ dữ liệu cho bảng `statuses`

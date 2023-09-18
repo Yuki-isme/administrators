@@ -86,4 +86,9 @@ class AdminController extends Controller
 
         return Redirect::route('admins.index')->with('success', 'Deleted Success');
     }
+
+    public function profile()
+    {
+        return view('admin.admin.profile');
+    }
 }

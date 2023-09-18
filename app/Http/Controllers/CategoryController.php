@@ -20,7 +20,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        //$this->authorize('viewAny', [Category::class, Auth::guard('admin')->user()]);
+        $this->authorize('viewAny', Category::class);
         $categories = $this->categoryService->getAllCategories();
 
         return view('admin.category.index', ['categories' => $categories]);
@@ -28,11 +28,13 @@ class CategoryController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Category::class);
         return view('admin.category.form');
     }
 
     public function store(CategoryRequest $request)
     {
+        $this->authorize('create', Category::class);
         $this->categoryService->store($request);
 
         return Redirect::route('categories.index')->with('success', 'Created category successfully!');
@@ -45,6 +47,7 @@ class CategoryController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update', Category::class);
         $category = $this->categoryService->getCategoryById($id);
 
         return view('admin.category.form', ['category' => $category]);
@@ -52,6 +55,7 @@ class CategoryController extends Controller
 
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Category::class);
         if ($request->ajax()) {
             return $this->categoryService->update($request, $id);
         }
@@ -61,6 +65,7 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete', Category::class);
         $this->categoryService->destroy($id);
 
         return Redirect::back()->with('alert', 'Deleted category successfully!');
@@ -70,6 +75,7 @@ class CategoryController extends Controller
 
     public function subIndex()
     {
+        $this->authorize('viewAny', Category::class);
         $categories = $this->categoryService->getAllSub();
 
         return view('admin.category.index', ['categories' => $categories, 'sub' => 'sub']);
@@ -77,6 +83,7 @@ class CategoryController extends Controller
 
     public function subCreate()
     {
+        $this->authorize('create', Category::class);
         $parents = $this->categoryService->getCategories();
 
         return view('admin.category.form', ['parents' => $parents, 'sub' => 'sub']);
@@ -84,12 +91,14 @@ class CategoryController extends Controller
 
     public function subStore(CategoryRequest $request)
     {
+        $this->authorize('create', Category::class);
         $this->categoryService->store($request);
         return Redirect::route('categories.sub_index')->with('success', 'Created sub category successfully!');
     }
 
     public function subEdit($id)
     {
+        $this->authorize('update', Category::class);
         $category = $this->categoryService->getCategoryById($id);
         $parents = $this->categoryService->getCategories();
 
@@ -98,6 +107,7 @@ class CategoryController extends Controller
 
     public function subUpdate(Request $request, $id)
     {
+        $this->authorize('update', Category::class);
         if ($request->ajax()) {
             return $this->categoryService->update($request, $id);
         }
@@ -107,6 +117,7 @@ class CategoryController extends Controller
 
     public function subDestroy($id)
     {
+        $this->authorize('delete', Category::class);
         return $this->categoryService->destroy($id);
     }
 

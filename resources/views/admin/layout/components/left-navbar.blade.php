@@ -26,8 +26,8 @@
                     <ul>
                         <li><a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.index') || request()->routeIs('categories.show') ? 'show active' : '' }}">Category List</a></li>
                         <li><a href="{{ route('categories.create') }}" class="{{ request()->routeIs('categories.create') ? 'show active' : '' }}">Add Category</a></li>
-                        <li><a href="{{ route('categories.sub_index') }}" class="{{ request()->routeIs('categories.sub_index') || request()->routeIs('categories.sub_show') ? 'show active' : '' }}">Sub Category List</a></li>
-                        <li><a href="{{ route('categories.sub_create') }}" class="{{ request()->routeIs('categories.sub_create') ? 'show active' : '' }}">Add Sub Category</a></li>
+                        <li><a href="{{ route('categories.sub_index') }}" class="{{ request()->routeIs('categories.sub_index') || request()->routeIs('categories.sub_show') ? 'show active' : '' }}">Sub List</a></li>
+                        <li><a href="{{ route('categories.sub_create') }}" class="{{ request()->routeIs('categories.sub_create') ? 'show active' : '' }}">Add Sub</a></li>
                         @if (request()->routeIs('categories.edit'))
                             <li><a href="" class="show active">Edit Category</a></li>
                         @elseif(request()->routeIs('categories.sub_edit'))
@@ -52,8 +52,11 @@
                             alt="img"><span>
                             Tag</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a>Tag List</a></li>
-                        <li><a>Add Tag</a></li>
+                        <li><a href="{{ route('tags.index') }}" class="{{ request()->routeIs('tags.index') ? 'show active' : '' }}">Tag List</a></li>
+                        <li><a href="{{ route('tags.create') }}" class="{{ request()->routeIs('tags.create') ? 'show active' : '' }}">Add Tag</a></li>
+                        @if (request()->routeIs('tags.edit'))
+                            <li><a href="" class="show active">Edit Tag</a></li>
+                        @endif
                     </ul>
                 </li>
                 {{-- <li class="submenu">
@@ -78,6 +81,9 @@
                         <li><a href="{{ route('orders.completed')}}" class="{{ request()->routeIs('orders.completed') ? 'show active' : '' }}">Order Completed</a></li>
                         <li><a href="{{ route('orders.requestCancel')}}" class="{{ request()->routeIs('orders.requestCancel') ? 'show active' : '' }}">Order Request Cancel</a></li>
                         <li><a href="{{ route('orders.canceled')}}" class="{{ request()->routeIs('orders.canceled') ? 'show active' : '' }}">Order Canceled</a></li>
+                        @if (request()->routeIs('orders.edit'))
+                            <li><a href="" class="show active">Edit Order</a></li>
+                        @endif
                     </ul>
                 </li>
                 {{-- <li class="submenu">
@@ -160,8 +166,11 @@
                             alt="img"><span>
                             Users</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('admins.index') }}" class="{{ request()->routeIs('admins.index') ? 'show active' : '' }}">Users List</a></li>
-                        <li><a href="{{ route('admins.create') }}" class="{{ request()->routeIs('admins.create') ? 'show active' : '' }}">New User </a></li>
+                        <li><a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.index') ? 'show active' : '' }}">Users List</a></li>
+                        <li><a href="{{ route('users.create') }}" class="{{ request()->routeIs('users.create') ? 'show active' : '' }}">New User </a></li>
+                        @if (request()->routeIs('users.edit'))
+                            <li><a href="" class="show active">Edit User</a></li>
+                        @endif
                     </ul>
                 </li>
                 <li class="submenu">
@@ -174,6 +183,12 @@
                         <li><a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.index') ? 'show active' : '' }}">Roles List</a></li>
                         <li><a href="{{ route('roles.create') }}" class="{{ request()->routeIs('roles.create') ? 'show active' : '' }}">New Role</a></li>
                         <li><a href="{{ route('permissions.index') }}" class="{{ request()->routeIs('permissions.index') ? 'show active' : '' }}">Permissions List</a></li>
+                        @if (request()->routeIs('admins.edit'))
+                            <li><a href="" class="show active">Edit Admin</a></li>
+                        @elseif (request()->routeIs('roles.edit'))
+                            <li><a href="" class="show active">Edit Role</a></li>
+                        @endif
+
                     </ul>
                 </li>
                 {{-- <li class="submenu">

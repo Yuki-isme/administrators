@@ -9,8 +9,6 @@ use App\Services\AddressService;
 use App\Models\Order;
 use App\Models\Item;
 use App\Models\Info;
-use App\Models\User;
-use App\Models\Cart;
 use App\Mail\OrderSuccessMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -133,8 +131,14 @@ class CheckoutController extends Controller
         return view('frontend.checkout.success');
     }
 
-    public function failed()
+    public function failed(Request $request)
     {
-        return view('frontend.checkout.failed');
+        // dd($request);
+        return view('frontend.checkout.failed', ['order_id' => $request->order_id, 'order_total' => $request->order_total]);
+    }
+
+    public function repayment(Request $request)
+    {
+        return Redirect::route('vnPay', ['order_id' => $request->order_id, 'total' => $request->order_total]);
     }
 }

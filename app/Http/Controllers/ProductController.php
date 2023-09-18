@@ -23,6 +23,7 @@ class ProductController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', Product::class);
         $products = $this->productService->getAllProducts();
 
         return view('admin.product.index', ['products' => $products]);
@@ -30,6 +31,7 @@ class ProductController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Product::class);
         $categories = $this->productService->getAllCategories();
         $brands = $this->productService->getAllBrands();
 
@@ -38,7 +40,7 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-
+        $this->authorize('create', Product::class);
         $this->productService->store($request);
 
         return Redirect::route('products.index')->with('success', 'Created product successfully!');
@@ -46,6 +48,7 @@ class ProductController extends Controller
 
     public function show(string $id)
     {
+        $this->authorize('view', Product::class);
         $product = $this->productService->getProductById($id);
 
         return view('admin.product.show', ['product' => $product]);
@@ -53,6 +56,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update', Product::class);
         $product = $this->productService->getProductById($id);
         $categories = $this->productService->getAllCategories();
         $brands = $this->productService->getAllBrands();
@@ -62,6 +66,7 @@ class ProductController extends Controller
 
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Product::class);
         if ($request->ajax()) {
             return $this->productService->update($request, $id);
         }
@@ -73,6 +78,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete', Product::class);
         $this->productService->destroy($id);
 
         return Redirect::back()->with('alert', 'Deleted product successfully!');

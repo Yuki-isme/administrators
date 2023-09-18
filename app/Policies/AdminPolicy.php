@@ -11,7 +11,7 @@ class AdminPolicy
 {
     private $admin;
     function __construct (){
-        $this->admin = Auth::guard('admin')->user();
+        $this->admin = Admin::find(Auth::guard('admin')->user()->id);
     }
     /**
      * Determine whether the user can view any models.
@@ -24,7 +24,7 @@ class AdminPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?Admin $admin, Admin $a): bool
+    public function view(?Admin $admin): bool
     {
         return $this->admin->hasPermission('detail_admin') || $this->admin->hasRole('Master');
     }
@@ -40,7 +40,7 @@ class AdminPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(?Admin $admin, Admin $a): bool
+    public function update(?Admin $admin): bool
     {
         return $this->admin->hasPermission('update_admin') || $this->admin->hasRole('Master');
     }
@@ -48,7 +48,7 @@ class AdminPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(?Admin $admin, Admin $a): bool
+    public function delete(?Admin $admin): bool
     {
         return $this->admin->hasPermission('delate_admin') || $this->admin->hasRole('Master');
     }
@@ -56,16 +56,16 @@ class AdminPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(?Admin $admin, Admin $a): bool
+    public function restore(?Admin $admin): bool
     {
-        //
+        return 0;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(?Admin $admin, Admin $a): bool
+    public function forceDelete(?Admin $admin): bool
     {
-        //
+        return 0;
     }
 }

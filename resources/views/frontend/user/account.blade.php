@@ -120,11 +120,14 @@
                                         </table>
                                         <br>
                                         <div style="float: right">
-                                            @if ($order->payment_method == 'Thanh toán qua VN Pay' && $order->payment_status == 'Chưa thanh toán')
-                                                <button type="button" class="btn btn-primary">Repayment</button>
+                                            @if ($order->payment_method == 'Thanh toán qua VN Pay' && $order->payment_status == 'Chưa thanh toán' && $order->status_id < 3)
+                                                <button data-order-id="{{ $order->id }}"
+                                                    data-order-total="{{ $order->total }}"
+                                                    class="btn btn-primary repayment">Repayment</button>
                                             @endif
                                             @if ($order->status_id == 8 || $order->status_id == 5 || $order->status_id == 6)
-                                                <button type="button" class="btn btn-success">Re-order</button>
+                                                <button data-order-id="{{ $order->id }}"
+                                                    class="btn btn-success reorder">Re-order</button>
                                             @endif
                                             @if ($order->status_id < 3)
                                                 <button type="button" class="btn btn-danger">Cancel</button>
@@ -427,6 +430,15 @@
                 </div>
             </div>
         </div>
+        <form action="{{ route('repayment') }}" method="post" id="repayment_form">
+            @csrf
+            <input type="hidden" name="order_id" id="repayment_id">
+            <input type="hidden" name="order_total" id="repayment_total">
+        </form>
+        <form action="{{ route('reorder') }}" method="post" id="reorder_form">
+            @csrf
+            <input type="hidden" name="order_id" id="reorder_id">
+        </form>
     </section>
 @endsection
 
@@ -437,7 +449,7 @@
                 e.preventDefault();
 
                 // Kiểm tra nếu liên kết được nhấp là "Logout"
-                if ($(this).attr("id") === "logout" || $(this).attr("id") === "home") {
+                if ($(this).attr("id") === "home") {
                     window.location.href = $(this).attr("href");
                 } else {
                     var targetSection = $(this).attr("href");
@@ -455,6 +467,21 @@
                     $(targetSection).addClass("show active");
                 }
             });
+        });
+
+        $(document).ready(function() {
+            $(document).on('click', '.repayment', function(e) {
+                $('#repayment_id').val($(this).data('order-id'));
+                $('#repayment_total').val($(this).data('order-total'));
+                $('#repayment_form').submit();
+            })
+        });
+
+        $(document).ready(function() {
+            $(document).on('click', '.reorder', function(e) {
+                $('#reorder_id').val($(this).data('order-id'));
+                $('#reorder_form').submit();
+            })
         });
     </script>
 @endpush

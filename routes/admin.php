@@ -22,6 +22,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 
 Route::group(['prefix' => 'categories', 'as' => 'categories.'], function () {
     //category
@@ -108,6 +109,8 @@ Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
 
 Route::group(['prefix' => 'tags', 'as' => 'tags.'], function () {
 
+    Route::get('/getTags', [TagController::class, 'getTags'])->name('getTags');
+
     Route::get('/', [TagController::class, 'index'])->name('index');
 
     Route::get('/create', [TagController::class, 'create'])->name('create');
@@ -160,10 +163,25 @@ Route::group(['prefix' => 'admins', 'as' => 'admins.'], function () {
     Route::put('/{id}', [AdminController::class, 'update'])->name('update');
 
     Route::delete('/{id}', [AdminController::class, 'destroy'])->name('destroy');
+
+    Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
+});
+
+Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
+
+    Route::get('/', [UserController::class, 'index'])->name('index');
+
+    Route::get('/create', [UserController::class, 'create'])->name('create');
+    Route::post('/', [UserController::class, 'store'])->name('store');
+
+    Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [UserController::class, 'update'])->name('update');
+
+    Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
 });
 
 Route::get('/dashboard', function () {
-    return view('admin.layout.layout');
+    return view('admin.layout.dashboard');
 })->name('admin.dashboard');
 
 
