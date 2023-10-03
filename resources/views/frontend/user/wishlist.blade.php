@@ -40,7 +40,19 @@
                                             </div>
                                             <div style="display: flex; justify-content: center;">
                                                 <div class="h6">
-                                                    {{ number_format($product->cart_price, 0, ',', '.') }} VND
+                                                    @if ($product->sale_price == 0)
+                                                        <strong
+                                                            class="">{{ number_format($product->cart_price, 0, ',', '.') }}
+                                                            VND</strong>
+                                                    @else
+                                                        <strong
+                                                            class="">{{ number_format($product->cart_price, 0, ',', '.') }}
+                                                            VND</strong>
+                                                        <div class="price-wrap mb-2">
+                                                            <del class=" text-danger">{{ number_format($product->price, 0, ',', '.') }}
+                                                                VND</del>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -95,7 +107,7 @@
                                     <a href="#" class="wishlistUpdate" data-product-id="{{ $similarProduct->id }}"
                                         data-current-action="{{ $wishlists ? (in_array($similarProduct->id, $wishlists) ? 'remove' : 'add') : 'add' }}"><i
                                             class="fas fa-heart {{ $wishlists ? (in_array($similarProduct->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }} fa-lg float-end pt-3 m-2"></i></a>
- 
+
 
                                 </div>
                             </div>
@@ -105,12 +117,20 @@
                             </a>
                             <div class="card-body d-flex flex-column pt-3 border-top">
                                 <a href="#" class="nav-link">{{ $similarProduct->name }}</a>
-                                <div class="price-wrap mb-2">
-                                    <strong class="">{{ $similarProduct->cart_price }}</strong>
-                                    <del class="">{{ $similarProduct->price }}</del>
-                                </div>
+                                @if ($similarProduct->sale_price == 0)
+                                    <strong class="">{{ number_format($similarProduct->cart_price, 0, ',', '.') }}
+                                        VND</strong>
+                                @else
+                                    <strong class="">{{ number_format($similarProduct->cart_price, 0, ',', '.') }}
+                                        VND</strong>
+                                    <div class="price-wrap mb-2">
+                                        <del class=" text-danger">{{ number_format($similarProduct->price, 0, ',', '.') }}
+                                            VND</del>
+                                    </div>
+                                @endif
                                 <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                                    <a href="{{ route('addToCart', ['id' => $similarProduct->id]) }}" class="btn btn-outline-primary w-100 addToCartButton">Add to cart</a>
+                                    <a href="{{ route('addToCart', ['id' => $similarProduct->id]) }}"
+                                        class="btn btn-outline-primary w-100 addToCartButton">Add to cart</a>
                                 </div>
                             </div>
                         </div>

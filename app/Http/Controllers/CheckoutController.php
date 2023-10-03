@@ -35,7 +35,10 @@ class CheckoutController extends Controller
 
     public function order()
     {
-        $user = $this->checkoutService->getInforUser();
+        if(count(cart()->getContent()) == 0){
+            return Redirect::route('cart')->with('message', 'Giỏ hàng rỗng');
+        }
+        $user = $this->checkoutService->getInfoUser();
 
         $provinces = $this->addressService->getProvinces();
 

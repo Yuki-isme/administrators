@@ -144,7 +144,7 @@ class OrderController extends Controller
         if ($order->status_id < 3 || $order->status_id == 7) {
             $this->orderService->cancel($id);
 
-            return Redirect::route('orders.requestCancel')->with('success', 'Cancel order successfully!');
+            return Redirect::route('orders.canceled')->with('success', 'Cancel order successfully!');
         } else {
             return Redirect::back();
         }
@@ -172,5 +172,31 @@ class OrderController extends Controller
         $provinces = $this->orderService->provinces();
 
         return view('admin.order.form', ['order' => $order, 'provinces' => $provinces, 'statuses' => $statuses, 'statusDisabledMap' => $this->statusDisabledMap]);
+    }
+
+    public function customerCancel(Request $request)
+    {
+        $order = $this->orderService->find($request->order_id);
+
+        if ($order->status_id < 3 || $order->status_id == 7) {
+            $this->orderService->cancel($request->order_id);
+
+            return Redirect::route('orderCancelled')->with('success', 'Cancel order successfully!');
+        } else {
+            return Redirect::back();
+        }
+    }
+
+    public function customerUndoCancel(Request $request)
+    {
+        $order = $this->orderService->find($request->order_id);
+
+        if ($order->status_id == 7) {
+            $this->orderService->undoCancel($request->order_id);
+
+            return Redirect::route('orderPending')->with('success', 'Undo cancel order successfully!');
+        } else {
+            return Redirect::back();
+        }
     }
 }

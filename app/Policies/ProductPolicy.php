@@ -16,7 +16,7 @@ class ProductPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(?Admin $admin): bool
+    public function viewAny(): bool
     {
         return $this->admin->hasPermission('viewAny_product') || $this->admin->hasRole('Master');
     }
@@ -24,7 +24,7 @@ class ProductPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?Admin $admin): bool
+    public function view(): bool
     {
         return $this->admin->hasPermission('view_product') || $this->admin->hasRole('Master');
     }
@@ -32,15 +32,15 @@ class ProductPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(?Admin $admin): bool
+    public function create(): bool
     {
-        return $this->admin->hasPermission('create_roduct') || $this->admin->hasRole('Master');
+        return $this->admin->hasPermission('create_product') || $this->admin->hasRole('Master');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(?Admin $admin): bool
+    public function update(): bool
     {
         return $this->admin->hasPermission('update_product') || $this->admin->hasRole('Master');
     }
@@ -48,7 +48,7 @@ class ProductPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(?Admin $admin): bool
+    public function delete(): bool
     {
         return $this->admin->hasPermission('delete_product') || $this->admin->hasRole('Master');
     }
@@ -56,7 +56,7 @@ class ProductPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(?Admin $admin): bool
+    public function restore(): bool
     {
         return 0;
     }
@@ -64,7 +64,7 @@ class ProductPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(?Admin $admin): bool
+    public function forceDelete(): bool
     {
         return 0;
     }

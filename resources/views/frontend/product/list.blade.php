@@ -272,21 +272,33 @@
                                         <div class="col-lg-4 col-md-6 col-sm-6 d-flex product product-grid">
                                             <div class="card w-100 my-2 shadow-2-strong">
                                                 <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
-                                                    class="card-img-top" />
+                                                    class="card-img-top" style="width: 306px; height:306px">
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="d-flex flex-row">
-                                                        <h5 class="mb-1 me-1">
-                                                            {{ number_format($product->cart_price, 0, ',', '.') }}
-                                                            VND</h5>
-                                                        <span class="text-danger"><s>{{ number_format($product->price, 0, ',', '.') }}
-                                                                VND</s></span>
+                                                        <div class="price-wrap mb-2">
+                                                        @if ($product->sale_price == 0)
+                                                            <h5
+                                                                class="">{{ number_format($product->cart_price, 0, ',', '.') }}
+                                                                VND</h5>
+                                                        @else
+                                                            <strong
+                                                                class="">{{ number_format($product->cart_price, 0, ',', '.') }}
+                                                                VND</strong>
+                                                            <div class="price-wrap mb-2">
+                                                                <del class=" text-danger">{{ number_format($product->price, 0, ',', '.') }}
+                                                                    VND</del>
+                                                            </div>
+                                                        @endif
+                                                        </div>
                                                     </div>
                                                     <p class="card-text">{{ $product->name }}
                                                     </p>
                                                     <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
                                                         <a href="{{ route('addToCart', ['id' => $product->id]) }}"
-                                                            class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
-                                                        <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                                                            class="btn btn-primary shadow-0 me-1 addToCartButton">Add to
+                                                            cart</a>
+                                                        <a href=""
+                                                            class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
                                                             data-product-id="{{ $product->id }}"
                                                             data-current-action="{{ $wishlists ? (in_array($product->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
                                                             <i
@@ -351,8 +363,10 @@
                                                             <h6 class="text-success">Free shipping</h6>
                                                             <div class="mt-3">
                                                                 <a href="{{ route('addToCart', ['id' => $product->id]) }}"
-                                                                    class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>
-                                                                <a href="" class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
+                                                                    class="btn btn-primary shadow-0 me-1 addToCartButton">Add
+                                                                    to cart</a>
+                                                                <a href=""
+                                                                    class="btn btn-light border px-2 pt-2 icon-hover wishlistButton"
                                                                     data-product-id="{{ $product->id }}"
                                                                     data-current-action="{{ $wishlists ? (in_array($product->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
                                                                     <i
@@ -402,7 +416,7 @@
 @push('custom-script')
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.addToCartButton',function(e) {
+            $(document).on('click', '.addToCartButton', function(e) {
                 e.preventDefault();
 
                 $.ajax({

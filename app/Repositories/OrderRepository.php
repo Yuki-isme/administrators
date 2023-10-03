@@ -17,4 +17,8 @@ class OrderRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function getOrderItems($id)
+    {
+        return $this->model->where('items')->find($id);
+    }
 }

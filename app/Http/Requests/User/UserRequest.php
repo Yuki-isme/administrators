@@ -19,9 +19,11 @@ class UserRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
+            'name' => 'required|string|max:25',
+            'username' => 'required|string|unique:users', // Kiểm tra tính duy nhất của trường "username" trong bảng "users"
             'password' => 'required|min:8',
             'confirm' => 'required|same:password',
         ];
@@ -30,7 +32,16 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'confirm.same' => 'Password confirm not the same!',
+            'name.required' => 'The name field is required.',
+            'name.string' => 'The name must be a string.',
+            'name.max' => 'The name may not be greater than :max characters.',
+            'username.required' => 'The username field is required.',
+            'username.string' => 'The username must be a string.',
+            'username.unique' => 'The username has already been taken.',
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least :min characters.',
+            'confirm.required' => 'The confirmation password field is required.',
+            'confirm.same' => 'The confirmation password does not match the password.',
         ];
     }
 }

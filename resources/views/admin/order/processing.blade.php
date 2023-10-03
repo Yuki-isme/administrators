@@ -63,16 +63,19 @@
                         <div class="wordset">
                             <ul>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                            src="{{ asset('admin/assets/img/icons/pdf.svg') }}" alt="img"></a>
+                                    {{-- <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"> --}}
+                                        <img src="{{ asset('admin/assets/img/icons/pdf.svg') }}" alt="img">
+                                    {{-- </a> --}}
                                 </li>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                            src="{{ asset('admin/assets/img/icons/excel.svg') }}" alt="img"></a>
+                                    {{-- <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"> --}}
+                                        <img src="{{ asset('admin/assets/img/icons/excel.svg') }}" alt="img">
+                                    {{-- </a> --}}
                                 </li>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                            src="{{ asset('admin/assets/img/icons/printer.svg') }}" alt="img"></a>
+                                    {{-- <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"> --}}
+                                        <img src="{{ asset('admin/assets/img/icons/printer.svg') }}" alt="img">
+                                    {{-- </a> --}}
                                 </li>
                             </ul>
                         </div>
@@ -170,26 +173,26 @@
                                             @endif
 
                                             @if ($order->status_id == 7)
-                                                <a
+                                                <a title="Đồng ý hủy đơn"
                                                     href="#"onclick="event.preventDefault(); cancelorder('{{ route('orders.cancel', ['id' => $order->id]) }}')">
                                                     <img src="{{ asset('admin/assets/img/icons/allow.svg') }}"
                                                         alt="img" style="width: 24px; height: 24px">
                                                 </a>
-                                                <a
+                                                <a title="Không cho phép hủy"
                                                     href="#"onclick="event.preventDefault(); notcancel('{{ route('orders.notCancel', ['id' => $order->id]) }}')">
                                                     <img src="{{ asset('admin/assets/img/icons/not-allow.svg') }}"
                                                         alt="img" style="width: 24px; height: 24px">
                                                 </a>
                                             @elseif($order->status_id < 3)
-                                                <a
+                                                <a title="Hủy đơn"
                                                     href="#"onclick="event.preventDefault(); cancelorder('{{ route('orders.cancel', ['id' => $order->id]) }}')">
                                                     <img src="{{ asset('admin/assets/img/icons/delete.svg') }}"
                                                         alt="img" style="width: 24px; height: 24px">
                                                 </a>
                                             @endif
                                             @if ($order->status_id == 8 || $order->status_id == 6)
-                                                <a
-                                                    href="#"onclick="event.preventDefault(); cancelorder('{{ route('orders.initialization', ['id' => $order->id]) }}')">
+                                                <a title="Khởi tạo lại đơn hàng"
+                                                    href="#"onclick="event.preventDefault(); initialization('{{ route('orders.initialization', ['id' => $order->id]) }}')">
                                                     <img src="{{ asset('admin/assets/img/icons/return1.svg') }}"
                                                         alt="img" style="width: 24px; height: 24px">
                                                 </a>
@@ -211,9 +214,6 @@
     <form action="" method="post" id="not-cancel-form">
         @csrf
         @method('put')
-    </form>
-    <form action="" method="post" id="initialization-form">
-        @csrf
     </form>
 @endsection
 
@@ -301,8 +301,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Set the correct action for the delete form using jQuery
-                    $('#initialization').attr('action', url);
-                    $('#initialization').submit();
+                    window.location.href = url;
                 }
             });
         }

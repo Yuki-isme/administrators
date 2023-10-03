@@ -6,10 +6,17 @@
                     <div class="d-flex">
                         <img src="{{ asset('storage/' . $item['img']) }}" class="border rounded me-3"
                             style="width: 96px; height: 96px" />
-                        <div class="">
-                            <a href="#" class="nav-link">{{ $item['name'] }}</a>
-                            <p class="text-muted">Yellow, Jeans</p>
-                        </div>
+                            <div class="">
+                                <span class="nav-link"
+                                    style="color: #4f4f4f">{{ $item['name'] }}</span>
+                                <p class="text-muted">
+                                    @if ($item['stock'] > 0)
+                                        Còn hàng
+                                    @else
+                                        Hết hàng
+                                    @endif
+                                </p>
+                            </div>
                     </div>
                 </div>
             </div>

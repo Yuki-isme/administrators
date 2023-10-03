@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.user.form');
+        return view('frontend.auth.register');
     }
 
     /**
@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $this->userService->store($request);
 
-        return Redirect::route('user.index')->with('success', 'Created Success');
+        return Redirect::route('login')->with('success', 'Created Success');
     }
 
     /**
@@ -58,7 +58,7 @@ class UserController extends Controller
     {
 
 
-        return view('admin.user.form');
+        //return view('admin.user.form');
     }
 
     /**
@@ -67,7 +67,7 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
 
-        return Redirect::route('user.index')->with('success', 'Updated Success');
+        return Redirect::route('myAccount')->with('success', 'Updated Success');
     }
 
     /**
@@ -75,8 +75,8 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->userService->destroy($id);
+        // $this->userService->destroy($id);
 
-        return Redirect::route('user.index')->with('success', 'Deleted Success');
+        // return Redirect::route('user.index')->with('success', 'Deleted Success');
     }
 }

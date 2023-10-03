@@ -6,8 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,17 +27,25 @@ Route::get('/aa', function () {
 
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::get('login', [AdminAuthController::class, 'viewlogin'])->name('admin.login');
-    Route::post('auth', [AdminAuthController::class, 'login'])->name('admin.auth');
-    Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::get('/login', [AdminAuthController::class, 'viewLogin'])->name('admin.login');
+    Route::post('/auth', [AdminAuthController::class, 'login'])->name('admin.auth');
+    Route::get('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
 
-Route::get('/login', [UserAuthController::class, 'viewlogin'])->name('login');
-Route::post('auth', [UserAuthController::class, 'login'])->name('auth');
-Route::get('logout', [UserAuthController::class, 'logout'])->name('logout');
+Route::get('/register', [UserController::class, 'create'])->name('register');
+Route::post('/store', [UserController::class, 'store'])->name('storeAccount');
+
+Route::get('/login', [UserAuthController::class, 'viewLogin'])->name('login');
+Route::post('/auth', [UserAuthController::class, 'login'])->name('auth');
+Route::get('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => 'auth:web'], function () {
     Route::get('myAccount', [HomeController::class, 'myAccount'])->name('myAccount');
+    Route::get('allOrder', [HomeController::class, 'allOrder'])->name('allOrder');
+    Route::get('orderPending', [HomeController::class, 'orderPending'])->name('orderPending');
+    Route::get('orderShipping', [HomeController::class, 'orderShipping'])->name('orderShipping');
+    Route::get('orderCompleted', [HomeController::class, 'orderCompleted'])->name('orderCompleted');
+    Route::get('orderCancelled', [HomeController::class, 'orderCancelled'])->name('orderCancelled');
     Route::get('wishlist', [HomeController::class, 'wishlist'])->name('wishlist');
     Route::post('/{id}/addWishlist', [HomeController::class, 'addWishlist'])->name('addWishlist');
     Route::post('/{id}/wishlistUpdate', [HomeController::class, 'wishlistUpdate'])->name('wishlistUpdate');
@@ -73,3 +81,5 @@ Route::post('/repayment',[CheckoutController::class, 'repayment'])->name('repaym
 Route::get('/vnPay',[PaymentController::class, 'vnPay'])->name('vnPay');
 Route::get('/vnPay_return',[PaymentController::class, 'vnPayReturn'])->name('vnPayReturn');
 
+Route::post('/customerCancel',[OrderController::class, 'customerCancel'])->name('customerCancel');
+Route::post('/customerUndoCancel',[OrderController::class, 'customerUndoCancel'])->name('customerUndoCancel');

@@ -26,7 +26,17 @@
             </div>
             <div style="display: flex; justify-content: center;">
                 <div class="h6">
-                    {{ number_format($product->cart_price, 0, ',', '.') }} VND
+                    @if ($product->sale_price == 0)
+                        <strong class="">{{ number_format($product->cart_price, 0, ',', '.') }}
+                            VND</strong>
+                    @else
+                        <strong class="">{{ number_format($product->cart_price, 0, ',', '.') }}
+                            VND</strong>
+                        <div class="price-wrap mb-2">
+                            <del class=" text-danger">{{ number_format($product->price, 0, ',', '.') }}
+                                VND</del>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -37,9 +47,7 @@
                     data-product-id="{{ $product->id }}"
                     data-current-action="{{ $wishlists ? (in_array($product->id, $wishlists) ? 'remove' : 'add') : 'add' }}">
                     <i
-                        class="fas fa-heart fa-lg
-                                                        {{ $wishlists ? (in_array($product->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }}
-                                                        px-1 icon-wishlist"></i>
+                        class="fas fa-heart fa-lg {{ $wishlists ? (in_array($product->id, $wishlists) ? 'text-primary' : 'text-secondary') : 'text-secondary' }} px-1 icon-wishlist"></i>
                 </a>
                 <a href="{{ route('addToCart', ['id' => $product->id]) }}"
                     class="btn btn-outline-primary addToCartButton">ADD TO CART</a>

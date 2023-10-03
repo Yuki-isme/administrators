@@ -23,7 +23,7 @@ class UserRepository extends BaseRepository
         return Auth::guard('web')->user();
     }
 
-    public function getInforUser()
+    public function getInfoUser()
     {
         $user = $this->getUser();
 

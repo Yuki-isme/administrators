@@ -223,18 +223,16 @@
             </div>
         </div>
         <!-- Heading -->
-    @elseif(request()->routeIs('myAccount'))
+    @elseif(request()->routeIs('myAccount') ||
+            request()->routeIs('allOrder') ||
+            request()->routeIs('orderPending') ||
+            request()->routeIs('orderShipping') ||
+            request()->routeIs('orderCompleted') ||
+            request()->routeIs('orderCancelled'))
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-primary custom-nav current-page">
             <!-- Container wrapper -->
             <div class="container justify-content-center justify-content-md-between">
-                <!-- Toggle button -->
-                <button class="navbar-toggler border py-2 text-dark" type="button" data-mdb-toggle="collapse"
-                    data-mdb-target="#navbarLeftAlignExample" aria-controls="navbarLeftAlignExample"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
-
                 <!-- Collapsible wrapper -->
                 <div class="collapse navbar-collapse" id="navbarLeftAlignExample">
                     <!-- Left links -->
@@ -246,23 +244,29 @@
                             <div class="nav-link">|</div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#profile-section">Profile</a>
+                            <a class="nav-link {{ request()->routeIs('myAccount') ? 'active' : '' }}"
+                                href="{{ route('myAccount') }}">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#all-orders-section">All
+                            <a class="nav-link {{ request()->routeIs('allOrder') ? 'active' : '' }}"
+                                href="{{ route('allOrder') }}">All
                                 Orders</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#shipping-orders-section">Shipping
-                                Orders</a>
+                            <a class="nav-link {{ request()->routeIs('orderPending') ? 'active' : '' }}"
+                                href="{{ route('orderPending') }}">Orders Pending</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#completed-orders-section">Completed
-                                Orders</a>
+                            <a class="nav-link {{ request()->routeIs('orderShipping') ? 'active' : '' }}"
+                                href="{{ route('orderShipping') }}">Order Shipping</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#cancelled-orders-section">Cancelled
-                                Orders</a>
+                            <a class="nav-link {{ request()->routeIs('orderCompleted') ? 'active' : '' }}"
+                                href="{{ route('orderCompleted') }}">Order Completed</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('orderCancelled') ? 'active' : '' }}"
+                                href="{{ route('orderCancelled') }}">Order Cancelled</a>
                         </li>
                     </ul>
                     <!-- Left links -->
@@ -271,7 +275,10 @@
             <!-- Container wrapper -->
         </nav>
         <!-- Navbar -->
-    @elseif(request()->routeIs('listByCategory') || request()->routeIs('listByBrand') || request()->routeIs('list') || request()->routeIs('searchProducts'))
+    @elseif(request()->routeIs('listByCategory') ||
+            request()->routeIs('listByBrand') ||
+            request()->routeIs('list') ||
+            request()->routeIs('searchProducts'))
         <!-- Heading -->
         <div class="bg-primary mb-4">
             <div class="container py-4">

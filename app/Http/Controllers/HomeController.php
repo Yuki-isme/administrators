@@ -157,9 +157,48 @@ class HomeController extends Controller
     public function myAccount()
     {
         $user = Auth::guard('web')->user();
-        $orders = Order::with('items', 'province', 'district', 'ward', 'status')->where('user_id', $user->id)->orderByDesc('id')->get();
 
-        return view('frontend.user.account', ['user' => $user, 'orders' => $orders]);
+        return view('frontend.user.account', ['user' => $user]);
+    }
+
+    public function allOrder()
+    {
+        $user = Auth::guard('web')->user();
+        $orders = Order::with('items.product.thumbnail', 'province', 'district', 'ward', 'status')->where('user_id', $user->id)->orderByDesc('id')->get();
+
+        return view('frontend.user.all-order', ['user' => $user, 'orders' => $orders]);
+    }
+
+    public function orderPending()
+    {
+        $user = Auth::guard('web')->user();
+        $orders = Order::with('items.product.thumbnail', 'province', 'district', 'ward', 'status')->where('user_id', $user->id)->where('status_id', '<', 3)->orderByDesc('id')->get();
+
+        return view('frontend.user.order-pending', ['user' => $user, 'orders' => $orders]);
+    }
+
+    public function orderShipping()
+    {
+        $user = Auth::guard('web')->user();
+        $orders = Order::with('items.product.thumbnail', 'province', 'district', 'ward', 'status')->where('user_id', $user->id)->where('status_id', '>', 2)->where('status_id', '<', 6)->orderByDesc('id')->get();
+
+        return view('frontend.user.order-shipping', ['user' => $user, 'orders' => $orders]);
+    }
+
+    public function orderCompleted()
+    {
+        $user = Auth::guard('web')->user();
+        $orders = Order::with('items.product.thumbnail', 'province', 'district', 'ward', 'status')->where('user_id', $user->id)->where('status_id', '=', 6)->orderByDesc('id')->get();
+
+        return view('frontend.user.order-completed', ['user' => $user, 'orders' => $orders]);
+    }
+
+    public function orderCancelled()
+    {
+        $user = Auth::guard('web')->user();
+        $orders = Order::with('items.product.thumbnail', 'province', 'district', 'ward', 'status')->where('user_id', $user->id)->where('status_id', '>', 6)->orderByDesc('id')->get();
+
+        return view('frontend.user.order-cancelled', ['user' => $user, 'orders' => $orders]);
     }
 
     public function wishlist()
@@ -168,9 +207,9 @@ class HomeController extends Controller
         $products = Auth::guard('web')->user()->wishlists->load('thumbnail', 'tags');
         $wishlists = Auth::guard('web')->check() ?  Auth::guard('web')->user()->wishlists->pluck('id')->toArray() : null;
         $similarProducts = Product::with('thumbnail')
-            ->select('products.id', 'products.name', 'products.description', 'products.price', DB::raw('SUM(items.amount) as total_amount'))
+            ->select('products.id', 'products.name', 'products.sale_price', 'products.price', DB::raw('SUM(items.amount) as total_amount'))
             ->join('items', 'products.id', '=', 'items.product_id')
-            ->groupBy('products.id', 'products.name', 'products.description', 'products.price')
+            ->groupBy('products.id', 'products.name', 'products.sale_price', 'products.price')
             ->orderByDesc('total_amount')
             ->take(4)
             ->get();
@@ -212,8 +251,9 @@ class HomeController extends Controller
 
         $categories = $this->homeService->getCategories();
         $brands = $this->homeService->getBrands();
+        $wishlists = Auth::guard('web')->check() ?  Auth::guard('web')->user()->wishlists->pluck('id')->toArray() : null;
 
-        return view('frontend.product.list', ['products' => $products, 'brands' => $brands, 'categories' => $categories]);
+        return view('frontend.product.list', ['products' => $products, 'brands' => $brands, 'categories' => $categories, 'wishlists' => $wishlists]);
     }
 
     public function addWishlist($id, Request $request)

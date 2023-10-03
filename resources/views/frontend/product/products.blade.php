@@ -5,7 +5,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-6 d-flex product product-grid">
                     <div class="card w-100 my-2 shadow-2-strong">
                         <img src="{{ asset('storage/' . $product->thumbnail->url) }}"
-                            class="card-img-top" />
+                            class="card-img-top"  style="width: 306px; height:306px">
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex flex-row">
                                 <h5 class="mb-1 me-1">

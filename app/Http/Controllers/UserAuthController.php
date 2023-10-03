@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserAuthController extends Controller
 {
-    public function viewlogin()
+    public function viewLogin()
     {
         return view('frontend.auth.login');
     }
@@ -30,6 +30,4 @@ class UserAuthController extends Controller
         Auth::guard('web')->logout();
         return redirect()->route('index');
     }
-
-
 }

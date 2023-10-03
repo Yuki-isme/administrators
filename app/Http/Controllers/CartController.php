@@ -27,7 +27,11 @@ class CartController extends Controller
         } else if ($check == 'stock') {
             return response()->json(['success' => false, 'message' => 'San pham da het hang']);
         } else {
-            return response()->json(['success' => true, 'message' => 'Them thanh cong', 'count' => count(cart()->getContent())]);
+            $discount = $this->cartService->getDiscount();
+            $wishlists = Auth::guard('web')->check() ?  Auth::guard('web')->user()->wishlists->pluck('id')->toArray() : null;
+            $cart = view('frontend.checkout.update.cart', ['wishlists' => $wishlists])->render();
+            $total = view('frontend.checkout.update.total', ['total' => $this->cartService->getTotal(), 'discount' => $discount])->render();
+            return response()->json(['success' => true, 'message' => 'Them thanh cong', 'count' => count(cart()->getContent()), 'cart' => $cart, 'total' => $total]);
         }
     }
 
@@ -39,7 +43,7 @@ class CartController extends Controller
         $carts = cart()->getContent();
         $similar = collect([]);
 
-        if($carts){
+        if ($carts) {
             foreach ($carts as $product_id => $item) {
                 $similarProduct = Product::with('thumbnail')
                     ->join('product_tag', 'products.id', '=', 'product_tag.product_id')
@@ -55,24 +59,24 @@ class CartController extends Controller
                     ->groupBy('products.id')
                     ->orderByDesc('tag_count')
                     ->take(1)
-                    ->get(); 
-    
+                    ->get();
+
                 if ($similarProduct->isNotEmpty()) {
                     $similar = $similar->concat($similarProduct);
                 }
             }
         }
-            // Kiểm tra nếu $similar chưa đủ 4 sản phẩm thì lấy sản phẩm mới nhất
-            if ($similar->count() < 4) {
-                $newestProducts = Product::with('thumbnail')
-                    ->where('stock', '>', 0)
-                    ->orderBy('created_at', 'desc')
-                    ->take(4 - $similar->count())
-                    ->get(); // Chuyển đổi kết quả thành Collection
-    
-                $similar = $similar->concat($newestProducts);
-            }
-        
+        // Kiểm tra nếu $similar chưa đủ 4 sản phẩm thì lấy sản phẩm mới nhất
+        if ($similar->count() < 4) {
+            $newestProducts = Product::with('thumbnail')
+                ->where('stock', '>', 0)
+                ->orderBy('created_at', 'desc')
+                ->take(4 - $similar->count())
+                ->get(); // Chuyển đổi kết quả thành Collection
+
+            $similar = $similar->concat($newestProducts);
+        }
+
 
 
         return view('frontend.checkout.cart', ['carts' => $carts, 'wishlists' => $wishlists, 'similar' => $similar]);

@@ -17,7 +17,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can view any models.
      */
-    public function viewAny(?Admin $admin): bool
+    public function viewAny(): bool
     {
         return $this->admin->hasPermission('viewAny_brand') || $this->admin->hasRole('Master');
     }
@@ -34,7 +34,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can create models.
      */
-    public function create(?Admin $admin): bool
+    public function create(): bool
     {
         return $this->admin->hasPermission('create_brand') || $this->admin->hasRole('Master');
     }
@@ -42,7 +42,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can update the model.
      */
-    public function update(?Admin $admin): bool
+    public function update(): bool
     {
         return $this->admin->hasPermission('update_brand') || $this->admin->hasRole('Master');
     }
@@ -50,7 +50,7 @@ class BrandPolicy
     /**
      * Determine whether the admin can delete the model.
      */
-    public function delete(?Admin $admin): bool
+    public function delete(): bool
     {
         return $this->admin->hasPermission('delete_brand') || $this->admin->hasRole('Master');
     }

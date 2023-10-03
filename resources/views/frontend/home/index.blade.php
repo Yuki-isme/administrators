@@ -74,7 +74,17 @@
                                 <a href="{{ route('productDetail', ['id' => $newProduct->id]) }}" class="text-product">
                                     <h5 class="card-title">{{ $newProduct->name }}</h5>
                                 </a>
-                                <p class="card-text">{{ number_format($newProduct->cart_price, 0, ',', '.') }} VND</p>
+                                @if ($newProduct->sale_price == 0)
+                                    <strong class="">{{ number_format($newProduct->cart_price, 0, ',', '.') }}
+                                        VND</strong>
+                                @else
+                                    <strong class="">{{ number_format($newProduct->cart_price, 0, ',', '.') }}
+                                        VND</strong>
+                                    <div class="price-wrap mb-2">
+                                        <del class=" text-danger">{{ number_format($newProduct->price, 0, ',', '.') }}
+                                            VND</del>
+                                    </div>
+                                @endif
                                 <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
                                     <a href="{{ route('addToCart', ['id' => $newProduct->id]) }}"
                                         class="btn btn-primary shadow-0 me-1 addToCartButton">Add to cart</a>

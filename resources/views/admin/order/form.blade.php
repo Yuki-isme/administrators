@@ -29,9 +29,6 @@
                 <div class="card-body">
                     <form method="post" action="{{ route('orders.store') }}" enctype="multipart/form-data">
                         @csrf
-                        @isset($order)
-                            @method('PUT')
-                        @endisset
                         <div class="row">
                             <div class="col-lg-2 col-sm-2 col-12">
                                 <div class="form-group">
@@ -77,15 +74,7 @@
                                     <label>Status</label>
                                     <select name="status_id" class="disabled-results form-control form-small">
                                         @foreach ($statuses as $status)
-                                            @php
-                                                if (isset($order)) {
-                                                    $isDisabled = in_array($status->id, $statusDisabledMap[$order->status_id]);
-                                                }
-                                            @endphp
-
-                                            <option value="{{ $status->id }}"
-                                                {{ isset($order) ? ($status->id == $order->status_id ? 'selected' : '') : '' }}
-                                                {{ isset($order) ? ($isDisabled ? 'disabled' : '') : '' }}>
+                                            <option value="{{ $status->id }}">
                                                 {{ $status->name }}</option>
                                         @endforeach
                                     </select>
@@ -190,7 +179,8 @@
                                                     </td>
                                                     <td>{{ number_format($item->product->price, 0, ',', '.') }}
                                                     </td>
-                                                    <td>{{ number_format($item->product->price - $item->product->cart_price, 0, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->product->price - $item->product->cart_price, 0, ',', '.') }}
+                                                    </td>
 
                                                     <td>
                                                         <select
@@ -199,14 +189,14 @@
                                                             data-price="{{ $item->product->price }}"
                                                             data-discount="{{ $item->product->price - $item->product->cart_price }}">
                                                             @php
-                                                                $amount = $item->amount <=  $item->product->stock ? $item->amount : $item->product->stock;
+                                                                $amount = $item->amount <= $item->product->stock ? $item->amount : $item->product->stock;
                                                             @endphp
-                                                                @for ($i = 1; $i <= $item->product->stock; $i++)
-                                                                    <option value="{{ $i }}"
-                                                                        {{ $i == $amount ? 'selected' : '' }}>
-                                                                        {{ $i }}
-                                                                    </option>
-                                                                @endfor
+                                                            @for ($i = 1; $i <= $item->product->stock; $i++)
+                                                                <option value="{{ $i }}"
+                                                                    {{ $i == $amount ? 'selected' : '' }}>
+                                                                    {{ $i }}
+                                                                </option>
+                                                            @endfor
                                                         </select>
                                                     </td>
                                                     <td class="total-price">
@@ -216,7 +206,7 @@
                                                         {{ number_format(($item->product->price - $item->product->cart_price) * $amount, 0, ',', '.') }}
                                                     </td>
                                                     @php
-                                                        $sumTotal += ($item->product->cart_price) * $amount;
+                                                        $sumTotal += $item->product->cart_price * $amount;
                                                     @endphp
                                                     <td class="last-total">
                                                         {{ number_format($item->product->cart_price * $amount, 0, ',', '.') }}

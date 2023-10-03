@@ -304,7 +304,39 @@ class OrderService
             DB::beginTransaction();
 
             $this->orderRepository->getById($id)->update([
-                'status_id' => 2,
+                'status_id' => 1,
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->withErrors(['common' => $e->getMessage()]);
+        }
+    }
+
+    public function customerCancel($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->orderRepository->getById($id)->update([
+                'status_id' => 7,
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->withErrors(['common' => $e->getMessage()]);
+        }
+    }
+
+    public function undoCancel($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->orderRepository->getById($id)->update([
+                'status_id' => 1,
             ]);
 
             DB::commit();

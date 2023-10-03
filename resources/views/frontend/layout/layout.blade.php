@@ -17,7 +17,7 @@
     <!-- Alert -->
     <link href="{{ asset('frontend/css/alertify.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('frontend/css/default.min.css') }}" rel="stylesheet" />
-    <!-- Alert -->
+    <!-- Slick -->
     <link href="{{ asset('frontend/css/slick.css') }}" rel="stylesheet" />
     <!-- MDB -->
     <link rel="stylesheet" href="{{ asset('frontend/css/mdb.min.css') }}" />
@@ -45,6 +45,8 @@
     <script type="text/javascript" src="{{ asset('frontend/js/alertify.min.js') }}"></script>
     <!-- Slick -->
     <script type="text/javascript" src="{{ asset('frontend/js/slick.min.js') }}"></script>
+    <!-- SweetAlert -->
+    <script src="{{ asset('admin/assets/plugins/sweetalert/js/sweetalert2.all.min.js') }}"></script>
     <!-- Custom scripts -->
     <script type="text/javascript" src="{{ asset('frontend/js/script.js') }}"></script>
     <script>

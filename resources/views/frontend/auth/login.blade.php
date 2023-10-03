@@ -49,12 +49,10 @@
                             <div class="bg-white rounded-5 shadow-5-strong p-5">
                                 <ul class="nav nav-tabs mb-4">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="signin-tab" data-bs-toggle="tab"
-                                            href="#signin-form">Sign In</a>
+                                        <a class="nav-link active" href="{{ route('login') }}">Sign In</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="signup-tab" data-bs-toggle="tab"
-                                            href="#signup-form">Sign Up</a>
+                                        <a class="nav-link" href="{{ route('register') }}">Sign Up</a>
                                     </li>
                                 </ul>
 
@@ -66,7 +64,7 @@
                                             <div class="form-outline mb-4">
                                                 <input name="username" type="text" id="form1Example1"
                                                     class="form-control" required />
-                                                <label class="form-label" for="form1Example1">User name</label>
+                                                <label class="form-label" for="form1Example1">Login Name</label>
                                             </div>
 
                                             <div class="form-outline mb-4">
@@ -85,7 +83,7 @@
                                                     </button>
                                                 </div>
                                             @endif
-                                            <div class="row mb-4">
+                                            {{-- <div class="row mb-4">
                                                 <div class="col d-flex justify-content-center">
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" value=""
@@ -98,29 +96,11 @@
                                                 <div class="col text-center">
                                                     <a href="#!">Forgot password?</a>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
-                                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                                            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                                            <a href="{{ route('index')}}" class="btn btn-light btn-block">Back</a>
                                         </form>
-                                    </div>
-
-                                    <div class="tab-pane fade" id="signup-form">
-                                        <!-- Sign Up form content -->
-                                        <div class="form-outline mb-4">
-                                            <input type="email" id="form2Example1" class="form-control" />
-                                            <label class="form-label" for="form2Example1">Email address</label>
-                                        </div>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="password" id="form2Example2" class="form-control" />
-                                            <label class="form-label" for="form2Example2">Password</label>
-                                        </div>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="password" id="form2Example3" class="form-control" />
-                                            <label class="form-label" for="form2Example3">Confirm Password</label>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
                                     </div>
                                 </div>
                             </div>
@@ -144,22 +124,6 @@
 
             $('#close-alert').on('click', function() {
                 $('#alert').hide();
-            });
-        });
-        
-        $(document).ready(function() {
-            // Bắt sự kiện khi nhấp vào tab Sign In
-            $("#signin-tab").click(function(e) {
-                e.preventDefault();
-                $("#signin-form").addClass("show active");
-                $("#signup-form").removeClass("show active");
-            });
-
-            // Bắt sự kiện khi nhấp vào tab Sign Up
-            $("#signup-tab").click(function(e) {
-                e.preventDefault();
-                $("#signup-form").addClass("show active");
-                $("#signin-form").removeClass("show active");
             });
         });
     </script>

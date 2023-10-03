@@ -24,8 +24,8 @@ class CheckoutService
         return $this->userRepository->getUser();
     }
 
-    public function getInforUser()
+    public function getInfoUser()
     {
-        return $this->userRepository->getInforUser();
+        return $this->userRepository->getInfoUser();
     }
 }

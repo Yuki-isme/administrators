@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class AdminAuthController extends Controller
 {
-    public function viewlogin()
+    public function viewLogin()
     {
         return view('admin.auth.login');
     }
@@ -31,5 +31,4 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->logout();
         return redirect()->route('admin.login');
     }
-
 }

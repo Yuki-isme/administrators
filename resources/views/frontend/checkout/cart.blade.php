@@ -17,14 +17,21 @@
                                         <div class="row gy-3 mb-4">
                                             <div class="col-lg-5">
                                                 <div class="me-lg-5">
-                                                    <div class="d-flex">
+                                                    <a class="d-flex" href="{{ route('productDetail', ['id' => $id]) }}">
                                                         <img src="{{ asset('storage/' . $item['img']) }}"
                                                             class="border rounded me-3" style="width: 96px; height: 96px" />
                                                         <div class="">
-                                                            <a href="#" class="nav-link">{{ $item['name'] }}</a>
-                                                            <p class="text-muted">Yellow, Jeans</p>
+                                                            <span class="nav-link"
+                                                                style="color: #4f4f4f">{{ $item['name'] }}</span>
+                                                            <p class="text-muted">
+                                                                @if ($item['stock'] > 0)
+                                                                    Còn hàng
+                                                                @else
+                                                                    Hết hàng
+                                                                @endif
+                                                            </p>
                                                         </div>
-                                                    </div>
+                                                    </a>
                                                 </div>
                                             </div>
                                             <div
@@ -39,13 +46,17 @@
                                                         @endfor
                                                     </select>
                                                 </div>
-                                                <div class="">
+                                                <div>
                                                     <span
                                                         class="h6">{{ number_format($item['price'] * $item['amount'], 0, ',', '.') }}
                                                         VND</span>
                                                     <br />
                                                     <small class="text-muted text-nowrap">
                                                         {{ number_format($item['price'], 0, ',', '.') }} VND / per item
+                                                        @if( $item['discount'] > 0)
+                                                        <del class=" text-danger">{{ number_format($item['price'] + $item['discount'], 0, ',', '.') }}
+                                                            VND</del>
+                                                        @endif()
                                                     </small>
                                                 </div>
                                             </div>
@@ -132,7 +143,7 @@
                                 </div>
                             </div>
                             <div class="mt-3">
-                                <a href="{{ route('order') }}" data-total="{{ cart()->getTotal() }}" id="make-purchase"
+                                <a href="{{ route('order') }}" id="make-purchase"
                                     class="btn btn-success w-100 shadow-0 mb-2">
                                     Make Purchase
                                 </a>
@@ -170,15 +181,26 @@
 
                                 </div>
                             </div>
-                            <a href="#" class="d-flex justify-content-center align-items-center">
+                            <a href="{{ route('productDetail', ['id' => $similarProduct->id]) }}"
+                                class="d-flex justify-content-center align-items-center">
                                 <img src="{{ asset('storage/' . $similarProduct->thumbnail->url) }}"
                                     style="width: 200px; height: 200px" class="card-img-top rounded-2" />
                             </a>
-                            <div class="card-body d-flex flex-column pt-3 border-top">
-                                <a href="#" class="nav-link">{{ $similarProduct->name }}</a>
+                            <div class="card-body d-flex flex-column pt-3 border-top" style="height: 187px">
+                                <a href="{{ route('productDetail', ['id' => $similarProduct->id]) }}"
+                                    class="nav-link">{{ $similarProduct->name }}</a>
                                 <div class="price-wrap mb-2">
-                                    <strong class="">{{ $similarProduct->cart_price }}</strong>
-                                    <del class="">{{ $similarProduct->price }}</del>
+                                    @if ($similarProduct->sale_price == 0)
+                                        <strong class="">{{ number_format($similarProduct->cart_price, 0, ',', '.') }}
+                                            VND</strong>
+                                    @else
+                                        <strong class="">{{ number_format($similarProduct->cart_price, 0, ',', '.') }}
+                                            VND</strong>
+                                        <div class="price-wrap mb-2">
+                                            <del class=" text-danger">{{ number_format($similarProduct->price, 0, ',', '.') }}
+                                                VND</del>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
                                     <a href="{{ route('addToCart', ['id' => $similarProduct->id]) }}"
@@ -198,14 +220,15 @@
 
 @push('custom-script')
     <script>
+        var check = {{ count(cart()->getContent()) }}
         $(document).ready(function() {
             $(document).on('click', '#make-purchase', function(e) {
                 e.preventDefault();
-                if ($(this).data('total') == '0') {
+                if (check == 0) {
                     alertify.warning('Giỏ hàng trống', {
                         'cssClass': 'ajs-success'
                     });
-                }else{
+                } else {
                     window.location.href = $(this).attr('href');
                 }
 
@@ -223,7 +246,7 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        console.log(response.count);
+                        check = response.count;
                         $('#cart-amount').text('My cart' + ' (' + response.count + ')');
                         $('#cart-update').html(response.cart);
                         $('#total-update').html(response.total);
@@ -306,6 +329,36 @@
                             });
                         }
                     }.bind(this) // Chắc chắn rằng "this" trỏ đúng đối tượng
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $(document).on('click', '.addToCartButton', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('href'),
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            check = response.count;
+                            $('#cart-amount').text('My cart' + ' (' + response.count + ')');
+                            $('#cart-update').html(response.cart);
+                            $('#total-update').html(response.total);
+                            alertify.success(response.message, {
+                                'cssClass': 'ajs-success'
+                            });
+                        } else {
+                            alertify.error(response.message, {
+                                'cssClass': 'ajs-error'
+                            });
+
+                        }
+                    }
                 });
             });
         });
